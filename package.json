@@ -2,7 +2,8 @@
   "name": "flowscript",
   "version": "0.1.0",
   "description": "A TypeScript/JavaScript library designed to implement workflows as computational graphs",
-  "main": "src/index.ts",
+  "main": "src/index.js",
+  "types": "src/index.d.ts",
   "directories": {
     "test": "test"
   },
@@ -41,5 +42,4 @@
     "test:watch": "mocha --require ts-node/register test/**/*.ts --watch --watch-extensions ts"
   },
   "author": "Sebastian E. Kwiatkowski",
-  "license": "MIT"
 }
