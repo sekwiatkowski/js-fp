@@ -134,6 +134,7 @@ class Future {
         });
     }
 }
+exports.Future = Future;
 function fulfill(value) {
     return new Future(() => Promise.resolve(Fulfilled_1.fulfilled(value)));
 }
@@ -150,9 +151,3 @@ function future(createPromise) {
     }));
 }
 exports.future = future;
-fulfill((a) => (b) => (c) => (d) => a + b + c + d)
-    .apply(1)
-    .apply(() => 2)
-    .apply(fulfill(3))
-    .apply(() => fulfill(4))
-    .getOrElse(() => { throw 'rejection'; });

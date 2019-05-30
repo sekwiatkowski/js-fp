@@ -1,5 +1,5 @@
 import { Settled, SettledMatchPattern } from './Settled';
-declare class Future<T, E> {
+export declare class Future<T, E> {
     private readonly createPromise;
     constructor(createPromise: () => Promise<Settled<T, E>>);
     apply<B, C>(this: Future<(parameter: B) => C, E>, parameterValueOrFunction: B | (() => B) | Future<B, E> | (() => Future<B, E>) | Promise<B> | (() => Promise<B>)): Future<C, E>;
@@ -22,4 +22,3 @@ declare class Future<T, E> {
 export declare function fulfill<T, E>(value: T): Future<T, E>;
 export declare function reject<T, E>(error: E): Future<T, E>;
 export declare function future<T, E>(createPromise: () => Promise<T>): Future<T, E>;
-export {};

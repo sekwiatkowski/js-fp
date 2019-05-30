@@ -38,6 +38,7 @@ class Box {
         return predicate(this.value);
     }
 }
+exports.Box = Box;
 function box(value) {
     return new Box(value);
 }

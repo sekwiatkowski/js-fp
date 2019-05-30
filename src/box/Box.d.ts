@@ -1,4 +1,4 @@
-declare class Box<A> {
+export declare class Box<A> {
     private readonly value;
     constructor(value: A);
     apply<B, C>(this: Box<(parameter: B) => C>, parameterOrFunction: B | Box<B> | (() => B) | (() => Box<B>)): Box<C>;
@@ -12,4 +12,3 @@ declare class Box<A> {
     test(predicate: (A: any) => boolean): boolean;
 }
 export declare function box<A>(value: A): Box<A>;
-export {};
