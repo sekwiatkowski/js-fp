@@ -31,12 +31,12 @@
     "monad",
     "monoid",
     "option",
-    "maybe",
     "result",
     "validation",
     "future"
   ],
   "scripts": {
+    "transpile": "tsc",
     "test": "mocha --require ts-node/register test/**/*.ts",
     "test:watch": "mocha --require ts-node/register test/**/*.ts --watch --watch-extensions ts"
   },
