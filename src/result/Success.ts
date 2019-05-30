@@ -1,0 +1,94 @@
+import {Result, ResultMatchPattern} from './Result'
+import {Failure} from './Failure'
+
+export class Success<T, E> implements Result<T, E> {
+    constructor(private readonly value: T) {}
+
+    apply<U, V>(
+        this: Result<(parameter: U) => V, E>,
+        parameterOrFunction: U | (() => U) | Result<U, E> | (() => Result<U, E>)): Result<V, E> {
+        const parameter = parameterOrFunction instanceof Function ? parameterOrFunction() : parameterOrFunction
+
+        if (parameter instanceof Success || parameter instanceof Failure) {
+            return parameter.chain(parameterValue => this.map(f => f(parameterValue)))
+        }
+        else {
+            return this.map(f => f(<U>parameter))
+        }
+    }
+
+    assign<T extends object, U>(
+        this: Success<T, E>,
+        key: string,
+        memberOrFunction: U | ((value: T) => U) | Result<T, E> | ((value: T) => T) | ((value: T) => Result<T, E>)): Result<T & { [key in string]: U }, E> {
+        const member = memberOrFunction instanceof Function ? memberOrFunction(this.value) : memberOrFunction
+
+        if(member instanceof Success || member instanceof Failure) {
+            return member.map(memberValue => {
+                return {
+                    ...Object(this.value),
+                    [key]: memberValue
+                }
+            })
+        }
+        else {
+            return new Success({
+                ...Object(this.value),
+                [key]: member
+            })
+        }
+    }
+
+    chain<U>(f: (t: T) => Result<U, E>): Result<U, E> {
+        return f(this.value)
+    }
+
+    getErrorOrElse(alternative: E|((value: T) => E)): E {
+        return alternative instanceof Function ? alternative(this.value) : alternative
+    }
+
+    getOrElse(alternative: T|((error: E) => T)): T {
+        return this.value
+    }
+
+    isFailure(): boolean {
+        return false
+    }
+
+    isSuccess(): boolean {
+        return true
+    }
+
+    map<U>(f: (value: T) => U): Result<U, E> {
+        return new Success(f(this.value))
+    }
+
+    mapError<F>(f: (error: E) => F): Result<T, F> {
+        return new Success(this.value)
+    }
+
+    match<X>(pattern: ResultMatchPattern<T, E, X>): X {
+        return pattern.Success(this.value)
+    }
+
+    orElse(alternative: T|((error: E) => T)): Result<T, E> {
+        return this
+    }
+
+    orAttempt(alternative: (error: E) => Result<T, E>): Result<T, E> {
+        return this
+    }
+
+    perform(sideEffect: (value: T) => void): Result<T, E> {
+        sideEffect(this.value)
+        return new Success(this.value)
+    }
+
+    performOnError(sideEffect: (error: E) => void): Result<T, E> {
+        return this
+    }
+}
+
+export function success<T, E>(value: T) : Success<T, E> {
+    return new Success(value)
+}
