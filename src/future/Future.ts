@@ -239,10 +239,3 @@ export function future<T, E>(createPromise: () => Promise<T>): Future<T, E> {
                 .catch(error => resolve(rejected<T, E>(error)))
         }))
 }
-
-fulfill((a: number) => (b: number) => (c: number) => (d: number) => a + b + c + d)
-    .apply(1)
-    .apply(() => 2)
-    .apply(fulfill(3))
-    .apply(() => fulfill(4))
-    .getOrElse(() => { throw 'rejection' })
