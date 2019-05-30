@@ -1,13 +1,13 @@
-export { box } from './box/Box'
+export { Box, box } from './box/Box'
 
-export { option } from './option/Option'
-export { some } from './option/Some'
-export { none } from './option/None'
+export { Option, option } from './option/Option'
+export { Some, some } from './option/Some'
+export { None, none } from './option/None'
 
-export { success } from './result/Success'
-export { failure } from './result/Failure'
+export { Success, success } from './result/Success'
+export { Failure, failure } from './result/Failure'
 
-export { invalid } from './validated/Invalid'
-export { valid } from './validated/Valid'
+export { Invalid, invalid } from './validated/Invalid'
+export { Valid, valid } from './validated/Valid'
 
-export { future, fulfill, reject } from './future/Future'
+export { Future, future, fulfill, reject } from './future/Future'

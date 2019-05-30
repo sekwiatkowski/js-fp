@@ -1,4 +1,4 @@
-class Box<A> {
+export class Box<A> {
     constructor(private readonly value: A) {}
 
     apply<B, C>(this: Box<(parameter: B) => C>, parameterOrFunction: B | Box<B> | (() => B) | (() => Box<B>)) : Box<C> {

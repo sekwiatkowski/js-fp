@@ -2,7 +2,7 @@ import {Settled, SettledMatchPattern} from './Settled'
 import {fulfilled} from './Fulfilled'
 import {rejected} from './Rejected'
 
-class Future<T, E> {
+export class Future<T, E> {
     constructor(private readonly createPromise: () => Promise<Settled<T, E>>) {}
 
     apply<B, C>(this: Future<(parameter: B) => C, E>, parameterValueOrFunction: B | (() => B) | Future<B, E> | (() => Future<B, E>) | Promise<B> | (() => Promise<B>)) : Future<C, E> {
