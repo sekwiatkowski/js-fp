@@ -42,4 +42,5 @@
     "test:watch": "mocha --require ts-node/register test/**/*.ts --watch --watch-extensions ts"
   },
   "author": "Sebastian E. Kwiatkowski",
+  "license": "MIT"
 }
