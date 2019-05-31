@@ -1,4 +1,4 @@
-import {box} from '../../src'
+import {box, Future, Some, Success, Valid} from '../../src'
 
 const chai = require('chai')
 
@@ -84,5 +84,21 @@ describe('Box', () => {
 
         mutable
             .should.equal(f(valueText))
+    })
+
+    it('should be convertible to a Some instance', () => {
+        (box(valueText).toOption() instanceof Some).should.be.true
+    })
+
+    it('should be convertible to a Success instance', () => {
+        (box(valueText).toResult() instanceof Success).should.be.true
+    })
+
+    it('should be convertible to a Valid instance', () => {
+        (box(valueText).toValidated() instanceof Valid).should.be.true
+    })
+
+    it('should be convertible to a Future instance', () => {
+        (box(valueText).toFuture() instanceof Future).should.be.true
     })
 })

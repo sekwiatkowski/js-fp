@@ -1,3 +1,5 @@
+import {fulfill, Future, Option, Result, some, success, valid, Validated} from '..'
+
 export class Box<A> {
     constructor(private readonly value: A) {}
 
@@ -39,6 +41,22 @@ export class Box<A> {
 
     test(predicate: (A) => boolean): boolean {
         return predicate(this.value)
+    }
+
+    toOption(): Option<A> {
+        return some(this.value)
+    }
+
+    toResult<E>(): Result<A, E> {
+        return success(this.value)
+    }
+
+    toValidated<E>(): Validated<A> {
+        return valid(this.value)
+    }
+
+    toFuture<E>(): Future<A, E> {
+        return fulfill(this.value)
     }
 }
 
