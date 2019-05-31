@@ -1,3 +1,5 @@
+import {Future, Option, Result, Validated} from '..';
+
 export declare class Box<A> {
     private readonly value;
     constructor(value: A);
@@ -10,6 +12,10 @@ export declare class Box<A> {
     map<B>(f: (value: A) => B): Box<B>;
     perform(sideEffect: (A: any) => void): Box<A>;
     test(predicate: (A: any) => boolean): boolean;
+    toOption(): Option<A>;
+    toResult<E>(): Result<A, E>;
+    toValidated<E>(): Validated<A>;
+    toFuture<E>(): Future<A, E>;
 }
 export declare function box<A>(value: A): Box<A>;
 export declare function boxObject(): Box<{}>;

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const __1 = require("..");
 class Box {
     constructor(value) {
         this.value = value;
@@ -28,6 +29,18 @@ class Box {
     }
     test(predicate) {
         return predicate(this.value);
+    }
+    toOption() {
+        return __1.some(this.value);
+    }
+    toResult() {
+        return __1.success(this.value);
+    }
+    toValidated() {
+        return __1.valid(this.value);
+    }
+    toFuture() {
+        return __1.fulfill(this.value);
     }
 }
 exports.Box = Box;
