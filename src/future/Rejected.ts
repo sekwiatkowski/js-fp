@@ -11,7 +11,7 @@ class Rejected<T, E> implements Settled<T, E> {
         return alternative instanceof Function ? alternative(this.error) : alternative
     }
 
-    match<X>(pattern: SettledMatchPattern<T, E, X>) {
+    match<X>(pattern: SettledMatchPattern<T, E, X>): X {
         return pattern.Rejected(this.error)
     }
 

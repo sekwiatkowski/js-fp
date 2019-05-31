@@ -19,7 +19,7 @@ class Fulfilled<T, E> implements Settled<T, E> {
         return new Fulfilled(this.value)
     }
 
-    match<X>(pattern: SettledMatchPattern<T, E, X>) {
+    match<X>(pattern: SettledMatchPattern<T, E, X>): X {
         return pattern.Resolved(this.value)
     }
 

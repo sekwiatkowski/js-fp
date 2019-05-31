@@ -8,7 +8,7 @@ export interface Settled<T, E> {
 
     mapError<F>(f: (error: E) => F): Settled<T, F>
 
-    match<X>(pattern: SettledMatchPattern<T, E, X>)
+    match<X>(pattern: SettledMatchPattern<T, E, X>): X
 
     getErrorOrElse(alternative: E | ((value: T) => E)): E
 
