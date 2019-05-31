@@ -43,5 +43,5 @@ export interface Option<A> {
 export function option<T>(valueOrFunction: T | (() => T)): Option<T> {
     const nullable = valueOrFunction instanceof Function ? valueOrFunction() : valueOrFunction
 
-    return nullable !== null ? some(nullable) : none
+    return nullable != null ? some(nullable) : none
 }

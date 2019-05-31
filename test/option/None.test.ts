@@ -1,5 +1,4 @@
-import {none, some} from '../../src'
-import {Option} from '../../src/option/Option'
+import {none, Option, some} from '../../src'
 
 const chai = require('chai')
 
