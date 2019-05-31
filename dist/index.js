@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var Box_1 = require("./box/Box");
 exports.Box = Box_1.Box;
 exports.box = Box_1.box;
+exports.boxObject = Box_1.boxObject;
 var Option_1 = require("./option/Option");
 exports.option = Option_1.option;
 var Some_1 = require("./option/Some");

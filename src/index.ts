@@ -1,4 +1,4 @@
-export { Box, box } from './box/Box'
+export { Box, box, boxObject } from './box/Box'
 
 export { Option, option } from './option/Option'
 export { Some, some, optionObject } from './option/Some'
