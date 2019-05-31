@@ -11,6 +11,23 @@ describe('Success', () => {
     const createSuccessOfString = () => success<string, string>(containedValue)
     const noSideEffectText = 'no side-effect'
 
+    it('should be able to build an object that satisfies an interface', () => {
+        interface TestInterface {
+            first: string
+            second: number
+        }
+
+        const firstValue = 'text'
+        const secondValue = 1
+        const objectThatSatisfiesTestInterface: TestInterface = success({})
+            .assign('first', firstValue)
+            .assign('second', secondValue)
+            .getOrElse(unsafeGet)
+
+        objectThatSatisfiesTestInterface.first.should.equal(firstValue)
+        objectThatSatisfiesTestInterface.second.should.equal(secondValue)
+    })
+
     it('should be able to apply parameters', () => {
         success((a: number) => (b: number) => (c: number) => (d: number) => a + b + c + d)
             .apply(1)
@@ -27,8 +44,10 @@ describe('Success', () => {
             .assign('b', scope => scope.a + 1)
             .assign('c', success(3))
             .assign('d', scope => success(scope.c + 1))
-            .map(scope => scope.a + scope.b + scope.c + scope.d)
-            .getOrElse(unsafeGet)
+            .match({
+                Success: scope => scope.a + scope.b + scope.c + scope.d,
+                Failure: unsafeGet
+            })
             .should.equal(10)
     })
 

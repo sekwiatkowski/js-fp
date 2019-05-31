@@ -6,12 +6,12 @@ export interface ValidatedMatchPattern<T, U> {
 export interface Validated<T> {
     apply<U, V>(
         this: Validated<(parameter: U) => V>,
-        parameteOrFunction: U | Validated<U> | (() => U) | (() => Validated<U>)) : Validated<V>
+        parameterOrFunction: U | Validated<U> | (() => U) | (() => Validated<U>)) : Validated<V>
 
-    assign<T extends object, U>(
+    assign<T extends object, K extends string, U>(
         this: Validated<T>,
-        key: string,
-        other: U | ((T) => U) | Validated<U> | ((value: T) => Validated<U>)): Validated<T & { [key in string]: U }>
+        key: K,
+        memberOrFunction: Validated<U> | ((value: T) => Validated<U>) | U | ((value: T) => U)): Validated<T & { [key in K]: U }>
 
     concat(v: Validated<T>): Validated<T>
 

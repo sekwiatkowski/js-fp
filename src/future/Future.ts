@@ -5,7 +5,9 @@ import {rejected} from './Rejected'
 export class Future<T, E> {
     constructor(private readonly createPromise: () => Promise<Settled<T, E>>) {}
 
-    apply<B, C>(this: Future<(parameter: B) => C, E>, parameterValueOrFunction: B | (() => B) | Future<B, E> | (() => Future<B, E>) | Promise<B> | (() => Promise<B>)) : Future<C, E> {
+    apply<B, C>(
+        this: Future<(parameter: B) => C, E>,
+        parameterValueOrFunction: B | (() => B) | Future<B, E> | (() => Future<B, E>) | Promise<B> | (() => Promise<B>)) : Future<C, E> {
         return new Future(() =>
             new Promise(resolve => {
                 this.run(
@@ -31,10 +33,10 @@ export class Future<T, E> {
         )
     }
 
-    assign<T extends object, U>(
+    assign<T extends object, K extends string, U>(
         this: Future<T, E>,
-        key: string,
-        memberValueOrFunction: U | ((value: T) => U) | Future<U, E> | ((value: T) => Future<U, E>) | Promise<U> | ((value: T) => Promise<U>)): Future<T & { [key in string]: U }, E> {
+        key: K,
+        memberValueOrFunction: Future<U, E> | ((value: T) => Future<U, E>) | Promise<U> | ((value: T) => Promise<U>) | U | ((value: T) => U)): Future<T & { [key in K]: U }, E> {
         return new Future(() =>
             new Promise(resolve => {
                 this.run(
@@ -238,4 +240,8 @@ export function future<T, E>(createPromise: () => Promise<T>): Future<T, E> {
                 .then(value => resolve(fulfilled<T, E>(value)))
                 .catch(error => resolve(rejected<T, E>(error)))
         }))
+}
+
+export function futureObject<E>() : Future<{}, E> {
+    return fulfill({})
 }

@@ -1,13 +1,15 @@
 export { Box, box } from './box/Box'
 
 export { Option, option } from './option/Option'
-export { Some, some } from './option/Some'
+export { Some, some, optionObject } from './option/Some'
 export { None, none } from './option/None'
 
-export { Success, success } from './result/Success'
+export { Result } from './result/Result'
+export { Success, success, resultObject } from './result/Success'
 export { Failure, failure } from './result/Failure'
 
+export { Validated } from './validated/Validated'
+export { Valid, valid, validatedObject } from './validated/Valid'
 export { Invalid, invalid } from './validated/Invalid'
-export { Valid, valid } from './validated/Valid'
 
-export { Future, future, fulfill, reject } from './future/Future'
+export { Future, future, fulfill, reject, futureObject } from './future/Future'

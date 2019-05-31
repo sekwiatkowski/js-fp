@@ -10,7 +10,24 @@ describe('Some', () => {
     const containedValue = 'value'
     const createSomeOfString = () => some(containedValue)
     const satisfiedPredicate = value => value === containedValue
-    const violatedPredicate = value => value === "something else"
+    const violatedPredicate = value => value === 'something else'
+
+    it('should be able to build an object that satisfies an interface', () => {
+        interface TestInterface {
+            first: string
+            second: number
+        }
+
+        const firstValue = 'text'
+        const secondValue = 1
+        const objectThatSatisfiesTestInterface: TestInterface = some({})
+            .assign('first', firstValue)
+            .assign('second', secondValue)
+            .getOrElse(unsafeGet)
+
+        objectThatSatisfiesTestInterface.first.should.equal(firstValue)
+        objectThatSatisfiesTestInterface.second.should.equal(secondValue)
+    })
 
     it('should be able to apply parameters', () => {
         some((a: number) => (b: number) => (c: number) => (d: number) => a + b + c + d)
@@ -28,8 +45,10 @@ describe('Some', () => {
             .assign('b', scope => scope.a + 1)
             .assign('c', some(3))
             .assign('d', scope => some(scope.c + 1))
-            .map(scope => scope.a + scope.b + scope.c + scope.d)
-            .getOrElse(unsafeGet)
+            .match({
+                Some: scope => scope.a + scope.b + scope.c + scope.d,
+                None: unsafeGet
+            })
             .should.equal(10)
     })
 

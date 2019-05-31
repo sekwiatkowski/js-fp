@@ -17,25 +17,23 @@ export class Success<T, E> implements Result<T, E> {
         }
     }
 
-    assign<T extends object, U>(
+    assign<T extends object, K extends string, U>(
         this: Success<T, E>,
-        key: string,
-        memberOrFunction: U | ((value: T) => U) | Result<T, E> | ((value: T) => T) | ((value: T) => Result<T, E>)): Result<T & { [key in string]: U }, E> {
+        key: K,
+        memberOrFunction: Result<U, E> | ((value: T) => Result<U, E>) | U | ((value: T) => U)): Result<T & { [key in K]: U }, E> {
         const member = memberOrFunction instanceof Function ? memberOrFunction(this.value) : memberOrFunction
 
         if(member instanceof Success || member instanceof Failure) {
-            return member.map(memberValue => {
-                return {
-                    ...Object(this.value),
-                    [key]: memberValue
-                }
-            })
+            return member.map<T & { [key in K]: U }>(memberValue => ({
+                ...Object(this.value),
+                [key]: memberValue
+            }))
         }
         else {
-            return new Success({
-                ...Object(this.value),
+            return this.map<T & { [key in K]: U }>(obj  => ({
+                ...Object(obj),
                 [key]: member
-            })
+            }))
         }
     }
 
@@ -91,4 +89,8 @@ export class Success<T, E> implements Result<T, E> {
 
 export function success<T, E>(value: T) : Success<T, E> {
     return new Success(value)
+}
+
+export function resultObject<E>() : Result<{}, E> {
+    return success({})
 }

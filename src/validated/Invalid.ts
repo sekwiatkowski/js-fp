@@ -10,11 +10,11 @@ export class Invalid<T> implements Validated<T> {
         return new Invalid(this.errors)
     }
 
-    assign<T extends object, U>(
+    assign<T extends object, K extends string, U>(
         this: Invalid<T>,
-        key: string,
-        other: U | ((T) => U) | Validated<U> | ((value: T) => Validated<U>)): Validated<T & { [key in string]: U }> {
-        return new Invalid<T & { [key in string]: U }>(this.errors)
+        key: K,
+        memberOrFunction: Validated<U> | ((value: T) => Validated<U>) | U | ((value: T) => U)): Validated<T & { [key in K]: U }> {
+        return new Invalid<T & { [key in K]: U }>(this.errors)
     }
 
     concat(other: Validated<T>): Validated<T> {

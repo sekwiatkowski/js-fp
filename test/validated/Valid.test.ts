@@ -27,8 +27,10 @@ describe('Valid', () => {
             .assign('b', scope => scope.a + 1)
             .assign('c', valid(3))
             .assign('d', scope => valid(scope.c + 1))
-            .map(scope => scope.a + scope.b + scope.c + scope.d)
-            .getOrElse(unsafeGet)
+            .match({
+                Valid: scope => scope.a + scope.b + scope.c + scope.d,
+                Invalid: unsafeGet
+            })
             .should.equal(10)
     })
 

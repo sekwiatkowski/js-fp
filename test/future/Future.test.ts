@@ -16,7 +16,24 @@ describe('Future', () => {
     const noSideEffectText = 'no side-effect'
     const sideEffectText = 'performed side-effect'
 
-    it('should be able to apply parameters (in the future)', async () => {
+    it('should be able to build an object that satisfies an interface', async() => {
+        interface TestInterface {
+            first: string
+            second: number
+        }
+
+        const firstValue = 'text'
+        const secondValue = 1
+        const objectThatSatisfiesTestInterface: TestInterface = await fulfill({})
+            .assign('first', firstValue)
+            .assign('second', secondValue)
+            .getOrElse(unsafeGet)
+
+        objectThatSatisfiesTestInterface.first.should.equal(firstValue)
+        objectThatSatisfiesTestInterface.second.should.equal(secondValue)
+    })
+
+    it('should be able to apply parameters (in the future)', async() => {
         const result = await fulfill((a: number) => (b: number) => (c: number) => (d: number) => (e: number) => (f: number) => a + b + c + d +e + f)
             .apply(1)
             .apply(() => 2)
@@ -31,14 +48,18 @@ describe('Future', () => {
 
     it('should be able to build an object using values and guaranteed computations', async() => {
         const result = await fulfill({})
-            .assign('x', 1)
-            .assign('y', () => 2)
+            .assign('a', 1)
+            .assign('b', () => 2)
+            .assign('c', fulfill(3))
+            .assign('d',() => fulfill(4))
+            .assign('e', Promise.resolve(5))
+            .assign('f', () => Promise.resolve(6))
             .match({
-                Resolved: scope => scope.x + scope.y,
+                Resolved: scope => scope.a + scope.b + scope.c + scope.d + scope.e + scope.f,
                 Rejected: () => { throw 'Unexpected rejection!' }
             })
 
-        result.should.equal(3)
+        result.should.equal(21)
     })
 
     it('should be able to build an object using promises', async() => {

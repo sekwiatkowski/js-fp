@@ -15,28 +15,23 @@ export class Some<A> implements Option<A> {
         }
     }
 
-    assign<A extends object, B>(
+    assign<A extends object, K extends string, B>(
         this: Some<A>,
-        key: string,
-        memberOrFunction: B | ((obj: A) => B) | Option<B> | ((obj: A) => Option<B>)): Option<A & { [key in string]: B }> {
+        key: K,
+        memberOrFunction: Option<B> | ((obj: A) => Option<B>) | B | ((obj: A) => B)): Option<A & { [key in K]: B }> {
         const member = memberOrFunction instanceof Function ? memberOrFunction(this.value) : memberOrFunction
 
         if(member instanceof Some || member instanceof None) {
-            return member
-                .map(otherValue => {
-                    return {
-                        ...Object(this.value),
-                        [key]: otherValue
-                    }
-                })
+            return member.map<A & { [key in K]: B }>(otherValue => ({
+                ...Object(this.value),
+                [key]: otherValue
+            }))
         }
         else {
-            return this.map(obj => {
-                return {
-                    ...Object(obj),
-                    [key]: member
-                }
-            })
+            return this.map<A & { [key in K]: B }>(obj => ({
+                ...Object(obj),
+                [key]: member
+            }))
         }
     }
 
@@ -93,4 +88,8 @@ export class Some<A> implements Option<A> {
 
 export function some<A>(value: A): Some<A> {
     return new Some(value)
+}
+
+export function optionObject() : Option<{}> {
+    return some({})
 }

@@ -17,27 +17,23 @@ export class Valid<T> implements Validated<T> {
         }
     }
 
-    assign<T extends object, U>(
+    assign<T extends object, K extends string, U>(
         this: Valid<T>,
-        key: string,
-        memberOrFunction: U | ((T) => U) | Validated<U> | ((value: T) => Validated<U>)): Validated<T & { [key in string]: U }> {
+        key: K,
+        memberOrFunction: Validated<U> | ((value: T) => Validated<U>) | U | ((value: T) => U)): Validated<T & { [key in K]: U }> {
         const member = memberOrFunction instanceof Function ? memberOrFunction(this.value) : memberOrFunction
 
         if (member instanceof Valid || member instanceof Invalid) {
-            return member.map(memberValue => {
-                return {
-                    ...Object(this.value),
-                    [key]: memberValue
-                }
-            })
+            return member.map<T & { [key in K]: U }>(memberValue => ({
+                ...Object(this.value),
+                [key]: memberValue
+            }))
         }
         else {
-            return this.map(obj => {
-                return {
-                    ...Object(obj),
-                    [key]: member
-                }
-            })
+            return this.map<T & { [key in K]: U }>(obj => ({
+                ...Object(obj),
+                [key]: member
+            }))
         }
     }
 
@@ -83,6 +79,10 @@ export class Valid<T> implements Validated<T> {
     }
 }
 
-export function valid<T>(value: T) {
+export function valid<T>(value: T): Valid<T> {
     return new Valid(value)
+}
+
+export function validatedObject() : Valid<{}> {
+    return valid({})
 }

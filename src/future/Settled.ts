@@ -1,6 +1,6 @@
 export interface SettledMatchPattern<T, E, X> {
-    Resolved: (T) => X,
-    Rejected: (E) => X
+    Resolved: (value: T) => X,
+    Rejected: (error: E) => X
 }
 
 export interface Settled<T, E> {

@@ -10,10 +10,10 @@ export class None<A> implements Option<A> {
         return none
     }
 
-    assign<A extends object, B>(
+    assign<A extends object, K extends string, B>(
         this: None<A>,
-        key: string,
-        member: B |((value: A) => B) | Option<B> | ((value: A) => Option<B>)): Option<A & { [k in string]: B }> {
+        key: K,
+        memberOrFunction: Option<B> | ((obj: A) => Option<B>) | B | ((obj: A) => B)): Option<A & { [key in K]: B }> {
         return none
     }
 

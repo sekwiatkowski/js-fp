@@ -11,11 +11,11 @@ export class Failure<T, E> implements Result<T, E> {
         return new Failure(this.error)
     }
 
-    assign<T extends object, U>(
+    assign<T extends object, K extends string, U>(
         this: Failure<T, E>,
-        key: string,
-        memberOrFunction: U | ((value: T) => U) | Result<T, E> | ((value: T) => T) | ((value: T) => Result<T, E>)): Result<T & { [key in string]: U }, E> {
-        return new Failure<T & { [k in string]: U }, E>(this.error)
+        key: K,
+        other: Result<U, E> | ((value: T) => Result<U, E>) | U | ((value: T) => U)): Result<T & { [key in K]: U }, E> {
+        return new Failure<T & { [k in K]: U }, E>(this.error)
     }
 
     chain<U>(f: (t: T) => Result<U, E>): Result<U, E> {

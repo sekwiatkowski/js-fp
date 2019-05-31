@@ -7,6 +7,23 @@ chai.should()
 describe('Box', () => {
     const valueText = 'value'
 
+    it('should be able to build an object that satisfies an interface', () => {
+        interface TestInterface {
+            first: string
+            second: number
+        }
+
+        const firstValue = 'text'
+        const secondValue = 1
+        const objectThatSatisfiesTestInterface: TestInterface = box({})
+            .assign('first', firstValue)
+            .assign('second', secondValue)
+            .get()
+
+        objectThatSatisfiesTestInterface.first.should.equal(firstValue)
+        objectThatSatisfiesTestInterface.second.should.equal(secondValue)
+    })
+
     it('should be able to apply parameters', () => {
         box(a => b => c => d => a + b + c + d)
             .apply(1)

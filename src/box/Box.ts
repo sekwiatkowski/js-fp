@@ -7,29 +7,17 @@ export class Box<A> {
         return this.map(f => f(parameter instanceof Box ? parameter.get() : parameter))
     }
 
-    assign<A extends object, B>(
+    assign<A extends object, K extends string, B>(
         this: Box<A>,
-        key: string,
-        memberOrFunction: B | ((value: A) => B) | Box<B> | ((value: A) => Box<B>)): Box<A & { [k in string]: B }> {
-
+        key: K,
+        memberOrFunction: Box<B> | ((value: A) => Box<B>) | B | ((value: A) => B)): Box<A & { [key in K]: B }> {
         const member = memberOrFunction instanceof Function ? memberOrFunction(this.value) : memberOrFunction
+        const memberValue = member instanceof Box ? member.get() : member
 
-        if (member instanceof Box) {
-            return member.map(memberValue => {
-                return {
-                    ...Object(this.value),
-                    [key]: memberValue
-                }
-            })
-        }
-        else {
-            return this.map(obj => {
-                return {
-                    ...Object(obj),
-                    [key]: member
-                }
-            })
-        }
+        return this.map<A & { [key in K]: B }>(obj => ({
+            ...Object(obj),
+            [key]: memberValue
+        }))
     }
 
     chain<B>(f: (value: A) => Box<B>): Box<B> {
@@ -56,4 +44,8 @@ export class Box<A> {
 
 export function box<A>(value: A): Box<A> {
     return new Box(value)
+}
+
+export function boxObject() : Box<{}> {
+    return box({})
 }

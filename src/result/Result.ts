@@ -6,12 +6,12 @@ export interface ResultMatchPattern<T, E, X> {
 export interface Result<T, E> {
     apply<U, V>(
         this: Result<(parameter: U) => V, E>,
-        parameteOrFunction: U | (() => U) | Result<U, E> | (() => Result<U, E>)) : Result<V, E>
+        parameterOrFunction: U | (() => U) | Result<U, E> | (() => Result<U, E>)) : Result<V, E>
 
-    assign<T extends object, U>(
+    assign<T extends object, K extends string, U>(
         this: Result<T, E>,
-        key: string,
-        other: U | ((value: T) => U)): Result<T & { [key in string]: U }, E>
+        key: K,
+        memberOrFunction: Result<U, E> | ((value: T) => Result<U, E>) | U | ((value: T) => U)): Result<T & { [key in K]: U }, E>
 
     chain<U>(f: (value: T) => Result<U, E>): Result<U, E>
 

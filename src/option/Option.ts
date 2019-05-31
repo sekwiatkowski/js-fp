@@ -10,10 +10,10 @@ export interface OptionMatchPattern<A, B> {
 export interface Option<A> {
     apply<B, C>(this: Option<(parameter: B) => C>, parameterOrFunction: B | (() => B) | Option<B> | (() => Option<B>)) : Option<C>
 
-    assign<A extends object, B>(
+    assign<A extends object, K extends string, B>(
         this: Option<A>,
-        key: string,
-        other: B | ((obj: A) => B) | Option<B> | ((obj: A) => Option<B>)): Option<A & { [key in string]: B }>
+        key: K,
+        memberOrFunction: Option<B> | ((obj: A) => Option<B>) | B | ((obj: A) => B)): Option<A & { [key in K]: B }>
 
     chain<B>(f: (value: A) => Option<B>): Option<B>
 
