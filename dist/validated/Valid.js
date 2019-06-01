@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const Invalid_1 = require("./Invalid");
+const __1 = require("..");
 class Valid {
     constructor(value) {
         this.value = value;
@@ -53,6 +54,15 @@ class Valid {
     }
     performWhenInvalid(sideEffect) {
         return this;
+    }
+    toFuture() {
+        return __1.fulfill(this.value);
+    }
+    toResult() {
+        return __1.success(this.value);
+    }
+    toOption() {
+        return __1.some(this.value);
     }
 }
 exports.Valid = Valid;

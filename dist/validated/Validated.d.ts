@@ -1,3 +1,5 @@
+import {Future, Option, Result} from '..';
+
 export interface ValidatedMatchPattern<T, U, E> {
     Valid: (value: T) => U;
     Invalid: (list: E[]) => U;
@@ -17,4 +19,7 @@ export interface Validated<T, E> {
     match<U>(pattern: ValidatedMatchPattern<T, U, E>): U;
     perform(sideEffect: (value: T) => void): Validated<T, E>;
     performWhenInvalid(sideEffect: (errors: E[]) => void): Validated<T, E>;
+    toFuture(): Future<T, E[]>;
+    toResult(): Result<T, E[]>;
+    toOption(): Option<T>;
 }

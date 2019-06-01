@@ -1,4 +1,5 @@
 import {Validated, ValidatedMatchPattern} from './Validated';
+import {Future, Option, Result} from '..';
 
 export declare class Invalid<T, E> implements Validated<T, E> {
     private readonly errors;
@@ -17,5 +18,8 @@ export declare class Invalid<T, E> implements Validated<T, E> {
     match<U>(pattern: ValidatedMatchPattern<T, U, E>): U;
     perform(sideEffect: (value: T) => void): Validated<T, E>;
     performWhenInvalid(sideEffect: (errors: E[]) => void): Validated<T, E>;
+    toFuture(): Future<T, E[]>;
+    toResult(): Result<T, E[]>;
+    toOption(): Option<T>;
 }
 export declare function invalid<T, E>(errors: E | E[]): Invalid<T, E>;

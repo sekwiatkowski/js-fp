@@ -1,5 +1,6 @@
 import {Validated, ValidatedMatchPattern} from './Validated'
 import {Invalid} from './Invalid'
+import {fulfill, Future, Option, Result, some, success} from '..'
 
 export class Valid<T, E> implements Validated<T, E> {
     constructor(private readonly value: T) {}
@@ -76,6 +77,18 @@ export class Valid<T, E> implements Validated<T, E> {
 
     performWhenInvalid(sideEffect: (errors: E[]) => void): Validated<T, E> {
         return this
+    }
+
+    toFuture(): Future<T, E[]> {
+        return fulfill<T, E[]>(this.value)
+    }
+
+    toOption(): Option<T> {
+        return some(this.value)
+    }
+
+    toResult(): Result<T, E[]> {
+        return success(this.value)
     }
 }
 
