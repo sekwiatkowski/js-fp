@@ -45,7 +45,7 @@ describe('Some', () => {
             .assign('b', scope => scope.a + 1)
             .assign('c', some(3))
             .assign('d', scope => some(scope.c + 1))
-            .match({
+            .fold({
                 Some: scope => scope.a + scope.b + scope.c + scope.d,
                 None: unsafeGet
             })
@@ -77,9 +77,9 @@ describe('Some', () => {
         createSomeOfString().isNone().should.be.false
     })
 
-    it('should return the value when matched', () => {
+    it('should return the value when folded', () => {
         createSomeOfString()
-            .match({
+            .fold({
                 Some: value => value,
                 None: unsafeGet
             })

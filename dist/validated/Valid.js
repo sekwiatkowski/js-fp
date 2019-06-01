@@ -45,7 +45,7 @@ class Valid {
     mapErrors(f) {
         return this;
     }
-    match(pattern) {
+    fold(pattern) {
         return pattern.Valid(this.value);
     }
     perform(sideEffect) {
@@ -58,11 +58,11 @@ class Valid {
     toFuture() {
         return __1.fulfill(this.value);
     }
-    toResult() {
-        return __1.success(this.value);
-    }
     toOption() {
         return __1.some(this.value);
+    }
+    toResult() {
+        return __1.success(this.value);
     }
 }
 exports.Valid = Valid;

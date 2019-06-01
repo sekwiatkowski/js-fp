@@ -45,7 +45,7 @@ class Success {
     mapError(f) {
         return new Success(this.value);
     }
-    match(pattern) {
+    fold(pattern) {
         return pattern.Success(this.value);
     }
     orElse(alternative) {

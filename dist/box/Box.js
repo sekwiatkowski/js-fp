@@ -17,6 +17,9 @@ class Box {
     chain(f) {
         return f(this.value);
     }
+    fold(f) {
+        return f(this.value);
+    }
     get() {
         return this.value;
     }

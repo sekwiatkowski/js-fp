@@ -1,4 +1,4 @@
-import {Validated, ValidatedMatchPattern} from './Validated';
+import {Validated, ValidatedFoldPattern} from './Validated';
 import {Future, Option, Result} from '..';
 
 export declare class Valid<T, E> implements Validated<T, E> {
@@ -15,12 +15,12 @@ export declare class Valid<T, E> implements Validated<T, E> {
     isValid(): boolean;
     map<U>(f: (value: T) => U): Validated<U, E>;
     mapErrors(f: (errors: E[]) => E[]): Validated<T, E>;
-    match<U, V>(pattern: ValidatedMatchPattern<T, U, E>): U;
+    fold<U, V>(pattern: ValidatedFoldPattern<T, U, E>): U;
     perform(sideEffect: (value: T) => void): Validated<T, E>;
     performWhenInvalid(sideEffect: (errors: E[]) => void): Validated<T, E>;
     toFuture(): Future<T, E[]>;
-    toResult(): Result<T, E[]>;
     toOption(): Option<T>;
+    toResult(): Result<T, E[]>;
 }
 export declare function valid<T, E>(value: T): Valid<T, E>;
 export declare function validatedObject<E>(): Valid<{}, E>;

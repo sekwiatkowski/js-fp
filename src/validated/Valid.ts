@@ -1,4 +1,4 @@
-import {Validated, ValidatedMatchPattern} from './Validated'
+import {Validated, ValidatedFoldPattern} from './Validated'
 import {Invalid} from './Invalid'
 import {fulfill, Future, Option, Result, some, success} from '..'
 
@@ -66,7 +66,7 @@ export class Valid<T, E> implements Validated<T, E> {
         return this
     }
 
-    match<U, V>(pattern: ValidatedMatchPattern<T, U, E>): U {
+    fold<U, V>(pattern: ValidatedFoldPattern<T, U, E>): U {
         return pattern.Valid(this.value)
     }
 

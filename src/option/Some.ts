@@ -1,5 +1,5 @@
 import {None, none} from './None'
-import {Option, OptionMatchPattern} from './Option'
+import {Option, OptionFoldPattern} from './Option'
 import {fulfill, Future, Result, success, valid, Validated} from '..'
 
 export class Some<A> implements Option<A> {
@@ -64,7 +64,7 @@ export class Some<A> implements Option<A> {
         return new Some(f(this.value))
     }
 
-    match<B>(pattern : OptionMatchPattern<A, B>) : B {
+    fold<B>(pattern : OptionFoldPattern<A, B>) : B {
         return pattern.Some(this.value)
     }
 

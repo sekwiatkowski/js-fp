@@ -33,7 +33,7 @@ class Failure {
     mapError(f) {
         return new Failure(f(this.error));
     }
-    match(pattern) {
+    fold(pattern) {
         return pattern.Failure(this.error);
     }
     orElse(alternative) {

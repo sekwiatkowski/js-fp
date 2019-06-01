@@ -44,7 +44,7 @@ describe('Success', () => {
             .assign('b', scope => scope.a + 1)
             .assign('c', success(3))
             .assign('d', scope => success(scope.c + 1))
-            .match({
+            .fold({
                 Success: scope => scope.a + scope.b + scope.c + scope.d,
                 Failure: unsafeGet
             })
@@ -110,9 +110,9 @@ describe('Success', () => {
             .not.to.throw()
     })
 
-    it('should return the contained value when matched', () => {
+    it('should return the contained value when folded', () => {
         createSuccessOfString()
-            .match({
+            .fold({
                 Success: value => value,
                 Failure: unsafeGet
             })

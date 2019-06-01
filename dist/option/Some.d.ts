@@ -1,4 +1,4 @@
-import {Option, OptionMatchPattern} from './Option';
+import {Option, OptionFoldPattern} from './Option';
 import {Future, Result, Validated} from '..';
 
 export declare class Some<A> implements Option<A> {
@@ -15,7 +15,7 @@ export declare class Some<A> implements Option<A> {
     isSome(): boolean;
     isNone(): boolean;
     map<B>(f: (value: A) => B): Option<B>;
-    match<B>(pattern: OptionMatchPattern<A, B>): B;
+    fold<B>(pattern: OptionFoldPattern<A, B>): B;
     orElse(alternative: A | (() => A)): Option<A>;
     orAttempt(alternative: () => Option<A>): Option<A>;
     perform(sideEffect: (value: A) => void): Option<A>;

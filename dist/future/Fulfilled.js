@@ -16,7 +16,7 @@ class Fulfilled {
     mapError(f) {
         return new Fulfilled(this.value);
     }
-    match(pattern) {
+    fold(pattern) {
         return pattern.Resolved(this.value);
     }
     orAttempt(alternative) {

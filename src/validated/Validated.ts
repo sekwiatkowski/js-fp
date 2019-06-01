@@ -1,6 +1,6 @@
 import {Future, Option, Result} from '..'
 
-export interface ValidatedMatchPattern<T, U, E> {
+export interface ValidatedFoldPattern<T, U, E> {
     Valid: (value: T) => U
     Invalid: (list: E[]) => U
 }
@@ -26,7 +26,7 @@ export interface Validated<T, E> {
     map<U>(f: (value: T) => U) : Validated<U, E>
     mapErrors(f: (errors: E[]) => E[]) : Validated<T, E>
 
-    match<U>(pattern: ValidatedMatchPattern<T, U, E>): U
+    fold<U>(pattern: ValidatedFoldPattern<T, U, E>): U
 
     perform(sideEffect: (value: T) => void): Validated<T, E>
     performWhenInvalid(sideEffect: (errors: E[]) => void): Validated<T, E>

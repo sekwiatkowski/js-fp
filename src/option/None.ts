@@ -1,4 +1,4 @@
-import {Option, OptionMatchPattern} from './Option'
+import {Option, OptionFoldPattern} from './Option'
 import {some} from './Some'
 import {failure, Future, invalid, reject, Result, Validated} from '..'
 
@@ -46,7 +46,7 @@ export class None<A> implements Option<A> {
         return none
     }
 
-    match<B>(pattern: OptionMatchPattern<A, B>): B {
+    fold<B>(pattern: OptionFoldPattern<A, B>): B {
         return pattern.None()
     }
 

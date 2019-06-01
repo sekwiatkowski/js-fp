@@ -86,9 +86,9 @@ describe('Failure', () => {
             .should.equal(f(error))
     })
 
-    it('should return the error when matched', () => {
+    it('should return the error when folded', () => {
         createFailureOfString()
-            .match({
+            .fold({
                 Success: unsafeGet,
                 Failure: error => error
             })

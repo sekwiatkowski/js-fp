@@ -88,9 +88,9 @@ class Future {
         return new Future(() => new Promise(resolve => this.createPromise()
             .then(settled => resolve(settled.mapError(f)))));
     }
-    match(pattern) {
+    fold(pattern) {
         return this.createPromise()
-            .then(settled => settled.match(pattern));
+            .then(settled => settled.fold(pattern));
     }
     orAttempt(alternative) {
         return new Future(() => new Promise(resolve => {

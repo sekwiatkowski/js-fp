@@ -27,7 +27,7 @@ describe('Valid', () => {
             .assign('b', scope => scope.a + 1)
             .assign('c', valid(3))
             .assign('d', scope => valid(scope.c + 1))
-            .match({
+            .fold({
                 Valid: scope => scope.a + scope.b + scope.c + scope.d,
                 Invalid: unsafeGet
             })
@@ -87,9 +87,9 @@ describe('Valid', () => {
             .not.to.throw()
     })
 
-    it('should return the contained value when matched', () => {
+    it('should return the contained value when folded', () => {
         createValidString()
-            .match({
+            .fold({
                 Valid: value => value,
                 Invalid: () => { throw 'Unexpected access!' }
             })

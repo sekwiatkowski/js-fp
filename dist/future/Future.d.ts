@@ -1,4 +1,4 @@
-import {Settled, SettledMatchPattern} from './Settled';
+import {Settled, SettledFoldPattern} from './Settled';
 
 export declare class Future<T, E> {
     private readonly createPromise;
@@ -12,7 +12,7 @@ export declare class Future<T, E> {
     getErrorOrElse(alternative: E | ((value: T) => E)): Promise<E>;
     map<U>(f: (value: T) => U): Future<U, E>;
     mapError<F>(f: (error: E) => F): Future<T, F>;
-    match<X>(pattern: SettledMatchPattern<T, E, X>): Promise<X>;
+    fold<X>(pattern: SettledFoldPattern<T, E, X>): Promise<X>;
     orAttempt(alternative: Future<T, E> | ((error: E) => Future<T, E>)): Future<T, E>;
     orElse(alternative: T | ((error: E) => T)): Future<T, E>;
     orPromise(alternative: Promise<T> | ((error: E) => Promise<T>)): Future<T, E>;

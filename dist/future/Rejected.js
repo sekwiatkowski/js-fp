@@ -10,7 +10,7 @@ class Rejected {
     getOrElse(alternative) {
         return alternative instanceof Function ? alternative(this.error) : alternative;
     }
-    match(pattern) {
+    fold(pattern) {
         return pattern.Rejected(this.error);
     }
     map(f) {

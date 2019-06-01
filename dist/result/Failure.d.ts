@@ -1,4 +1,4 @@
-import {Result, ResultMatchPattern} from './Result';
+import {Result, ResultFoldPattern} from './Result';
 import {Future, Option, Validated} from '..';
 
 export declare class Failure<T, E> implements Result<T, E> {
@@ -15,7 +15,7 @@ export declare class Failure<T, E> implements Result<T, E> {
     getOrElse(alternative: T | ((error: E) => T)): T;
     map<U>(f: (value: T) => U): Result<U, E>;
     mapError<F>(f: (error: E) => F): Result<T, F>;
-    match<X>(pattern: ResultMatchPattern<T, E, X>): X;
+    fold<X>(pattern: ResultFoldPattern<T, E, X>): X;
     orElse(alternative: T | ((error: E) => T)): Result<T, E>;
     orAttempt(alternative: (error: E) => Result<T, E>): Result<T, E>;
     perform(sideEffect: (value: T) => void): Result<T, E>;

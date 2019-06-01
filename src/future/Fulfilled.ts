@@ -1,4 +1,4 @@
-import {Settled, SettledMatchPattern} from './Settled'
+import {Settled, SettledFoldPattern} from './Settled'
 
 class Fulfilled<T, E> implements Settled<T, E> {
     constructor(private readonly value: T) {}
@@ -19,7 +19,7 @@ class Fulfilled<T, E> implements Settled<T, E> {
         return new Fulfilled(this.value)
     }
 
-    match<X>(pattern: SettledMatchPattern<T, E, X>): X {
+    fold<X>(pattern: SettledFoldPattern<T, E, X>): X {
         return pattern.Resolved(this.value)
     }
 

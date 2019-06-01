@@ -1,4 +1,4 @@
-import {Settled, SettledMatchPattern} from './Settled'
+import {Settled, SettledFoldPattern} from './Settled'
 import {fulfilled} from './Fulfilled'
 import {rejected} from './Rejected'
 
@@ -141,9 +141,9 @@ export class Future<T, E> {
         )
     }
 
-    match<X>(pattern: SettledMatchPattern<T, E, X>) : Promise<X> {
+    fold<X>(pattern: SettledFoldPattern<T, E, X>) : Promise<X> {
         return this.createPromise()
-            .then(settled => settled.match(pattern))
+            .then(settled => settled.fold(pattern))
     }
 
     orAttempt(alternative: Future<T, E>|((error: E) => Future<T, E>)): Future<T, E> {

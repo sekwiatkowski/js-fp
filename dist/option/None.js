@@ -31,7 +31,7 @@ class None {
     map(f) {
         return exports.none;
     }
-    match(pattern) {
+    fold(pattern) {
         return pattern.None();
     }
     orElse(alternative) {

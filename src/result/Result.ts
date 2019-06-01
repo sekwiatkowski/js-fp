@@ -1,6 +1,6 @@
 import {Future, Option, Validated} from '..'
 
-export interface ResultMatchPattern<T, E, X> {
+export interface ResultFoldPattern<T, E, X> {
     Success: (value: T) => X
     Failure: (error: E) => X
 }
@@ -26,7 +26,7 @@ export interface Result<T, E> {
     map<U>(f: (value: T) => U): Result<U, E>
     mapError<F>(f: (error: E) => F): Result<T, F>
 
-    match<X>(pattern : ResultMatchPattern<T, E, X>) : X
+    fold<X>(pattern : ResultFoldPattern<T, E, X>) : X
 
     orAttempt(alternative: (error: E) => Result<T, E>): Result<T, E>
     orElse(alternative: T|((error: E) => T)): Result<T, E>

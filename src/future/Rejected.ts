@@ -1,4 +1,4 @@
-import {Settled, SettledMatchPattern} from './Settled'
+import {Settled, SettledFoldPattern} from './Settled'
 
 class Rejected<T, E> implements Settled<T, E> {
     constructor(private readonly error: E) {}
@@ -11,7 +11,7 @@ class Rejected<T, E> implements Settled<T, E> {
         return alternative instanceof Function ? alternative(this.error) : alternative
     }
 
-    match<X>(pattern: SettledMatchPattern<T, E, X>): X {
+    fold<X>(pattern: SettledFoldPattern<T, E, X>): X {
         return pattern.Rejected(this.error)
     }
 

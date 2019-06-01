@@ -26,6 +26,10 @@ export class Box<A> {
         return f(this.value)
     }
 
+    fold<B>(f: (value: A) => B): B {
+        return f(this.value)
+    }
+
     get(): A {
         return this.value
     }

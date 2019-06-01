@@ -1,4 +1,4 @@
-import {Result, ResultMatchPattern} from './Result'
+import {Result, ResultFoldPattern} from './Result'
 import {success} from './Success'
 import {Future, invalid, none, Option, reject, Validated} from '..'
 
@@ -47,7 +47,7 @@ export class Failure<T, E> implements Result<T, E> {
         return new Failure(f(this.error))
     }
 
-    match<X>(pattern: ResultMatchPattern<T, E, X>): X {
+    fold<X>(pattern: ResultFoldPattern<T, E, X>): X {
         return pattern.Failure(this.error)
     }
 

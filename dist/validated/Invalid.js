@@ -12,7 +12,7 @@ class Invalid {
         return new Invalid(this.errors);
     }
     concat(other) {
-        return other.match({
+        return other.fold({
             Valid: () => this,
             Invalid: otherList => new Invalid(this.errors.concat(otherList))
         });
@@ -35,7 +35,7 @@ class Invalid {
     mapErrors(f) {
         return new Invalid(f(this.errors));
     }
-    match(pattern) {
+    fold(pattern) {
         return pattern.Invalid(this.errors);
     }
     perform(sideEffect) {
@@ -48,11 +48,11 @@ class Invalid {
     toFuture() {
         return __1.reject(this.errors);
     }
-    toResult() {
-        return __1.failure(this.errors);
-    }
     toOption() {
         return __1.none;
+    }
+    toResult() {
+        return __1.failure(this.errors);
     }
 }
 exports.Invalid = Invalid;
