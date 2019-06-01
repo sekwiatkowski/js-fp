@@ -25,4 +25,4 @@ export interface Option<A> {
     toResult<E>(error: E): Result<A, E>;
     toValidated<E>(error: E): Validated<A, E>;
 }
-export declare function option<T>(valueOrFunction: T | (() => T)): Option<T>;
+export declare function option<T>(valueOrFunction: undefined | null | T | (() => T)): Option<T>;

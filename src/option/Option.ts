@@ -41,8 +41,8 @@ export interface Option<A> {
     toValidated<E>(error: E): Validated<A, E>
 }
 
-export function option<T>(valueOrFunction: T | (() => T)): Option<T> {
+export function option<T>(valueOrFunction: T | null | undefined | (() => T)): Option<T> {
     const nullable = valueOrFunction instanceof Function ? valueOrFunction() : valueOrFunction
 
-    return nullable != null ? some(nullable) : none
+    return nullable == null ? none : some(nullable)
 }
