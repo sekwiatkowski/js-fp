@@ -1,9 +1,9 @@
 import {Validated} from './Validated';
 
-declare class Validator<T> {
+declare class Validator<T, E> {
     private readonly rules;
-    constructor(rules: ((T: any) => Validated<T>)[]);
-    validate(value: T): Validated<T>;
+    constructor(rules: ((value: T) => Validated<T, E>)[]);
+    validate(value: T): Validated<T, E>;
 }
-export declare function validator<T>(...rules: ((T: any) => Validated<T>)[]): Validator<T>;
+export declare function validator<T, E>(...rules: ((value: T) => Validated<T, E>)[]): Validator<T, E>;
 export {};

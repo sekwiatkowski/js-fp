@@ -1,21 +1,21 @@
 import {Validated, ValidatedMatchPattern} from './Validated';
 
-export declare class Invalid<T> implements Validated<T> {
+export declare class Invalid<T, E> implements Validated<T, E> {
     private readonly errors;
-    constructor(errors: string[]);
-    apply<U, V>(this: Invalid<(parameter: U) => V>, parameterOrFunction: U | (() => U) | Validated<U> | (() => Validated<U>)): Validated<V>;
-    assign<T extends object, K extends string, U>(this: Invalid<T>, key: K, memberOrFunction: Validated<U> | ((value: T) => Validated<U>) | U | ((value: T) => U)): Validated<T & {
+    constructor(errors: E[]);
+    apply<U, V>(this: Invalid<(parameter: U) => V, E>, parameterOrFunction: U | (() => U) | Validated<U, E> | (() => Validated<U, E>)): Validated<V, E>;
+    assign<T extends object, K extends string, U>(this: Invalid<T, E>, key: K, memberOrFunction: Validated<U, E> | ((value: T) => Validated<U, E>) | U | ((value: T) => U)): Validated<T & {
         [key in K]: U;
-    }>;
-    concat(other: Validated<T>): Validated<T>;
-    getErrorsOrElse(alternative: string[] | ((value: T) => string[])): string[];
-    getOrElse(alternative: T | ((errors: string[]) => T)): T;
+    }, E>;
+    concat(other: Validated<T, E>): Validated<T, E>;
+    getErrorsOrElse(alternative: E[] | ((value: T) => E[])): E[];
+    getOrElse(alternative: T | ((errors: E[]) => T)): T;
     isInvalid(): boolean;
     isValid(): boolean;
-    map<U>(f: (value: T) => U): Validated<U>;
-    mapErrors(f: (errors: string[]) => string[]): Validated<T>;
-    match<U>(pattern: ValidatedMatchPattern<T, U>): U;
-    perform(sideEffect: (value: T) => void): Validated<T>;
-    performWhenInvalid(sideEffect: (errors: string[]) => void): Validated<T>;
+    map<U>(f: (value: T) => U): Validated<U, E>;
+    mapErrors(f: (errors: E[]) => E[]): Validated<T, E>;
+    match<U>(pattern: ValidatedMatchPattern<T, U, E>): U;
+    perform(sideEffect: (value: T) => void): Validated<T, E>;
+    performWhenInvalid(sideEffect: (errors: E[]) => void): Validated<T, E>;
 }
-export declare function invalid<T>(errors: string | string[]): Invalid<T>;
+export declare function invalid<T, E>(errors: E | E[]): Invalid<T, E>;

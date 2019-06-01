@@ -1,5 +1,6 @@
 import {Result, ResultMatchPattern} from './Result'
 import {success} from './Success'
+import {Future, invalid, none, Option, reject, Validated} from '..'
 
 export class Failure<T, E> implements Result<T, E> {
     constructor(private readonly error: E) {}
@@ -65,6 +66,18 @@ export class Failure<T, E> implements Result<T, E> {
     performOnError(sideEffect: (error: E) => void) : Result<T, E> {
         sideEffect(this.error)
         return new Failure(this.error)
+    }
+
+    toFuture(): Future<T, E> {
+        return reject<T, E>(this.error)
+    }
+
+    toOption(): Option<T> {
+        return none
+    }
+
+    toValidated(): Validated<T, E> {
+        return invalid([this.error])
     }
 }
 

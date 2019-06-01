@@ -1,12 +1,12 @@
 import {Validated, ValidatedMatchPattern} from './Validated'
 import {Invalid} from './Invalid'
 
-export class Valid<T> implements Validated<T> {
+export class Valid<T, E> implements Validated<T, E> {
     constructor(private readonly value: T) {}
 
     apply<U, V>(
-        this: Valid<(parameter: U) => V>,
-        parameterOrFunction: Validated<U> | (() => U) | (() => Validated<U>) | U): Validated<V> {
+        this: Valid<(parameter: U) => V, E>,
+        parameterOrFunction: Validated<U, E> | (() => U) | (() => Validated<U, E>) | U): Validated<V, E> {
         const parameter = parameterOrFunction instanceof Function ? parameterOrFunction() : parameterOrFunction
 
         if (parameter instanceof Invalid || parameter instanceof Valid) {
@@ -18,9 +18,9 @@ export class Valid<T> implements Validated<T> {
     }
 
     assign<T extends object, K extends string, U>(
-        this: Valid<T>,
+        this: Valid<T, E>,
         key: K,
-        memberOrFunction: Validated<U> | ((value: T) => Validated<U>) | U | ((value: T) => U)): Validated<T & { [key in K]: U }> {
+        memberOrFunction: Validated<U, E> | ((value: T) => Validated<U, E>) | U | ((value: T) => U)): Validated<T & { [key in K]: U }, E> {
         const member = memberOrFunction instanceof Function ? memberOrFunction(this.value) : memberOrFunction
 
         if (member instanceof Valid || member instanceof Invalid) {
@@ -37,15 +37,15 @@ export class Valid<T> implements Validated<T> {
         }
     }
 
-    concat(validated: Validated<T>): Validated<T> {
+    concat(validated: Validated<T, E>): Validated<T, E> {
         return validated
     }
 
-    getErrorsOrElse(alternative: string[]|((value: T) => string[])): string[] {
+    getErrorsOrElse(alternative: E[]|((value: T) => E[])): E[] {
         return alternative instanceof Function ? alternative(this.value) : alternative
     }
 
-    getOrElse(alternative: T|((errors: string[]) => T)): T {
+    getOrElse(alternative: T|((errors: E[]) => T)): T {
         return this.value
     }
 
@@ -57,32 +57,32 @@ export class Valid<T> implements Validated<T> {
         return true
     }
 
-    map<U>(f: (value: T) => U): Validated<U> {
+    map<U>(f: (value: T) => U): Validated<U, E> {
         return new Valid(f(this.value))
     }
 
-    mapErrors(f: (errors: string[]) => string[]): Validated<T> {
-        return this;
+    mapErrors(f: (errors: E[]) => E[]): Validated<T, E> {
+        return this
     }
 
-    match<U, V>(pattern: ValidatedMatchPattern<T, U>): U {
+    match<U, V>(pattern: ValidatedMatchPattern<T, U, E>): U {
         return pattern.Valid(this.value)
     }
 
-    perform(sideEffect: (value: T) => void): Validated<T> {
+    perform(sideEffect: (value: T) => void): Validated<T, E> {
         sideEffect(this.value)
         return this
     }
 
-    performWhenInvalid(sideEffect: (errors: string[]) => void): Validated<T> {
+    performWhenInvalid(sideEffect: (errors: E[]) => void): Validated<T, E> {
         return this
     }
 }
 
-export function valid<T>(value: T): Valid<T> {
+export function valid<T, E>(value: T): Valid<T, E> {
     return new Valid(value)
 }
 
-export function validatedObject() : Valid<{}> {
+export function validatedObject<E>() : Valid<{}, E> {
     return valid({})
 }

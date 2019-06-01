@@ -34,13 +34,17 @@ export class Box<A> {
         return new Box(f(this.value))
     }
 
-    perform(sideEffect: (A) => void): Box<A> {
+    perform(sideEffect: (value: A) => void): Box<A> {
         sideEffect(this.value)
         return new Box(this.value)
     }
 
-    test(predicate: (A) => boolean): boolean {
+    test(predicate: (value: A) => boolean): boolean {
         return predicate(this.value)
+    }
+
+    toFuture<E>(): Future<A, E> {
+        return fulfill(this.value)
     }
 
     toOption(): Option<A> {
@@ -51,12 +55,8 @@ export class Box<A> {
         return success(this.value)
     }
 
-    toValidated<E>(): Validated<A> {
+    toValidated<E>(): Validated<A, E> {
         return valid(this.value)
-    }
-
-    toFuture<E>(): Future<A, E> {
-        return fulfill(this.value)
     }
 }
 

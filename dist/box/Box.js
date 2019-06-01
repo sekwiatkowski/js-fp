@@ -30,6 +30,9 @@ class Box {
     test(predicate) {
         return predicate(this.value);
     }
+    toFuture() {
+        return __1.fulfill(this.value);
+    }
     toOption() {
         return __1.some(this.value);
     }
@@ -38,9 +41,6 @@ class Box {
     }
     toValidated() {
         return __1.valid(this.value);
-    }
-    toFuture() {
-        return __1.fulfill(this.value);
     }
 }
 exports.Box = Box;

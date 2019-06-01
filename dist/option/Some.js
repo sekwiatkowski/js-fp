@@ -64,11 +64,11 @@ class Some {
     toResult(error) {
         return __1.success(this.value);
     }
-    toValidated(errorMessage) {
-        return __1.valid(this.value);
-    }
     toFuture(error) {
         return __1.fulfill(this.value);
+    }
+    toValidated(errorMessage) {
+        return __1.valid(this.value);
     }
 }
 exports.Some = Some;

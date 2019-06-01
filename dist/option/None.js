@@ -53,8 +53,8 @@ class None {
     toResult(error) {
         return __1.failure(error);
     }
-    toValidated(errorMessage) {
-        return __1.invalid([errorMessage]);
+    toValidated(error) {
+        return __1.invalid([error]);
     }
 }
 None.value = new None();

@@ -1,34 +1,34 @@
 import {Validated, ValidatedMatchPattern} from './Validated'
 
-export class Invalid<T> implements Validated<T> {
-    constructor(private readonly errors: string[]) {}
+export class Invalid<T, E> implements Validated<T, E> {
+    constructor(private readonly errors: E[]) {}
 
     apply<U, V>(
-        this: Invalid<(parameter: U) => V>,
-        parameterOrFunction: U | (() => U) | Validated<U> | (() => Validated<U>)): Validated<V> {
+        this: Invalid<(parameter: U) => V, E>,
+        parameterOrFunction: U | (() => U) | Validated<U, E> | (() => Validated<U, E>)): Validated<V, E> {
 
         return new Invalid(this.errors)
     }
 
     assign<T extends object, K extends string, U>(
-        this: Invalid<T>,
+        this: Invalid<T, E>,
         key: K,
-        memberOrFunction: Validated<U> | ((value: T) => Validated<U>) | U | ((value: T) => U)): Validated<T & { [key in K]: U }> {
-        return new Invalid<T & { [key in K]: U }>(this.errors)
+        memberOrFunction: Validated<U, E> | ((value: T) => Validated<U, E>) | U | ((value: T) => U)): Validated<T & { [key in K]: U }, E> {
+        return new Invalid<T & { [key in K]: U }, E>(this.errors)
     }
 
-    concat(other: Validated<T>): Validated<T> {
+    concat(other: Validated<T, E>): Validated<T, E> {
         return other.match({
             Valid: () => this,
-            Invalid: otherList => new Invalid<T>(this.errors.concat(otherList))
+            Invalid: otherList => new Invalid<T, E>(this.errors.concat(otherList))
         })
     }
 
-    getErrorsOrElse(alternative: string[]|((value: T) => string[])): string[] {
+    getErrorsOrElse(alternative: E[]|((value: T) => E[])): E[] {
         return this.errors
     }
 
-    getOrElse(alternative: T|((errors: string[]) => T)): T {
+    getOrElse(alternative: T|((errors: E[]) => T)): T {
         return alternative instanceof Function ? alternative(this.errors) : alternative
     }
 
@@ -40,28 +40,28 @@ export class Invalid<T> implements Validated<T> {
         return false
     }
 
-    map<U>(f: (value: T) => U): Validated<U> {
-        return new Invalid<U>(this.errors)
+    map<U>(f: (value: T) => U): Validated<U, E> {
+        return new Invalid<U, E>(this.errors)
     }
 
-    mapErrors(f: (errors: string[]) => string[]): Validated<T> {
+    mapErrors(f: (errors: E[]) => E[]): Validated<T, E> {
         return new Invalid(f(this.errors))
     }
 
-    match<U>(pattern: ValidatedMatchPattern<T, U>): U {
+    match<U>(pattern: ValidatedMatchPattern<T, U, E>): U {
         return pattern.Invalid(this.errors)
     }
 
-    perform(sideEffect: (value: T) => void): Validated<T> {
+    perform(sideEffect: (value: T) => void): Validated<T, E> {
         return this
     }
 
-    performWhenInvalid(sideEffect: (errors: string[]) => void): Validated<T> {
+    performWhenInvalid(sideEffect: (errors: E[]) => void): Validated<T, E> {
         sideEffect(this.errors)
         return this
     }
 }
 
-export function invalid<T>(errors: string|string[]): Invalid<T> {
-    return new Invalid<T>(errors instanceof Array ? errors : [errors])
+export function invalid<T, E>(errors: E|E[]): Invalid<T, E> {
+    return new Invalid<T, E>(errors instanceof Array ? errors : [errors])
 }

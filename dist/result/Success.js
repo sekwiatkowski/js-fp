@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const Failure_1 = require("./Failure");
+const __1 = require("..");
 class Success {
     constructor(value) {
         this.value = value;
@@ -59,6 +60,15 @@ class Success {
     }
     performOnError(sideEffect) {
         return this;
+    }
+    toFuture() {
+        return __1.fulfill(this.value);
+    }
+    toOption() {
+        return __1.some(this.value);
+    }
+    toValidated() {
+        return __1.valid(this.value);
     }
 }
 exports.Success = Success;

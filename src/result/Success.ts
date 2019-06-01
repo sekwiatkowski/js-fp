@@ -1,5 +1,6 @@
 import {Result, ResultMatchPattern} from './Result'
 import {Failure} from './Failure'
+import {fulfill, Future, Option, some, valid, Validated} from '..'
 
 export class Success<T, E> implements Result<T, E> {
     constructor(private readonly value: T) {}
@@ -84,6 +85,18 @@ export class Success<T, E> implements Result<T, E> {
 
     performOnError(sideEffect: (error: E) => void): Result<T, E> {
         return this
+    }
+
+    toFuture(): Future<T, E> {
+        return fulfill<T, E>(this.value)
+    }
+
+    toOption(): Option<T> {
+        return some(this.value)
+    }
+
+    toValidated(): Validated<T, E> {
+        return valid(this.value)
     }
 }
 

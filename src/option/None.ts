@@ -75,8 +75,8 @@ export class None<A> implements Option<A> {
         return failure(error)
     }
 
-    toValidated(errorMessage: string): Validated<A> {
-        return invalid([errorMessage])
+    toValidated<E>(error: E): Validated<A, E> {
+        return invalid<A, E>([error])
     }
 }
 

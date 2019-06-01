@@ -8,7 +8,7 @@ export interface Settled<T, E> {
     match<X>(pattern: SettledMatchPattern<T, E, X>): X;
     getErrorOrElse(alternative: E | ((value: T) => E)): E;
     getOrElse(alternative: T | ((error: E) => T)): T;
-    perform(sideEffect: (value: T) => void): any;
-    performOnError(sideEffect: (error: E) => void): any;
+    perform(sideEffect: (value: T) => void): Settled<T, E>;
+    performOnError(sideEffect: (error: E) => void): Settled<T, E>;
     run(whenFulfilled: (value: T) => void, whenRejected: (error: E) => void): any;
 }

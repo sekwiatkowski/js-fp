@@ -14,9 +14,9 @@ export interface Settled<T, E> {
 
     getOrElse(alternative: T | ((error: E) => T)): T
 
-    perform(sideEffect: (value: T) => void)
+    perform(sideEffect: (value: T) => void): Settled<T, E>
 
-    performOnError(sideEffect: (error: E) => void)
+    performOnError(sideEffect: (error: E) => void): Settled<T, E>
 
     run(whenFulfilled: (value: T) => void, whenRejected: (error: E) => void)
 }

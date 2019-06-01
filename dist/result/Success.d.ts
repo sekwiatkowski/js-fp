@@ -1,4 +1,5 @@
 import {Result, ResultMatchPattern} from './Result';
+import {Future, Option, Validated} from '..';
 
 export declare class Success<T, E> implements Result<T, E> {
     private readonly value;
@@ -19,6 +20,9 @@ export declare class Success<T, E> implements Result<T, E> {
     orAttempt(alternative: (error: E) => Result<T, E>): Result<T, E>;
     perform(sideEffect: (value: T) => void): Result<T, E>;
     performOnError(sideEffect: (error: E) => void): Result<T, E>;
+    toFuture(): Future<T, E>;
+    toOption(): Option<T>;
+    toValidated(): Validated<T, E>;
 }
 export declare function success<T, E>(value: T): Success<T, E>;
 export declare function resultObject<E>(): Result<{}, E>;

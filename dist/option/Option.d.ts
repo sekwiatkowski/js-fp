@@ -23,6 +23,6 @@ export interface Option<A> {
     test(predicate: (value: A) => boolean): boolean;
     toFuture<E>(error: E): Future<A, E>;
     toResult<E>(error: E): Result<A, E>;
-    toValidated(errorMessage: string): Validated<A>;
+    toValidated<E>(error: E): Validated<A, E>;
 }
 export declare function option<T>(valueOrFunction: T | (() => T)): Option<T>;

@@ -24,8 +24,11 @@ class Fulfilled {
     }
     perform(sideEffect) {
         sideEffect(this.value);
+        return this;
     }
-    performOnError(sideEffect) { }
+    performOnError(sideEffect) {
+        return this;
+    }
     run(whenFulfilled, whenRejected) {
         whenFulfilled(this.value);
     }

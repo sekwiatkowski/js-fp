@@ -27,11 +27,15 @@ class Fulfilled<T, E> implements Settled<T, E> {
         return this
     }
 
-    perform(sideEffect: (value: T) => void) {
+    perform(sideEffect: (value: T) => void): Settled<T, E> {
         sideEffect(this.value)
+
+        return this
     }
 
-    performOnError(sideEffect: (error: E) => void) {}
+    performOnError(sideEffect: (error: E) => void): Settled<T, E> {
+        return this
+    }
 
     run(whenFulfilled: (value: T) => void, whenRejected: (error: E) => void) {
         whenFulfilled(this.value)

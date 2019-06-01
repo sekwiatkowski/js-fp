@@ -9,8 +9,8 @@ declare class Fulfilled<T, E> implements Settled<T, E> {
     mapError<F>(f: (error: E) => F): Settled<T, F>;
     match<X>(pattern: SettledMatchPattern<T, E, X>): X;
     orAttempt(alternative: (error: E) => Promise<T>): Settled<T, E>;
-    perform(sideEffect: (value: T) => void): void;
-    performOnError(sideEffect: (error: E) => void): void;
+    perform(sideEffect: (value: T) => void): Settled<T, E>;
+    performOnError(sideEffect: (error: E) => void): Settled<T, E>;
     run(whenFulfilled: (value: T) => void, whenRejected: (error: E) => void): void;
 }
 export declare function fulfilled<T, E>(value: T): Fulfilled<T, E>;

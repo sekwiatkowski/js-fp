@@ -1,3 +1,5 @@
+import {Future, Option, Validated} from '..'
+
 export interface ResultMatchPattern<T, E, X> {
     Success: (value: T) => X
     Failure: (error: E) => X
@@ -22,7 +24,7 @@ export interface Result<T, E> {
     isSuccess(): boolean
 
     map<U>(f: (value: T) => U): Result<U, E>
-    mapError<F>(f: (F) => F): Result<T, F>
+    mapError<F>(f: (error: E) => F): Result<T, F>
 
     match<X>(pattern : ResultMatchPattern<T, E, X>) : X
 
@@ -31,4 +33,8 @@ export interface Result<T, E> {
 
     perform(sideEffect: (value: T) => void): Result<T, E>
     performOnError(sideEffect: (error: E) => void): Result<T, E>
+
+    toFuture(): Future<T, E>
+    toOption(): Option<T>
+    toValidated(): Validated<T, E>
 }

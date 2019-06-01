@@ -22,6 +22,6 @@ export declare class None<A> implements Option<A> {
     performWhenNone(sideEffect: () => void): Option<A>;
     toFuture<E>(error: E): Future<A, E>;
     toResult<E>(error: E): Result<A, E>;
-    toValidated(errorMessage: string): Validated<A>;
+    toValidated<E>(error: E): Validated<A, E>;
 }
 export declare const none: Option<never>;

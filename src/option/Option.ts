@@ -23,7 +23,6 @@ export interface Option<A> {
     getOrElse(alternative: A | (() => A)): A
 
     isSome(): boolean
-
     isNone(): boolean
 
     map<B>(f: (value: A) => B): Option<B>
@@ -31,20 +30,16 @@ export interface Option<A> {
     match<B>(pattern: OptionMatchPattern<A, B>): B
 
     orElse(alternative: A | (() => A)): Option<A>
-
     orAttempt(alternative: () => Option<A>): Option<A>
 
     perform(sideEffect: (value: A) => void): Option<A>
-
     performWhenNone(sideEffect: () => void): Option<A>
 
     test(predicate: (value: A) => boolean): boolean
 
     toFuture<E>(error: E): Future<A, E>
-
     toResult<E>(error: E): Result<A, E>
-
-    toValidated(errorMessage: string): Validated<A>
+    toValidated<E>(error: E): Validated<A, E>
 }
 
 export function option<T>(valueOrFunction: T | (() => T)): Option<T> {

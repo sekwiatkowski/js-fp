@@ -89,12 +89,12 @@ export class Some<A> implements Option<A> {
         return success(this.value)
     }
 
-    toValidated(errorMessage: string): Validated<A> {
-        return valid(this.value)
-    }
-
     toFuture<E>(error: E): Future<A, E> {
         return fulfill(this.value)
+    }
+
+    toValidated<E>(errorMessage: E): Validated<A, E> {
+        return valid<A, E>(this.value)
     }
 }
 

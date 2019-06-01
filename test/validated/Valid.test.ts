@@ -8,7 +8,7 @@ const expect = chai.expect
 describe('Valid', () => {
     const unsafeGet = () => { throw 'Unexpected failure to get the value!' }
     const containedString = 'value'
-    const createValidString = () => valid<string>(containedString)
+    const createValidString = () => valid<string, string>(containedString)
     const noSideEffectText = 'no side-effect'
 
     it('should be able to apply parameters', () => {
@@ -64,7 +64,7 @@ describe('Valid', () => {
     })
 
     it('should return the other Validated instance when concatenated', () => {
-        const otherValidated = valid('other string')
+        const otherValidated = valid<string, string>('other string')
         createValidString().concat(otherValidated).should.equal(otherValidated)
     })
 

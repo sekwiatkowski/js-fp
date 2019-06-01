@@ -7,7 +7,7 @@ const expect = chai.expect
 describe('Invalid', () => {
     const unsafeGetErrors = () => { throw 'Unexpected failure to get the errors!' }
     const errors = ['error 1', 'error 2']
-    const createInvalidInstance = <T>() => invalid<T>(errors)
+    const createInvalidInstance = <T>() => invalid<T, string>(errors)
     const noSideEffectText = 'no side-effect'
 
     it('should ignore attempts to apply parameters', () => {

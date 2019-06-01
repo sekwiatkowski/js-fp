@@ -10,12 +10,12 @@ export declare class Box<A> {
     chain<B>(f: (value: A) => Box<B>): Box<B>;
     get(): A;
     map<B>(f: (value: A) => B): Box<B>;
-    perform(sideEffect: (A: any) => void): Box<A>;
-    test(predicate: (A: any) => boolean): boolean;
+    perform(sideEffect: (value: A) => void): Box<A>;
+    test(predicate: (value: A) => boolean): boolean;
+    toFuture<E>(): Future<A, E>;
     toOption(): Option<A>;
     toResult<E>(): Result<A, E>;
-    toValidated<E>(): Validated<A>;
-    toFuture<E>(): Future<A, E>;
+    toValidated<E>(): Validated<A, E>;
 }
 export declare function box<A>(value: A): Box<A>;
 export declare function boxObject(): Box<{}>;

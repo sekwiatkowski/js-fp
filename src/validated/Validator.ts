@@ -1,15 +1,15 @@
 import {Validated} from './Validated'
 
-class Validator<T> {
-    constructor(private readonly rules: ((T) => Validated<T>)[]) {}
+class Validator<T, E> {
+    constructor(private readonly rules: ((value: T) => Validated<T, E>)[]) {}
 
-    validate(value: T) : Validated<T> {
+    validate(value: T) : Validated<T, E> {
         return this.rules
             .map(rule => rule(value))
             .reduce((acc, current) => acc.concat(current))
     }
 }
 
-export function validator<T>(...rules: ((T) => Validated<T>)[]): Validator<T> {
+export function validator<T, E>(...rules: ((value: T) => Validated<T, E>)[]): Validator<T, E> {
     return new Validator(rules)
 }

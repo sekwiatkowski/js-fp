@@ -19,9 +19,12 @@ class Rejected {
     mapError(f) {
         return new Rejected(f(this.error));
     }
-    perform(sideEffect) { }
+    perform(sideEffect) {
+        return this;
+    }
     performOnError(sideEffect) {
         sideEffect(this.error);
+        return this;
     }
     run(whenFulfilled, whenRejected) {
         whenRejected(this.error);
