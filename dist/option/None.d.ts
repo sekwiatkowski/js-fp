@@ -1,4 +1,5 @@
 import {Option, OptionMatchPattern} from './Option';
+import {Future, Result, Validated} from '..';
 
 export declare class None<A> implements Option<A> {
     static value: Option<never>;
@@ -19,5 +20,8 @@ export declare class None<A> implements Option<A> {
     orAttempt(alternative: () => Option<A>): Option<A>;
     perform(sideEffect: (value: A) => void): Option<A>;
     performWhenNone(sideEffect: () => void): Option<A>;
+    toFuture<E>(error: E): Future<A, E>;
+    toResult<E>(error: E): Result<A, E>;
+    toValidated(errorMessage: string): Validated<A>;
 }
 export declare const none: Option<never>;

@@ -1,3 +1,5 @@
+import {Future, Result, Validated} from '..';
+
 export interface OptionMatchPattern<A, B> {
     Some: (value: A) => B;
     None: () => B;
@@ -19,5 +21,8 @@ export interface Option<A> {
     perform(sideEffect: (value: A) => void): Option<A>;
     performWhenNone(sideEffect: () => void): Option<A>;
     test(predicate: (value: A) => boolean): boolean;
+    toFuture<E>(error: E): Future<A, E>;
+    toResult<E>(error: E): Result<A, E>;
+    toValidated(errorMessage: string): Validated<A>;
 }
 export declare function option<T>(valueOrFunction: T | (() => T)): Option<T>;

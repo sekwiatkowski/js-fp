@@ -1,5 +1,6 @@
 import {None, none} from './None'
 import {Option, OptionMatchPattern} from './Option'
+import {fulfill, Future, Result, success, valid, Validated} from '..'
 
 export class Some<A> implements Option<A> {
     constructor(private readonly value: A) {}
@@ -82,6 +83,18 @@ export class Some<A> implements Option<A> {
 
     performWhenNone(sideEffect: () => void): Option<A> {
         return new Some(this.value)
+    }
+
+    toResult<E>(error: E): Result<A, E> {
+        return success(this.value)
+    }
+
+    toValidated(errorMessage: string): Validated<A> {
+        return valid(this.value)
+    }
+
+    toFuture<E>(error: E): Future<A, E> {
+        return fulfill(this.value)
     }
 }
 

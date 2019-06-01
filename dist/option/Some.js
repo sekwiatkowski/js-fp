@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const None_1 = require("./None");
+const __1 = require("..");
 class Some {
     constructor(value) {
         this.value = value;
@@ -59,6 +60,15 @@ class Some {
     }
     performWhenNone(sideEffect) {
         return new Some(this.value);
+    }
+    toResult(error) {
+        return __1.success(this.value);
+    }
+    toValidated(errorMessage) {
+        return __1.valid(this.value);
+    }
+    toFuture(error) {
+        return __1.fulfill(this.value);
     }
 }
 exports.Some = Some;

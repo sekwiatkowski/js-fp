@@ -1,5 +1,6 @@
 import {Option, OptionMatchPattern} from './Option'
 import {some} from './Some'
+import {failure, Future, invalid, reject, Result, Validated} from '..'
 
 export class None<A> implements Option<A> {
     static value: Option<never> = new None()
@@ -64,6 +65,18 @@ export class None<A> implements Option<A> {
     performWhenNone(sideEffect: () => void): Option<A> {
         sideEffect()
         return none
+    }
+
+    toFuture<E>(error: E): Future<A, E> {
+        return reject(error)
+    }
+
+    toResult<E>(error: E): Result<A, E> {
+        return failure(error)
+    }
+
+    toValidated(errorMessage: string): Validated<A> {
+        return invalid([errorMessage])
     }
 }
 
