@@ -55,8 +55,8 @@ export class Future<T, E> {
                                 secondError => resolve(rejected(secondError)))
                         }
                         else if (futureOrPromiseOrValue instanceof Promise) {
-                            futureOrPromiseOrValue.then(
-                                member => {
+                            futureOrPromiseOrValue
+                                .then(member => {
                                     const updatedObject = {
                                         ...Object(existingObject),
                                         [key]: member

@@ -1,4 +1,4 @@
-import {fulfill, future, reject} from '../../src'
+import {fulfill, future, futureObject, reject} from '../../src'
 
 const chai = require('chai')
 
@@ -289,6 +289,43 @@ describe('Future', () => {
             .getOrElse(unsafeGet)
 
         got.should.equal(defaultValue)
+    })
+
+    it('should be able to skip over error maps when chaining', async() => {
+        let sideEffectText = noSideEffectText
+
+        const secondErrorText = 'second error'
+
+        const result = await fulfill<string, string>('The first step succeeds.')
+            .mapError(() => {
+                sideEffectText = 'side-effect!'
+                return 'first error'
+            })
+            .chain(() => reject('But the second step fails.'))
+            .mapError(() => secondErrorText)
+            .getErrorOrElse(unsafeGetError)
+
+        result.should.equal(secondErrorText)
+        sideEffectText.should.equal(noSideEffectText)
+    })
+
+    it('should be able to skip over error maps when assigning', async() => {
+        let sideEffectText = noSideEffectText
+
+        const secondErrorText = 'second error'
+
+        const result = await futureObject()
+            .assign('first', () => fulfill('The first assignment succeeds.'))
+            .mapError(() => {
+                sideEffectText = 'side-effect!'
+                return 'first error'
+            })
+            .assign('second', () => reject('The second assignment fails.'))
+            .mapError(() => secondErrorText)
+            .getErrorOrElse(unsafeGetError)
+
+        result.should.equal(secondErrorText)
+        sideEffectText.should.equal(noSideEffectText)
     })
 
 })

@@ -34,7 +34,8 @@ class Future {
                     }, secondError => resolve(Rejected_1.rejected(secondError)));
                 }
                 else if (futureOrPromiseOrValue instanceof Promise) {
-                    futureOrPromiseOrValue.then(member => {
+                    futureOrPromiseOrValue
+                        .then(member => {
                         const updatedObject = Object.assign({}, Object(existingObject), { [key]: member });
                         resolve(Fulfilled_1.fulfilled(updatedObject));
                     })
