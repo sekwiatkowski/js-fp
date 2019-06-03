@@ -39,9 +39,13 @@ class Invalid {
         return pattern.Invalid(this.errors);
     }
     perform(sideEffect) {
+        sideEffect();
         return this;
     }
-    performWhenInvalid(sideEffect) {
+    performOnValid(sideEffect) {
+        return this;
+    }
+    performOnInvalid(sideEffect) {
         sideEffect(this.errors);
         return this;
     }

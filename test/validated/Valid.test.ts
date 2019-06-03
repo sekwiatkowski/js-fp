@@ -103,8 +103,8 @@ describe('Valid', () => {
         mutable.should.equal(afterSideEffectText)
     })
 
-    it('should ignore side-effects meant for the Invalid path', () => {
-        expect(() => createValidString().performWhenInvalid(() => { throw 'Unexpected side-effect!' }))
+    it('should ignore side-effects intended for the Invalid path', () => {
+        expect(() => createValidString().performOnInvalid(() => { throw 'Unexpected side-effect!' }))
             .not.to.throw()
     })
 })

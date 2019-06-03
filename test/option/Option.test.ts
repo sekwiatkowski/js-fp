@@ -1,7 +1,18 @@
-import {none, option, Some} from '../../src'
+import {none, option, some, Some} from '../../src'
 
 const chai = require('chai')
 chai.should()
+
+describe('Some', () => {
+    it('should be able to perform side-effects on both paths', () => {
+        let mutable = 0
+
+        some('value').perform(() => { mutable++ })
+        none.perform(() => { mutable++ })
+
+        mutable.should.equal(2)
+    })
+})
 
 describe('option', () => {
     it('should map null to None', () => {
@@ -15,4 +26,5 @@ describe('option', () => {
     it('should wrap values inside Some', () => {
         (option(1) instanceof Some).should.be.true
     })
+
 })

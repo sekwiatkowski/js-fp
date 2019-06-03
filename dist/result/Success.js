@@ -55,10 +55,14 @@ class Success {
         return this;
     }
     perform(sideEffect) {
-        sideEffect(this.value);
-        return new Success(this.value);
+        sideEffect();
+        return this;
     }
-    performOnError(sideEffect) {
+    performOnSuccess(sideEffect) {
+        sideEffect(this.value);
+        return this;
+    }
+    performOnFailure(sideEffect) {
         return this;
     }
     toFuture() {

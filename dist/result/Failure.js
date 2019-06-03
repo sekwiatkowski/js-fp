@@ -43,11 +43,15 @@ class Failure {
         return alternative(this.error);
     }
     perform(sideEffect) {
+        sideEffect();
         return this;
     }
-    performOnError(sideEffect) {
+    performOnSuccess(sideEffect) {
+        return this;
+    }
+    performOnFailure(sideEffect) {
         sideEffect(this.error);
-        return new Failure(this.error);
+        return this;
     }
     toFuture() {
         return __1.reject(this.error);

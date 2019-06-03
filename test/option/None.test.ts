@@ -52,13 +52,13 @@ describe('None', () => {
         let mutable = 'before side-effect'
 
         const sideEffectText = 'after side-effect'
-        none.performWhenNone(() => mutable = sideEffectText)
+        none.performOnNone(() => mutable = sideEffectText)
 
         mutable.should.equal(sideEffectText)
     })
 
-    it('should be able to ignore side-effect meant for the Some path', () => {
-        expect(() => none.perform(() => { throw 'Unexpected side-effect!' })).not.to.throw()
+    it('should be able to ignore side-effect intended for the Some path', () => {
+        expect(() => none.performOnSome(() => { throw 'Unexpected side-effect!' })).not.to.throw()
     })
 
     it('should return the default value', () => {

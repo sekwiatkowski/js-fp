@@ -30,16 +30,16 @@ describe('Failure', () => {
             .should.equal(error)
     })
 
-    it('should perform side-effects meant for the failure path', () => {
+    it('should perform side-effects intended for the failure path', () => {
         let mutable = noSideEffectText
 
-        createFailureOfString().performOnError(error => mutable = error)
+        createFailureOfString().performOnFailure(error => mutable = error)
 
         mutable.should.equal(error)
     })
 
-    it('should ignore side-effects meant for the success path', () => {
-        expect(() => createFailureOfString().perform(() => { throw 'Unexpected side-effect!'}))
+    it('should ignore side-effects intended for the success path', () => {
+        expect(() => createFailureOfString().performOnSuccess(() => { throw 'Unexpected side-effect!'}))
             .not.to.throw()
     })
 

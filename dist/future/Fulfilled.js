@@ -23,10 +23,14 @@ class Fulfilled {
         return this;
     }
     perform(sideEffect) {
+        sideEffect();
+        return this;
+    }
+    performOnFulfilled(sideEffect) {
         sideEffect(this.value);
         return this;
     }
-    performOnError(sideEffect) {
+    performOnRejected(sideEffect) {
         return this;
     }
     run(whenFulfilled, whenRejected) {

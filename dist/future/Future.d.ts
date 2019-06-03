@@ -16,8 +16,12 @@ export declare class Future<T, E> {
     orAttempt(alternative: Future<T, E> | ((error: E) => Future<T, E>)): Future<T, E>;
     orElse(alternative: T | ((error: E) => T)): Future<T, E>;
     orPromise(alternative: Promise<T> | ((error: E) => Promise<T>)): Future<T, E>;
-    perform(sideEffect: (value: T) => void): Future<T, E>;
-    performOnError(sideEffect: (error: E) => void): Future<T, E>;
+    perform<U, F>(f: (() => Future<U, F>) | (() => Promise<U>)): Future<T, E>;
+    performOnFulfilled<U, F>(f: ((value: T) => Future<U, F>) | ((value: T) => Promise<U>)): Future<T, E>;
+    performOnRejected<U, F>(f: ((error: E) => Future<U, F>) | ((error: E) => Promise<U>)): Future<T, E>;
+    performSync(sideEffect: () => void): Future<T, E>;
+    performSyncOnFulfilled(sideEffect: (value: T) => void): Future<T, E>;
+    performSyncOnRejected(sideEffect: (error: E) => void): Future<T, E>;
     run(whenFulfilled: (value: T) => void, whenRejected: (error: E) => void): void;
 }
 export declare function fulfill<T, E>(value: T): Future<T, E>;

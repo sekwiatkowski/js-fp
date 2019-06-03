@@ -28,8 +28,9 @@ export interface Validated<T, E> {
 
     fold<U>(pattern: ValidatedFoldPattern<T, U, E>): U
 
-    perform(sideEffect: (value: T) => void): Validated<T, E>
-    performWhenInvalid(sideEffect: (errors: E[]) => void): Validated<T, E>
+    perform(sideEffect: () => void): Validated<T, E>
+    performOnValid(sideEffect: (value: T) => void): Validated<T, E>
+    performOnInvalid(sideEffect: (errors: E[]) => void): Validated<T, E>
 
     toFuture(): Future<T, E[]>
     toResult(): Result<T, E[]>

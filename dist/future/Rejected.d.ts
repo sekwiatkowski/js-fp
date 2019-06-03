@@ -8,8 +8,9 @@ declare class Rejected<T, E> implements Settled<T, E> {
     fold<X>(pattern: SettledFoldPattern<T, E, X>): X;
     map<U>(f: (value: T) => U): Settled<U, E>;
     mapError<F>(f: (error: E) => F): Settled<T, F>;
-    perform(sideEffect: (value: T) => void): Settled<T, E>;
-    performOnError(sideEffect: (error: E) => void): Settled<T, E>;
+    perform(sideEffect: () => void): Settled<T, E>;
+    performOnFulfilled(sideEffect: (value: T) => void): Settled<T, E>;
+    performOnRejected(sideEffect: (error: E) => void): Settled<T, E>;
     run(whenFulfilled: (value: T) => void, whenRejected: (error: E) => void): void;
 }
 export declare function rejected<T, E>(error: E): Rejected<T, E>;

@@ -86,16 +86,16 @@ describe('Some', () => {
             .should.equal(containedValue)
     })
 
-    it('should be able to perform side-effects meant for the Some path', () => {
+    it('should be able to perform side-effects intended for the Some path', () => {
         let mutable = 'before side-effect'
 
-        createSomeOfString().perform(value => mutable = value)
+        createSomeOfString().performOnSome(value => mutable = value)
 
         mutable.should.equal(containedValue)
     })
 
-    it('should ignore the side-effects meant for the None path', () => {
-        expect(() => createSomeOfString().performWhenNone(() => { throw 'Unexpected side-effect!' }))
+    it('should ignore the side-effects intended for the None path', () => {
+        expect(() => createSomeOfString().performOnNone(() => { throw 'Unexpected side-effect!' }))
             .not.to.throw()
     })
 

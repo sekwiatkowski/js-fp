@@ -18,8 +18,9 @@ export declare class Some<A> implements Option<A> {
     fold<B>(pattern: OptionFoldPattern<A, B>): B;
     orElse(alternative: A | (() => A)): Option<A>;
     orAttempt(alternative: () => Option<A>): Option<A>;
-    perform(sideEffect: (value: A) => void): Option<A>;
-    performWhenNone(sideEffect: () => void): Option<A>;
+    perform(sideEffect: () => void): Option<A>;
+    performOnSome(sideEffect: (value: A) => void): Option<A>;
+    performOnNone(sideEffect: () => void): Option<A>;
     toResult<E>(error: E): Result<A, E>;
     toFuture<E>(error: E): Future<A, E>;
     toValidated<E>(errorMessage: E): Validated<A, E>;

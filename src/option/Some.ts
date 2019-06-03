@@ -76,13 +76,18 @@ export class Some<A> implements Option<A> {
         return this
     }
 
-    perform(sideEffect: (value: A) => void): Option<A> {
-        sideEffect(this.value)
-        return new Some(this.value)
+    perform(sideEffect: () => void): Option<A> {
+        sideEffect()
+        return none
     }
 
-    performWhenNone(sideEffect: () => void): Option<A> {
-        return new Some(this.value)
+    performOnSome(sideEffect: (value: A) => void): Option<A> {
+        sideEffect(this.value)
+        return this
+    }
+
+    performOnNone(sideEffect: () => void): Option<A> {
+        return this
     }
 
     toResult<E>(error: E): Result<A, E> {

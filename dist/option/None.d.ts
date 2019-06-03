@@ -18,8 +18,9 @@ export declare class None<A> implements Option<A> {
     fold<B>(pattern: OptionFoldPattern<A, B>): B;
     orElse(alternative: A | (() => A)): Option<A>;
     orAttempt(alternative: () => Option<A>): Option<A>;
-    perform(sideEffect: (value: A) => void): Option<A>;
-    performWhenNone(sideEffect: () => void): Option<A>;
+    perform(sideEffect: () => void): Option<A>;
+    performOnSome(sideEffect: (value: A) => void): Option<A>;
+    performOnNone(sideEffect: () => void): Option<A>;
     toFuture<E>(error: E): Future<A, E>;
     toResult<E>(error: E): Result<A, E>;
     toValidated<E>(error: E): Validated<A, E>;

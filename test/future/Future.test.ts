@@ -16,6 +16,8 @@ describe('Future', () => {
     const noSideEffectText = 'no side-effect'
     const sideEffectText = 'performed side-effect'
 
+    const timeout = 30
+
     it('should be able to build an object that satisfies an interface', async() => {
         interface TestInterface {
             first: string
@@ -145,7 +147,7 @@ describe('Future', () => {
         let mutable = noSideEffectText
 
         fulfill(error)
-            .perform(() => mutable = sideEffectText)
+            .performSyncOnFulfilled(() => mutable = sideEffectText)
             .run(
                 () => {
                     mutable.should.equal(sideEffectText)
@@ -160,7 +162,7 @@ describe('Future', () => {
         let mutable = noSideEffectText
 
         reject(error)
-            .perform(() => mutable = sideEffectText)
+            .performSyncOnFulfilled(() => mutable = sideEffectText)
             .run(
                 () => {
                     throw 'Unexpected resolution!'
@@ -175,7 +177,7 @@ describe('Future', () => {
         let mutable = noSideEffectText
 
         reject(error)
-            .performOnError(() => mutable = sideEffectText)
+            .performSyncOnRejected(() => mutable = sideEffectText)
             .run(
                 () => {
                     throw 'Unexpected resolution!'
@@ -190,7 +192,7 @@ describe('Future', () => {
         let mutable = noSideEffectText
 
         fulfill(value)
-            .performOnError(() => mutable = sideEffectText)
+            .performSyncOnRejected(() => mutable = sideEffectText)
             .run(
                 () => {
                     mutable.should.equal(noSideEffectText)
@@ -326,6 +328,128 @@ describe('Future', () => {
 
         result.should.equal(secondErrorText)
         sideEffectText.should.equal(noSideEffectText)
+    })
+
+    it('should be able to synchronously perform a side-effect in either case', async() => {
+        let mutable = 0
+
+        await fulfill({})
+            .performSync(() => mutable += 1)
+            .getOrElse(unsafeGet)
+
+        await reject({})
+            .performSync(() => mutable += 1)
+            .getErrorOrElse(unsafeGet)
+
+        mutable.should.equal(2)
+    })
+
+    it('should be able to chain asynchronous side-effect performances on the value when the promise is fulfilled', async() => {
+        let mutable = []
+
+        await fulfill({})
+            .performOnFulfilled(() => new Promise(resolve => {
+                setTimeout(() => {
+                    mutable.push('first')
+                    resolve()
+                }, timeout)
+            }))
+            .performOnFulfilled(() => new Promise(resolve => {
+                mutable.push('second')
+                resolve()
+            }))
+            .getOrElse(unsafeGet)
+
+        mutable.should.eql(['first', 'second'])
+    })
+
+    it('should ignore attempts to chain asynchronous side-effect performances on the error when the promise is fulfilled', async() => {
+        let mutable = []
+
+        await fulfill({})
+            .performOnRejected(() => new Promise(resolve => {
+                setTimeout(() => {
+                    mutable.push('first')
+                    resolve()
+                }, timeout)
+            }))
+            .performOnRejected(() => new Promise(resolve => {
+                mutable.push('second')
+                resolve()
+            }))
+            .getOrElse(unsafeGet)
+
+        mutable.should.eql([])
+    })
+
+    it('should ignore attempts to chain asynchronous side-effect performances on the value when the promise is rejected', async() => {
+        let mutable = []
+
+        await reject({})
+            .performOnFulfilled(() => new Promise(resolve => {
+                setTimeout(() => {
+                    mutable.push('first')
+                    resolve()
+                }, timeout)
+            }))
+            .performOnFulfilled(() => new Promise(resolve => {
+                mutable.push('second')
+                resolve()
+            }))
+            .getErrorOrElse(unsafeGet)
+
+        mutable.should.eql([])
+    })
+
+    it('should be able to chain asynchronous side-effect performances on the error the promise is rejected', async() => {
+        let mutable = []
+
+        await reject({})
+            .performOnRejected(() => new Promise(resolve => {
+                setTimeout(() => {
+                    mutable.push('first')
+                    resolve()
+                }, timeout)
+            }))
+            .performOnRejected(() => new Promise(resolve => {
+                mutable.push('second')
+                resolve()
+            }))
+            .getErrorOrElse(unsafeGet)
+
+        mutable.should.eql(['first', 'second'])
+    })
+
+    it('should be able to asynchronously perform a side-effect in either case', async() => {
+        let mutable = []
+
+        await fulfill({})
+            .perform(() => new Promise(resolve => {
+                setTimeout(() => {
+                    mutable.push('first')
+                    resolve()
+                }, timeout)
+            }))
+            .perform(() => new Promise(resolve => {
+                mutable.push('second')
+                resolve()
+            }))
+            .getOrElse(unsafeGet)
+
+        await reject({})
+            .perform(() => new Promise(resolve => {
+                setTimeout(() => {
+                    mutable.push('third')
+                    resolve()
+                }, timeout)
+            }))
+            .perform(() => new Promise(resolve => {
+                mutable.push('fourth')
+                resolve()
+            }))
+            .getErrorOrElse(unsafeGet)
+
+        mutable.should.eql(['first', 'second', 'third', 'fourth'])
     })
 
 })

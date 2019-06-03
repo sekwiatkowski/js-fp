@@ -53,11 +53,16 @@ export class Invalid<T, E> implements Validated<T, E> {
         return pattern.Invalid(this.errors)
     }
 
-    perform(sideEffect: (value: T) => void): Validated<T, E> {
+    perform(sideEffect: () => void): Validated<T, E> {
+        sideEffect()
         return this
     }
 
-    performWhenInvalid(sideEffect: (errors: E[]) => void): Validated<T, E> {
+    performOnValid(sideEffect: (value: T) => void): Validated<T, E> {
+        return this
+    }
+
+    performOnInvalid(sideEffect: (errors: E[]) => void): Validated<T, E> {
         sideEffect(this.errors)
         return this
     }

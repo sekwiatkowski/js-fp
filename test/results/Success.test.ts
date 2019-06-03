@@ -64,16 +64,16 @@ describe('Success', () => {
         mutable.should.equal(notComputedText)
     })
 
-    it('should perform side-effects meant for the success path', () => {
+    it('should perform side-effects intended for the success path', () => {
         let mutable = noSideEffectText
 
-        createSuccessOfString().perform(value => mutable = value)
+        createSuccessOfString().performOnSuccess(value => mutable = value)
 
         mutable.should.equal(containedValue)
     })
 
-    it('should ignore side-effects meant for the failure path', () => {
-        expect(() => createSuccessOfString().performOnError(() => { throw 'Unexpected side-effect!' }))
+    it('should ignore side-effects intended for the failure path', () => {
+        expect(() => createSuccessOfString().performOnFailure(() => { throw 'Unexpected side-effect!' }))
             .not.to.throw()
     })
 

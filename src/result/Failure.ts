@@ -59,13 +59,18 @@ export class Failure<T, E> implements Result<T, E> {
         return alternative(this.error)
     }
 
-    perform(sideEffect: (value: T) => void) : Result<T, E> {
+    perform(sideEffect: () => void) : Result<T, E> {
+        sideEffect()
         return this
     }
 
-    performOnError(sideEffect: (error: E) => void) : Result<T, E> {
+    performOnSuccess(sideEffect: (value: T) => void) : Result<T, E> {
+        return this
+    }
+
+    performOnFailure(sideEffect: (error: E) => void) : Result<T, E> {
         sideEffect(this.error)
-        return new Failure(this.error)
+        return this
     }
 
     toFuture(): Future<T, E> {

@@ -58,11 +58,16 @@ export class None<A> implements Option<A> {
         return alternative()
     }
 
-    perform(sideEffect: (value: A) => void): Option<A> {
+    perform(sideEffect: () => void): Option<A> {
+        sideEffect()
         return none
     }
 
-    performWhenNone(sideEffect: () => void): Option<A> {
+    performOnSome(sideEffect: (value: A) => void): Option<A> {
+        return none
+    }
+
+    performOnNone(sideEffect: () => void): Option<A> {
         sideEffect()
         return none
     }

@@ -192,7 +192,86 @@ export class Future<T, E> {
         )
     }
 
-    perform(sideEffect: (value: T) => void): Future<T, E> {
+    perform<U, F>(f: (() => Future<U, F>) | (() => Promise<U>)): Future<T, E> {
+        return new Future<T, E>(() =>
+            new Promise<Settled<T, E>>(resolve => {
+                this.run(
+                    firstValue => {
+                        const futureOrPromise = f()
+
+                        const fulfillAgain = () => resolve(fulfilled(firstValue))
+
+                        if (futureOrPromise instanceof Future) {
+                            futureOrPromise.run(fulfillAgain, fulfillAgain)
+                        }
+                        else {
+                            futureOrPromise.then(
+                                fulfillAgain)
+                                .catch(fulfillAgain)
+                        }
+                    },
+                    firstError => {
+                        const futureOrPromise = f()
+
+                        const rejectAgain = () => resolve(rejected(firstError))
+
+                        if (futureOrPromise instanceof Future) {
+                            futureOrPromise.run(rejectAgain, rejectAgain)
+                        }
+                        else {
+                            futureOrPromise.then(rejectAgain).catch(rejectAgain)
+                        }
+                    }
+                )
+            })
+        )
+    }
+
+    performOnFulfilled<U, F>(f: ((value: T) => Future<U, F>) | ((value: T) => Promise<U>)): Future<T, E> {
+        return new Future<T, E>(() =>
+            new Promise<Settled<T, E>>(resolve =>
+                this.run(
+                    firstValue => {
+                        const fulfillAgain = () => resolve(fulfilled(firstValue))
+
+                        const futureOrPromise = f(firstValue)
+
+                        if (futureOrPromise instanceof Future) {
+                            futureOrPromise.run(fulfillAgain, fulfillAgain)
+                        }
+                        else {
+                            futureOrPromise.then(fulfillAgain).catch(fulfillAgain)
+                        }
+                    },
+                    firstError => resolve(rejected(firstError))
+                )
+            )
+        )
+    }
+
+    performOnRejected<U, F>(f: ((error: E) => Future<U, F>) | ((error: E) => Promise<U>)): Future<T, E> {
+        return new Future<T, E>(() =>
+            new Promise<Settled<T, E>>(resolve =>
+                this.run(
+                    firstValue => resolve(fulfilled(firstValue)),
+                    firstError => {
+                        const rejectAgain = () => resolve(rejected(firstError))
+
+                        const futureOrPromise = f(firstError)
+
+                        if (futureOrPromise instanceof Future) {
+                            futureOrPromise.run(rejectAgain, rejectAgain)
+                        }
+                        else {
+                            futureOrPromise.then(rejectAgain).catch(rejectAgain)
+                        }
+                    }
+                )
+            )
+        )
+    }
+
+    performSync(sideEffect: () => void): Future<T, E> {
         return new Future<T, E>(() =>
             new Promise<Settled<T, E>>(resolve =>
                 this.createPromise()
@@ -204,12 +283,24 @@ export class Future<T, E> {
         )
     }
 
-    performOnError(sideEffect: (error: E) => void): Future<T, E> {
+    performSyncOnFulfilled(sideEffect: (value: T) => void): Future<T, E> {
         return new Future<T, E>(() =>
             new Promise<Settled<T, E>>(resolve =>
                 this.createPromise()
                     .then(settled => {
-                        settled.performOnError(sideEffect)
+                        settled.performOnFulfilled(sideEffect)
+                        resolve(settled)
+                    })
+            )
+        )
+    }
+
+    performSyncOnRejected(sideEffect: (error: E) => void): Future<T, E> {
+        return new Future<T, E>(() =>
+            new Promise<Settled<T, E>>(resolve =>
+                this.createPromise()
+                    .then(settled => {
+                        settled.performOnRejected(sideEffect)
                         resolve(settled)
                     })
             )
@@ -225,11 +316,11 @@ export class Future<T, E> {
 
 }
 
-export function fulfill<T, E>(value : T): Future<T, E> {
+export function fulfill<T, E>(value: T): Future<T, E> {
     return new Future<T, E>(() => Promise.resolve(fulfilled(value)))
 }
 
-export function reject<T, E>(error : E): Future<T, E> {
+export function reject<T, E>(error: E): Future<T, E> {
     return new Future<T, E>(() => Promise.resolve(rejected(error)))
 }
 

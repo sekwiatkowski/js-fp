@@ -55,11 +55,15 @@ class Some {
         return this;
     }
     perform(sideEffect) {
-        sideEffect(this.value);
-        return new Some(this.value);
+        sideEffect();
+        return None_1.none;
     }
-    performWhenNone(sideEffect) {
-        return new Some(this.value);
+    performOnSome(sideEffect) {
+        sideEffect(this.value);
+        return this;
+    }
+    performOnNone(sideEffect) {
+        return this;
     }
     toResult(error) {
         return __1.success(this.value);

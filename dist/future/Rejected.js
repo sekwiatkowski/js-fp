@@ -20,9 +20,13 @@ class Rejected {
         return new Rejected(f(this.error));
     }
     perform(sideEffect) {
+        sideEffect();
         return this;
     }
-    performOnError(sideEffect) {
+    performOnFulfilled(sideEffect) {
+        return this;
+    }
+    performOnRejected(sideEffect) {
         sideEffect(this.error);
         return this;
     }

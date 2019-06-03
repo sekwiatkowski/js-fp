@@ -19,8 +19,9 @@ export interface Result<T, E> {
     fold<X>(pattern: ResultFoldPattern<T, E, X>): X;
     orAttempt(alternative: (error: E) => Result<T, E>): Result<T, E>;
     orElse(alternative: T | ((error: E) => T)): Result<T, E>;
-    perform(sideEffect: (value: T) => void): Result<T, E>;
-    performOnError(sideEffect: (error: E) => void): Result<T, E>;
+    perform(sideEffect: () => void): Result<T, E>;
+    performOnSuccess(sideEffect: (value: T) => void): Result<T, E>;
+    performOnFailure(sideEffect: (error: E) => void): Result<T, E>;
     toFuture(): Future<T, E>;
     toOption(): Option<T>;
     toValidated(): Validated<T, E>;

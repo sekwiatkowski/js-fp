@@ -114,17 +114,72 @@ class Future {
                 .catch(newError => resolve(Rejected_1.rejected(newError)))));
         }));
     }
-    perform(sideEffect) {
+    perform(f) {
+        return new Future(() => new Promise(resolve => {
+            this.run(firstValue => {
+                const futureOrPromise = f();
+                const fulfillAgain = () => resolve(Fulfilled_1.fulfilled(firstValue));
+                if (futureOrPromise instanceof Future) {
+                    futureOrPromise.run(fulfillAgain, fulfillAgain);
+                }
+                else {
+                    futureOrPromise.then(fulfillAgain)
+                        .catch(fulfillAgain);
+                }
+            }, firstError => {
+                const futureOrPromise = f();
+                const rejectAgain = () => resolve(Rejected_1.rejected(firstError));
+                if (futureOrPromise instanceof Future) {
+                    futureOrPromise.run(rejectAgain, rejectAgain);
+                }
+                else {
+                    futureOrPromise.then(rejectAgain).catch(rejectAgain);
+                }
+            });
+        }));
+    }
+    performOnFulfilled(f) {
+        return new Future(() => new Promise(resolve => this.run(firstValue => {
+            const fulfillAgain = () => resolve(Fulfilled_1.fulfilled(firstValue));
+            const futureOrPromise = f(firstValue);
+            if (futureOrPromise instanceof Future) {
+                futureOrPromise.run(fulfillAgain, fulfillAgain);
+            }
+            else {
+                futureOrPromise.then(fulfillAgain).catch(fulfillAgain);
+            }
+        }, firstError => resolve(Rejected_1.rejected(firstError)))));
+    }
+    performOnRejected(f) {
+        return new Future(() => new Promise(resolve => this.run(firstValue => resolve(Fulfilled_1.fulfilled(firstValue)), firstError => {
+            const rejectAgain = () => resolve(Rejected_1.rejected(firstError));
+            const futureOrPromise = f(firstError);
+            if (futureOrPromise instanceof Future) {
+                futureOrPromise.run(rejectAgain, rejectAgain);
+            }
+            else {
+                futureOrPromise.then(rejectAgain).catch(rejectAgain);
+            }
+        })));
+    }
+    performSync(sideEffect) {
         return new Future(() => new Promise(resolve => this.createPromise()
             .then(settled => {
             settled.perform(sideEffect);
             resolve(settled);
         })));
     }
-    performOnError(sideEffect) {
+    performSyncOnFulfilled(sideEffect) {
         return new Future(() => new Promise(resolve => this.createPromise()
             .then(settled => {
-            settled.performOnError(sideEffect);
+            settled.performOnFulfilled(sideEffect);
+            resolve(settled);
+        })));
+    }
+    performSyncOnRejected(sideEffect) {
+        return new Future(() => new Promise(resolve => this.createPromise()
+            .then(settled => {
+            settled.performOnRejected(sideEffect);
             resolve(settled);
         })));
     }

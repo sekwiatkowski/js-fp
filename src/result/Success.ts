@@ -78,12 +78,17 @@ export class Success<T, E> implements Result<T, E> {
         return this
     }
 
-    perform(sideEffect: (value: T) => void): Result<T, E> {
-        sideEffect(this.value)
-        return new Success(this.value)
+    perform(sideEffect: () => void): Result<T, E> {
+        sideEffect()
+        return this
     }
 
-    performOnError(sideEffect: (error: E) => void): Result<T, E> {
+    performOnSuccess(sideEffect: (value: T) => void): Result<T, E> {
+        sideEffect(this.value)
+        return this
+    }
+
+    performOnFailure(sideEffect: (error: E) => void): Result<T, E> {
         return this
     }
 

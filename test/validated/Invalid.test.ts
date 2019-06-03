@@ -91,9 +91,9 @@ describe('Invalid', () => {
             .should.eql(mappedErrors)
     })
 
-    it('should ignore attempts to perform a side-effect meant for the Valid branch', () => {
+    it('should ignore attempts to perform a side-effect intended for the Valid path', () => {
         expect(() => createInvalidInstance()
-            .perform(() => { throw 'Unexpected side-effect!' }))
+            .performOnValid(() => { throw 'Unexpected side-effect!' }))
             .not.to.throw()
     })
 
@@ -101,7 +101,7 @@ describe('Invalid', () => {
         let mutable = noSideEffectText
         const f = errors => `${errors[0]} ${errors[1]}`
         createInvalidInstance()
-            .performWhenInvalid(errors => mutable = f(errors))
+            .performOnInvalid(errors => mutable = f(errors))
 
         mutable.should.equal(f(errors))
     })

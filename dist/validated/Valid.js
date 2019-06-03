@@ -49,10 +49,14 @@ class Valid {
         return pattern.Valid(this.value);
     }
     perform(sideEffect) {
+        sideEffect();
+        return this;
+    }
+    performOnValid(sideEffect) {
         sideEffect(this.value);
         return this;
     }
-    performWhenInvalid(sideEffect) {
+    performOnInvalid(sideEffect) {
         return this;
     }
     toFuture() {

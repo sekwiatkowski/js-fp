@@ -23,13 +23,17 @@ class Rejected<T, E> implements Settled<T, E> {
         return new Rejected(f(this.error))
     }
 
-    perform(sideEffect: (value: T) => void): Settled<T, E> {
+    perform(sideEffect: () => void): Settled<T, E> {
+        sideEffect()
         return this
     }
 
-    performOnError(sideEffect: (error: E) => void): Settled<T, E> {
-        sideEffect(this.error)
+    performOnFulfilled(sideEffect: (value: T) => void): Settled<T, E> {
+        return this
+    }
 
+    performOnRejected(sideEffect: (error: E) => void): Settled<T, E> {
+        sideEffect(this.error)
         return this
     }
 

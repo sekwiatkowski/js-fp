@@ -41,9 +41,13 @@ class None {
         return alternative();
     }
     perform(sideEffect) {
+        sideEffect();
         return exports.none;
     }
-    performWhenNone(sideEffect) {
+    performOnSome(sideEffect) {
+        return exports.none;
+    }
+    performOnNone(sideEffect) {
         sideEffect();
         return exports.none;
     }

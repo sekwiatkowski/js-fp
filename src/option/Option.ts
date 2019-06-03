@@ -31,8 +31,9 @@ export interface Option<A> {
     orElse(alternative: A | (() => A)): Option<A>
     orAttempt(alternative: () => Option<A>): Option<A>
 
-    perform(sideEffect: (value: A) => void): Option<A>
-    performWhenNone(sideEffect: () => void): Option<A>
+    perform(sideEffect: () => void): Option<A>
+    performOnSome(sideEffect: (value: A) => void): Option<A>
+    performOnNone(sideEffect: () => void): Option<A>
 
     test(predicate: (value: A) => boolean): boolean
 
