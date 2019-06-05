@@ -26,7 +26,7 @@ export interface Result<T, E> {
     map<U>(f: (value: T) => U): Result<U, E>
     mapError<F>(f: (error: E) => F): Result<T, F>
 
-    fold<X>(pattern : ResultFoldPattern<T, E, X>) : X
+    fold<X>(onSuccess: (value: T) => X, onFailure: (error: E) => X) : X
 
     orAttempt(alternative: (error: E) => Result<T, E>): Result<T, E>
     orElse(alternative: T|((error: E) => T)): Result<T, E>

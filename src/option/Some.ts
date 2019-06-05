@@ -1,5 +1,5 @@
 import {None, none} from './None'
-import {Option, OptionFoldPattern} from './Option'
+import {Option} from './Option'
 import {fulfill, Future, Result, success, valid, Validated} from '..'
 
 export class Some<A> implements Option<A> {
@@ -64,8 +64,8 @@ export class Some<A> implements Option<A> {
         return new Some(f(this.value))
     }
 
-    fold<B>(pattern : OptionFoldPattern<A, B>) : B {
-        return pattern.Some(this.value)
+    fold<B>(onSome: (value: A) => B, onNone: () => B) : B {
+        return onSome(this.value)
     }
 
     orElse(alternative: A|(() => A)): Option<A> {

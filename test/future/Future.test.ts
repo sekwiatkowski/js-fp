@@ -56,10 +56,9 @@ describe('Future', () => {
             .assign('d',() => fulfill(4))
             .assign('e', Promise.resolve(5))
             .assign('f', () => Promise.resolve(6))
-            .fold({
-                Fulfilled: scope => scope.a + scope.b + scope.c + scope.d + scope.e + scope.f,
-                Rejected: () => { throw 'Unexpected rejection!' }
-            })
+            .fold(
+                scope => scope.a + scope.b + scope.c + scope.d + scope.e + scope.f,
+                () => { throw 'Unexpected rejection!' })
 
         result.should.equal(21)
     })
@@ -68,10 +67,9 @@ describe('Future', () => {
         const result = await fulfill({})
             .assign('x', () => Promise.resolve(1))
             .assign('y', Promise.resolve(2))
-            .fold({
-                Fulfilled: scope => scope.x + scope.y,
-                Rejected: () => { throw 'Unexpected rejection!' }
-            })
+            .fold(
+                scope => scope.x + scope.y,
+                () => { throw 'Unexpected rejection!' })
 
         result.should.equal(3)
     })
@@ -80,10 +78,9 @@ describe('Future', () => {
         const result = await fulfill({})
             .assign('x', Promise.resolve(1))
             .assign('y', Promise.reject(2))
-            .fold({
-                Fulfilled: () => { throw 'Unexpected resolution!' },
-                Rejected: () => 'rejected'
-            })
+            .fold(
+                () => { throw 'Unexpected resolution!' },
+                () => 'rejected')
 
         result.should.equal('rejected')
     })
@@ -92,10 +89,9 @@ describe('Future', () => {
         const result = await fulfill({})
             .assign('x', Promise.reject(1))
             .assign('y', Promise.resolve(2))
-            .fold({
-                Fulfilled: () => { throw 'Unexpected resolution!' },
-                Rejected: () => 'rejected'
-            })
+            .fold(
+                () => { throw 'Unexpected resolution!' },
+                () => 'rejected')
 
         result.should.equal('rejected')
     })
@@ -105,10 +101,9 @@ describe('Future', () => {
         const result = await fulfill({})
             .assign('x', future<number, string>(() => Promise.resolve(1)))
             .assign('y', () => future<number, string>(() => Promise.resolve(2)))
-            .fold({
-                Fulfilled: scope => scope.x + scope.y,
-                Rejected: () => { throw 'Unexpected rejection!' }
-            })
+            .fold(
+                scope => scope.x + scope.y,
+                () => { throw 'Unexpected rejection!' })
 
         result.should.equal(3)
     })
@@ -205,10 +200,9 @@ describe('Future', () => {
 
     it('should map over the value of the resolved promise when folded', async() => {
         const actualValue = await fulfill(value)
-            .fold({
-                Fulfilled: map,
-                Rejected: () => { throw 'Unexpected rejection!' }
-            })
+            .fold(
+                map,
+                () => { throw 'Unexpected rejection!' })
 
         const expectedValue = map(value)
         actualValue.should.equal(expectedValue)
@@ -216,10 +210,9 @@ describe('Future', () => {
 
     it('should map over the value of the rejected promise when folded', async() => {
         const actualValue = await reject(error)
-            .fold({
-                Fulfilled: () => { throw 'Unexpected resolution!' },
-                Rejected: map
-            })
+            .fold(
+                () => { throw 'Unexpected resolution!' },
+                map)
 
         const expectedValue = map(error)
         actualValue.should.equal(expectedValue)

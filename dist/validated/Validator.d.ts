@@ -1,5 +1,4 @@
-import {Validated} from './Validated';
-
+import { Validated } from './Validated';
 declare class Validator<T, E> {
     private readonly rules;
     constructor(rules: ((value: T) => Validated<T, E>)[]);

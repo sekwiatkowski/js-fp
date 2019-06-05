@@ -1,11 +1,10 @@
-import {Settled, SettledFoldPattern} from './Settled';
-
+import { Settled } from './Settled';
 declare class Rejected<T, E> implements Settled<T, E> {
     private readonly error;
     constructor(error: E);
     getErrorOrElse(alternative: E | ((value: T) => E)): E;
     getOrElse(alternative: T | ((error: E) => T)): T;
-    fold<X>(pattern: SettledFoldPattern<T, E, X>): X;
+    fold<X>(onFulfilled: (value: T) => X, onRejected: (error: E) => X): X;
     map<U>(f: (value: T) => U): Settled<U, E>;
     mapError<F>(f: (error: E) => F): Settled<T, F>;
     perform(sideEffect: () => void): Settled<T, E>;

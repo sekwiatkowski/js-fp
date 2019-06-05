@@ -45,8 +45,8 @@ class Valid {
     mapErrors(f) {
         return this;
     }
-    fold(pattern) {
-        return pattern.Valid(this.value);
+    fold(onValid, onInvalid) {
+        return onValid(this.value);
     }
     perform(sideEffect) {
         sideEffect();

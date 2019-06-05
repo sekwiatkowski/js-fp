@@ -1,5 +1,4 @@
-import {Settled, SettledFoldPattern} from './Settled';
-
+import { Settled } from './Settled';
 export declare class Future<T, E> {
     private readonly createPromise;
     constructor(createPromise: () => Promise<Settled<T, E>>);
@@ -12,13 +11,15 @@ export declare class Future<T, E> {
     getErrorOrElse(alternative: E | ((value: T) => E)): Promise<E>;
     map<U>(f: (value: T) => U): Future<U, E>;
     mapError<F>(f: (error: E) => F): Future<T, F>;
-    fold<X>(pattern: SettledFoldPattern<T, E, X>): Promise<X>;
+    fold<X>(onFulfilled: (value: T) => X, onRejected: (error: E) => X): Promise<X>;
+    isFulfilled(): Promise<boolean>;
+    isRejected(): Promise<boolean>;
     orAttempt(alternative: Future<T, E> | ((error: E) => Future<T, E>)): Future<T, E>;
     orElse(alternative: T | ((error: E) => T)): Future<T, E>;
     orPromise(alternative: Promise<T> | ((error: E) => Promise<T>)): Future<T, E>;
-    perform<U, F>(f: (() => Future<U, F>) | (() => Promise<U>)): Future<T, E>;
-    performOnFulfilled<U, F>(f: ((value: T) => Future<U, F>) | ((value: T) => Promise<U>)): Future<T, E>;
-    performOnRejected<U, F>(f: ((error: E) => Future<U, F>) | ((error: E) => Promise<U>)): Future<T, E>;
+    perform<U>(f: (() => Future<U, E>) | (() => Promise<U>)): Future<T, E>;
+    performOnFulfilled<U>(f: ((value: T) => Future<U, E>) | ((value: T) => Promise<U>)): Future<T, E>;
+    performOnRejected<U>(f: ((error: E) => Future<U, E>) | ((error: E) => Promise<U>)): Future<T, E>;
     performSync(sideEffect: () => void): Future<T, E>;
     performSyncOnFulfilled(sideEffect: (value: T) => void): Future<T, E>;
     performSyncOnRejected(sideEffect: (error: E) => void): Future<T, E>;

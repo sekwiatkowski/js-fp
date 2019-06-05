@@ -1,9 +1,9 @@
 export interface SettledFoldPattern<T, E, X> {
-    Resolved: (value: T) => X;
+    Fulfilled: (value: T) => X;
     Rejected: (error: E) => X;
 }
 export interface Settled<T, E> {
-    fold<X>(pattern: SettledFoldPattern<T, E, X>): X;
+    fold<X>(onFulfilled: (value: T) => X, onRejected: (error: E) => X): X;
     getErrorOrElse(alternative: E | ((value: T) => E)): E;
     getOrElse(alternative: T | ((error: E) => T)): T;
     map<U>(f: (value: T) => U): Settled<U, E>;

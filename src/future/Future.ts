@@ -1,4 +1,4 @@
-import {Settled, SettledFoldPattern} from './Settled'
+import {Settled} from './Settled'
 import {fulfilled} from './Fulfilled'
 import {rejected} from './Rejected'
 
@@ -141,23 +141,23 @@ export class Future<T, E> {
         )
     }
 
-    fold<X>(pattern: SettledFoldPattern<T, E, X>) : Promise<X> {
+    fold<X>(
+        onFulfilled: (value: T) => X,
+        onRejected: (error: E) => X) : Promise<X> {
         return this.createPromise()
-            .then(settled => settled.fold(pattern))
+            .then(settled => settled.fold(onFulfilled, onRejected))
     }
 
     isFulfilled() : Promise<boolean> {
-        return this.fold({
-            Fulfilled: () => true,
-            Rejected: () => false,
-        })
+        return this.fold(
+        () => true,
+        () => false)
     }
 
     isRejected() : Promise<boolean> {
-        return this.fold({
-            Fulfilled: () => false,
-            Rejected: () => true,
-        })
+        return this.fold(
+        () => false,
+        () => true)
     }
 
     orAttempt(alternative: Future<T, E>|((error: E) => Future<T, E>)): Future<T, E> {

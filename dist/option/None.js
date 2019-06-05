@@ -31,8 +31,8 @@ class None {
     map(f) {
         return exports.none;
     }
-    fold(pattern) {
-        return pattern.None();
+    fold(onSome, onNone) {
+        return onNone();
     }
     orElse(alternative) {
         return Some_1.some(alternative instanceof Function ? alternative() : alternative);

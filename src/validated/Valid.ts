@@ -1,4 +1,4 @@
-import {Validated, ValidatedFoldPattern} from './Validated'
+import {Validated} from './Validated'
 import {Invalid} from './Invalid'
 import {fulfill, Future, Option, Result, some, success} from '..'
 
@@ -66,8 +66,8 @@ export class Valid<T, E> implements Validated<T, E> {
         return this
     }
 
-    fold<U, V>(pattern: ValidatedFoldPattern<T, U, E>): U {
-        return pattern.Valid(this.value)
+    fold<U>(onValid: (value: T) => U, onInvalid: (list: E[]) => U): U {
+        return onValid(this.value)
     }
 
     perform(sideEffect: () => void): Validated<T, E> {

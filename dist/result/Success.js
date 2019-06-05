@@ -45,8 +45,8 @@ class Success {
     mapError(f) {
         return new Success(this.value);
     }
-    fold(pattern) {
-        return pattern.Success(this.value);
+    fold(onSuccess, onFailure) {
+        return onSuccess(this.value);
     }
     orElse(alternative) {
         return this;

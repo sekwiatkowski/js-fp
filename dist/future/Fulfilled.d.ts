@@ -1,5 +1,4 @@
-import {Settled, SettledFoldPattern} from './Settled';
-
+import { Settled } from './Settled';
 declare class Fulfilled<T, E> implements Settled<T, E> {
     private readonly value;
     constructor(value: T);
@@ -7,7 +6,7 @@ declare class Fulfilled<T, E> implements Settled<T, E> {
     getOrElse(alternative: T | ((error: E) => T)): T;
     map<U>(f: (value: T) => U): Settled<U, E>;
     mapError<F>(f: (error: E) => F): Settled<T, F>;
-    fold<X>(pattern: SettledFoldPattern<T, E, X>): X;
+    fold<X>(onFulfilled: (value: T) => X, onRejected: (error: E) => X): X;
     orAttempt(alternative: (error: E) => Promise<T>): Settled<T, E>;
     perform(sideEffect: () => void): Settled<T, E>;
     performOnFulfilled(sideEffect: (value: T) => void): Settled<T, E>;

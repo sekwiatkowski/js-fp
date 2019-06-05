@@ -42,10 +42,9 @@ describe('None', () => {
 
     it('should return the alternative when folded', () => {
         const alternativeText = 'alternative'
-        none.fold({
-            Some: value => value,
-            None: () => alternativeText
-        }).should.equal(alternativeText)
+        none.fold(
+            value => value,
+            () => alternativeText).should.equal(alternativeText)
     })
 
     it('should be able to perform side-effects', () => {

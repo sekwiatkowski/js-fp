@@ -1,5 +1,4 @@
-import {Future, Option, Result, Validated} from '..';
-
+import { Future, Option, Result, Validated } from '..';
 export declare class Box<A> {
     private readonly value;
     constructor(value: A);

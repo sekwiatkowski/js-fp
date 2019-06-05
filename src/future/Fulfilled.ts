@@ -1,4 +1,4 @@
-import {Settled, SettledFoldPattern} from './Settled'
+import {Settled} from './Settled'
 
 class Fulfilled<T, E> implements Settled<T, E> {
     constructor(private readonly value: T) {}
@@ -19,8 +19,8 @@ class Fulfilled<T, E> implements Settled<T, E> {
         return new Fulfilled(this.value)
     }
 
-    fold<X>(pattern: SettledFoldPattern<T, E, X>): X {
-        return pattern.Fulfilled(this.value)
+    fold<X>(onFulfilled: (value: T) => X, onRejected: (error: E) => X): X {
+        return onFulfilled(this.value)
     }
 
     orAttempt(alternative: (error: E) => Promise<T>): Settled<T, E> {

@@ -45,8 +45,8 @@ class Some {
     map(f) {
         return new Some(f(this.value));
     }
-    fold(pattern) {
-        return pattern.Some(this.value);
+    fold(onSome, onNone) {
+        return onSome(this.value);
     }
     orElse(alternative) {
         return this;

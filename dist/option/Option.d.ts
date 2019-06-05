@@ -1,9 +1,4 @@
-import {Future, Result, Validated} from '..';
-
-export interface OptionFoldPattern<A, B> {
-    Some: (value: A) => B;
-    None: () => B;
-}
+import { Future, Result, Validated } from '..';
 export interface Option<A> {
     apply<B, C>(this: Option<(parameter: B) => C>, parameterOrFunction: B | (() => B) | Option<B> | (() => Option<B>)): Option<C>;
     assign<A extends object, K extends string, B>(this: Option<A>, key: K, memberOrFunction: Option<B> | ((obj: A) => Option<B>) | B | ((obj: A) => B)): Option<A & {
@@ -15,7 +10,7 @@ export interface Option<A> {
     isSome(): boolean;
     isNone(): boolean;
     map<B>(f: (value: A) => B): Option<B>;
-    fold<B>(pattern: OptionFoldPattern<A, B>): B;
+    fold<B>(onSome: (value: A) => B, onNone: () => B): B;
     orElse(alternative: A | (() => A)): Option<A>;
     orAttempt(alternative: () => Option<A>): Option<A>;
     perform(sideEffect: () => void): Option<A>;

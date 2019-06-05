@@ -4,7 +4,7 @@ export interface SettledFoldPattern<T, E, X> {
 }
 
 export interface Settled<T, E> {
-    fold<X>(pattern: SettledFoldPattern<T, E, X>): X
+    fold<X>(onFulfilled: (value: T) => X, onRejected: (error: E) => X): X
 
     getErrorOrElse(alternative: E | ((value: T) => E)): E
     getOrElse(alternative: T | ((error: E) => T)): T

@@ -1,10 +1,5 @@
 import {Future, Option, Result} from '..'
 
-export interface ValidatedFoldPattern<T, U, E> {
-    Valid: (value: T) => U
-    Invalid: (list: E[]) => U
-}
-
 export interface Validated<T, E> {
     apply<U, V>(
         this: Validated<(parameter: U) => V, E>,
@@ -26,7 +21,7 @@ export interface Validated<T, E> {
     map<U>(f: (value: T) => U) : Validated<U, E>
     mapErrors(f: (errors: E[]) => E[]) : Validated<T, E>
 
-    fold<U>(pattern: ValidatedFoldPattern<T, U, E>): U
+    fold<U>(onValid: (value: T) => U, onInvalid: (list: E[]) => U): U
 
     perform(sideEffect: () => void): Validated<T, E>
     performOnValid(sideEffect: (value: T) => void): Validated<T, E>

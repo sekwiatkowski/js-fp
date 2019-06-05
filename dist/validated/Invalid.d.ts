@@ -1,6 +1,5 @@
-import {Validated, ValidatedFoldPattern} from './Validated';
-import {Future, Option, Result} from '..';
-
+import { Validated } from './Validated';
+import { Future, Option, Result } from '..';
 export declare class Invalid<T, E> implements Validated<T, E> {
     private readonly errors;
     constructor(errors: E[]);
@@ -15,7 +14,7 @@ export declare class Invalid<T, E> implements Validated<T, E> {
     isValid(): boolean;
     map<U>(f: (value: T) => U): Validated<U, E>;
     mapErrors(f: (errors: E[]) => E[]): Validated<T, E>;
-    fold<U>(pattern: ValidatedFoldPattern<T, U, E>): U;
+    fold<U>(onValid: (value: T) => U, onInvalid: (list: E[]) => U): U;
     perform(sideEffect: () => void): Validated<T, E>;
     performOnValid(sideEffect: (value: T) => void): Validated<T, E>;
     performOnInvalid(sideEffect: (errors: E[]) => void): Validated<T, E>;

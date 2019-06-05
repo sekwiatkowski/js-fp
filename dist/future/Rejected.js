@@ -10,8 +10,8 @@ class Rejected {
     getOrElse(alternative) {
         return alternative instanceof Function ? alternative(this.error) : alternative;
     }
-    fold(pattern) {
-        return pattern.Rejected(this.error);
+    fold(onFulfilled, onRejected) {
+        return onRejected(this.error);
     }
     map(f) {
         return new Rejected(this.error);

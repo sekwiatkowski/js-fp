@@ -1,6 +1,5 @@
-import {Result, ResultFoldPattern} from './Result';
-import {Future, Option, Validated} from '..';
-
+import { Result } from './Result';
+import { Future, Option, Validated } from '..';
 export declare class Success<T, E> implements Result<T, E> {
     private readonly value;
     constructor(value: T);
@@ -15,7 +14,7 @@ export declare class Success<T, E> implements Result<T, E> {
     isSuccess(): boolean;
     map<U>(f: (value: T) => U): Result<U, E>;
     mapError<F>(f: (error: E) => F): Result<T, F>;
-    fold<X>(pattern: ResultFoldPattern<T, E, X>): X;
+    fold<X>(onSuccess: (value: T) => X, onFailure: (error: E) => X): X;
     orElse(alternative: T | ((error: E) => T)): Result<T, E>;
     orAttempt(alternative: (error: E) => Result<T, E>): Result<T, E>;
     perform(sideEffect: () => void): Result<T, E>;

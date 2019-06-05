@@ -1,4 +1,4 @@
-import {Result, ResultFoldPattern} from './Result'
+import {Result} from './Result'
 import {success} from './Success'
 import {Future, invalid, none, Option, reject, Validated} from '..'
 
@@ -47,8 +47,8 @@ export class Failure<T, E> implements Result<T, E> {
         return new Failure(f(this.error))
     }
 
-    fold<X>(pattern: ResultFoldPattern<T, E, X>): X {
-        return pattern.Failure(this.error)
+    fold<X>(onSuccess: (value: T) => X, onFailure: (error: E) => X) : X {
+        return onFailure(this.error)
     }
 
     orElse(alternative: T|((error: E) => T)): Result<T, E> {

@@ -84,10 +84,9 @@ describe('Invalid', () => {
         const f = error => `mapped ${error}`
         const mappedErrors = errors.map(f)
         createInvalidInstance()
-            .fold({
-                Valid: () => { throw 'Unexpected branch!' },
-                Invalid: errors => errors.map(f)
-            })
+            .fold(
+                () => { throw 'Unexpected branch!' },
+                errors => errors.map(f))
             .should.eql(mappedErrors)
     })
 

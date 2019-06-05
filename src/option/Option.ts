@@ -2,11 +2,6 @@ import {some} from './Some'
 import {none} from './None'
 import {Future, Result, Validated} from '..'
 
-export interface OptionFoldPattern<A, B> {
-    Some: (value: A) => B
-    None: () => B
-}
-
 export interface Option<A> {
     apply<B, C>(this: Option<(parameter: B) => C>, parameterOrFunction: B | (() => B) | Option<B> | (() => Option<B>)) : Option<C>
 
@@ -26,7 +21,7 @@ export interface Option<A> {
 
     map<B>(f: (value: A) => B): Option<B>
 
-    fold<B>(pattern: OptionFoldPattern<A, B>): B
+    fold<B>(onSome: (value: A) => B, onNone: () => B): B
 
     orElse(alternative: A | (() => A)): Option<A>
     orAttempt(alternative: () => Option<A>): Option<A>

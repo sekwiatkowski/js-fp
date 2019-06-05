@@ -33,8 +33,8 @@ class Failure {
     mapError(f) {
         return new Failure(f(this.error));
     }
-    fold(pattern) {
-        return pattern.Failure(this.error);
+    fold(onSuccess, onFailure) {
+        return onFailure(this.error);
     }
     orElse(alternative) {
         return Success_1.success(alternative instanceof Function ? alternative(this.error) : alternative);

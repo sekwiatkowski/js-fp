@@ -27,10 +27,9 @@ describe('Valid', () => {
             .assign('b', scope => scope.a + 1)
             .assign('c', valid(3))
             .assign('d', scope => valid(scope.c + 1))
-            .fold({
-                Valid: scope => scope.a + scope.b + scope.c + scope.d,
-                Invalid: unsafeGet
-            })
+            .fold(
+                scope => scope.a + scope.b + scope.c + scope.d,
+                unsafeGet)
             .should.equal(10)
     })
 
@@ -89,10 +88,9 @@ describe('Valid', () => {
 
     it('should return the contained value when folded', () => {
         createValidString()
-            .fold({
-                Valid: value => value,
-                Invalid: () => { throw 'Unexpected access!' }
-            })
+            .fold(
+                value => value,
+                () => { throw 'Unexpected access!' })
             .should.equal(containedString)
     })
 

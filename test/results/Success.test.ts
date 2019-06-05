@@ -44,10 +44,9 @@ describe('Success', () => {
             .assign('b', scope => scope.a + 1)
             .assign('c', success(3))
             .assign('d', scope => success(scope.c + 1))
-            .fold({
-                Success: scope => scope.a + scope.b + scope.c + scope.d,
-                Failure: unsafeGet
-            })
+            .fold(
+                scope => scope.a + scope.b + scope.c + scope.d,
+                unsafeGet)
             .should.equal(10)
     })
 
@@ -112,10 +111,7 @@ describe('Success', () => {
 
     it('should return the contained value when folded', () => {
         createSuccessOfString()
-            .fold({
-                Success: value => value,
-                Failure: unsafeGet
-            })
+            .fold(value => value, unsafeGet)
             .should.equal(containedValue)
     })
 

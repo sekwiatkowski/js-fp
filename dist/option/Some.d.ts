@@ -1,6 +1,5 @@
-import {Option, OptionFoldPattern} from './Option';
-import {Future, Result, Validated} from '..';
-
+import { Option } from './Option';
+import { Future, Result, Validated } from '..';
 export declare class Some<A> implements Option<A> {
     private readonly value;
     constructor(value: A);
@@ -15,7 +14,7 @@ export declare class Some<A> implements Option<A> {
     isSome(): boolean;
     isNone(): boolean;
     map<B>(f: (value: A) => B): Option<B>;
-    fold<B>(pattern: OptionFoldPattern<A, B>): B;
+    fold<B>(onSome: (value: A) => B, onNone: () => B): B;
     orElse(alternative: A | (() => A)): Option<A>;
     orAttempt(alternative: () => Option<A>): Option<A>;
     perform(sideEffect: () => void): Option<A>;

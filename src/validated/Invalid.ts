@@ -1,4 +1,4 @@
-import {Validated, ValidatedFoldPattern} from './Validated'
+import {Validated} from './Validated'
 import {failure, Future, none, Option, reject, Result} from '..'
 
 export class Invalid<T, E> implements Validated<T, E> {
@@ -19,10 +19,9 @@ export class Invalid<T, E> implements Validated<T, E> {
     }
 
     concat(other: Validated<T, E>): Validated<T, E> {
-        return other.fold({
-            Valid: () => this,
-            Invalid: otherList => new Invalid<T, E>(this.errors.concat(otherList))
-        })
+        return other.fold(
+            () => this,
+            otherList => new Invalid<T, E>(this.errors.concat(otherList)))
     }
 
     getErrorsOrElse(alternative: E[]|((value: T) => E[])): E[] {
@@ -49,8 +48,8 @@ export class Invalid<T, E> implements Validated<T, E> {
         return new Invalid(f(this.errors))
     }
 
-    fold<U>(pattern: ValidatedFoldPattern<T, U, E>): U {
-        return pattern.Invalid(this.errors)
+    fold<U>(onValid: (value: T) => U, onInvalid: (list: E[]) => U): U{
+        return onInvalid(this.errors)
     }
 
     perform(sideEffect: () => void): Validated<T, E> {

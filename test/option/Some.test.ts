@@ -45,10 +45,9 @@ describe('Some', () => {
             .assign('b', scope => scope.a + 1)
             .assign('c', some(3))
             .assign('d', scope => some(scope.c + 1))
-            .fold({
-                Some: scope => scope.a + scope.b + scope.c + scope.d,
-                None: unsafeGet
-            })
+            .fold(
+                scope => scope.a + scope.b + scope.c + scope.d,
+                unsafeGet)
             .should.equal(10)
     })
 
@@ -79,10 +78,10 @@ describe('Some', () => {
 
     it('should return the value when folded', () => {
         createSomeOfString()
-            .fold({
-                Some: value => value,
-                None: unsafeGet
-            })
+            .fold(
+                value => value,
+                unsafeGet
+            )
             .should.equal(containedValue)
     })
 
