@@ -20,7 +20,7 @@ class Fulfilled<T, E> implements Settled<T, E> {
     }
 
     fold<X>(pattern: SettledFoldPattern<T, E, X>): X {
-        return pattern.Resolved(this.value)
+        return pattern.Fulfilled(this.value)
     }
 
     orAttempt(alternative: (error: E) => Promise<T>): Settled<T, E> {

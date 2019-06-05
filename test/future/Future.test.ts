@@ -57,7 +57,7 @@ describe('Future', () => {
             .assign('e', Promise.resolve(5))
             .assign('f', () => Promise.resolve(6))
             .fold({
-                Resolved: scope => scope.a + scope.b + scope.c + scope.d + scope.e + scope.f,
+                Fulfilled: scope => scope.a + scope.b + scope.c + scope.d + scope.e + scope.f,
                 Rejected: () => { throw 'Unexpected rejection!' }
             })
 
@@ -69,7 +69,7 @@ describe('Future', () => {
             .assign('x', () => Promise.resolve(1))
             .assign('y', Promise.resolve(2))
             .fold({
-                Resolved: scope => scope.x + scope.y,
+                Fulfilled: scope => scope.x + scope.y,
                 Rejected: () => { throw 'Unexpected rejection!' }
             })
 
@@ -81,7 +81,7 @@ describe('Future', () => {
             .assign('x', Promise.resolve(1))
             .assign('y', Promise.reject(2))
             .fold({
-                Resolved: () => { throw 'Unexpected resolution!' },
+                Fulfilled: () => { throw 'Unexpected resolution!' },
                 Rejected: () => 'rejected'
             })
 
@@ -93,7 +93,7 @@ describe('Future', () => {
             .assign('x', Promise.reject(1))
             .assign('y', Promise.resolve(2))
             .fold({
-                Resolved: () => { throw 'Unexpected resolution!' },
+                Fulfilled: () => { throw 'Unexpected resolution!' },
                 Rejected: () => 'rejected'
             })
 
@@ -106,7 +106,7 @@ describe('Future', () => {
             .assign('x', future<number, string>(() => Promise.resolve(1)))
             .assign('y', () => future<number, string>(() => Promise.resolve(2)))
             .fold({
-                Resolved: scope => scope.x + scope.y,
+                Fulfilled: scope => scope.x + scope.y,
                 Rejected: () => { throw 'Unexpected rejection!' }
             })
 
@@ -206,7 +206,7 @@ describe('Future', () => {
     it('should map over the value of the resolved promise when folded', async() => {
         const actualValue = await fulfill(value)
             .fold({
-                Resolved: map,
+                Fulfilled: map,
                 Rejected: () => { throw 'Unexpected rejection!' }
             })
 
@@ -217,7 +217,7 @@ describe('Future', () => {
     it('should map over the value of the rejected promise when folded', async() => {
         const actualValue = await reject(error)
             .fold({
-                Resolved: () => { throw 'Unexpected resolution!' },
+                Fulfilled: () => { throw 'Unexpected resolution!' },
                 Rejected: map
             })
 
@@ -450,6 +450,48 @@ describe('Future', () => {
             .getErrorOrElse(unsafeGet)
 
         mutable.should.eql(['first', 'second', 'third', 'fourth'])
+    })
+
+    it('should indicate the status correctly when it has been rejected', async() => {
+        const createRejectedFuture = () => reject({})
+
+        const isFulfilled = await createRejectedFuture().isFulfilled()
+        isFulfilled.should.be.false
+
+        const isRejected = await createRejectedFuture().isRejected()
+        isRejected.should.be.true
+    })
+
+    it('should indicate the status correctly when it has been fulfilled', async() => {
+        const createFulfilledFuture = () => fulfill({})
+
+        const isFulfilled = await createFulfilledFuture().isFulfilled()
+        isFulfilled.should.be.true
+
+        const isRejected = await createFulfilledFuture().isRejected()
+        isRejected.should.be.false
+    })
+
+    it('should reject a future when a side-effect on a value is rejected', async() => {
+        const createFutureWithRejectedSideEffectOnFulfilled = () => fulfill({})
+            .performOnFulfilled(() => Promise.reject({}))
+
+        const isFulfilled = await createFutureWithRejectedSideEffectOnFulfilled().isFulfilled()
+        isFulfilled.should.be.false
+
+        const isRejected = await createFutureWithRejectedSideEffectOnFulfilled().isRejected()
+        isRejected.should.be.true
+    })
+
+    it('should reject a future when a side-effect on both paths is rejected', async() => {
+        const createFutureWithRejectedSideEffectOnBothPaths = () => fulfill({})
+            .perform(() => Promise.reject({}))
+
+        const isFulfilled = await createFutureWithRejectedSideEffectOnBothPaths().isFulfilled()
+        isFulfilled.should.be.false
+
+        const isRejected = await createFutureWithRejectedSideEffectOnBothPaths().isRejected()
+        isRejected.should.be.true
     })
 
 })

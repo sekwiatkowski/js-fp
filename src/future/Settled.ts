@@ -1,5 +1,5 @@
 export interface SettledFoldPattern<T, E, X> {
-    Resolved: (value: T) => X,
+    Fulfilled: (value: T) => X,
     Rejected: (error: E) => X
 }
 

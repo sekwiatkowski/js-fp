@@ -146,6 +146,20 @@ export class Future<T, E> {
             .then(settled => settled.fold(pattern))
     }
 
+    isFulfilled() : Promise<boolean> {
+        return this.fold({
+            Fulfilled: () => true,
+            Rejected: () => false,
+        })
+    }
+
+    isRejected() : Promise<boolean> {
+        return this.fold({
+            Fulfilled: () => false,
+            Rejected: () => true,
+        })
+    }
+
     orAttempt(alternative: Future<T, E>|((error: E) => Future<T, E>)): Future<T, E> {
         return new Future<T, E>(() =>
             new Promise<Settled<T, E>>(resolve => {
@@ -192,7 +206,7 @@ export class Future<T, E> {
         )
     }
 
-    perform<U, F>(f: (() => Future<U, F>) | (() => Promise<U>)): Future<T, E> {
+    perform<U>(f: (() => Future<U, E>) | (() => Promise<U>)): Future<T, E> {
         return new Future<T, E>(() =>
             new Promise<Settled<T, E>>(resolve => {
                 this.run(
@@ -200,14 +214,15 @@ export class Future<T, E> {
                         const futureOrPromise = f()
 
                         const fulfillAgain = () => resolve(fulfilled(firstValue))
+                        const rejectForFirstTime = error => resolve(rejected(error))
 
                         if (futureOrPromise instanceof Future) {
-                            futureOrPromise.run(fulfillAgain, fulfillAgain)
+                            futureOrPromise.run(fulfillAgain, rejectForFirstTime)
                         }
                         else {
-                            futureOrPromise.then(
-                                fulfillAgain)
-                                .catch(fulfillAgain)
+                            futureOrPromise
+                                .then(fulfillAgain)
+                                .catch(rejectForFirstTime)
                         }
                     },
                     firstError => {
@@ -219,7 +234,9 @@ export class Future<T, E> {
                             futureOrPromise.run(rejectAgain, rejectAgain)
                         }
                         else {
-                            futureOrPromise.then(rejectAgain).catch(rejectAgain)
+                            futureOrPromise
+                                .then(rejectAgain)
+                                .catch(rejectAgain)
                         }
                     }
                 )
@@ -227,20 +244,23 @@ export class Future<T, E> {
         )
     }
 
-    performOnFulfilled<U, F>(f: ((value: T) => Future<U, F>) | ((value: T) => Promise<U>)): Future<T, E> {
+    performOnFulfilled<U>(f: ((value: T) => Future<U, E>) | ((value: T) => Promise<U>)): Future<T, E> {
         return new Future<T, E>(() =>
             new Promise<Settled<T, E>>(resolve =>
                 this.run(
                     firstValue => {
                         const fulfillAgain = () => resolve(fulfilled(firstValue))
+                        const rejectForFirstTime = error => resolve(rejected(error))
 
                         const futureOrPromise = f(firstValue)
 
                         if (futureOrPromise instanceof Future) {
-                            futureOrPromise.run(fulfillAgain, fulfillAgain)
+                            futureOrPromise.run(fulfillAgain, rejectForFirstTime)
                         }
                         else {
-                            futureOrPromise.then(fulfillAgain).catch(fulfillAgain)
+                            futureOrPromise
+                                .then(fulfillAgain)
+                                .catch(rejectForFirstTime)
                         }
                     },
                     firstError => resolve(rejected(firstError))
@@ -249,7 +269,7 @@ export class Future<T, E> {
         )
     }
 
-    performOnRejected<U, F>(f: ((error: E) => Future<U, F>) | ((error: E) => Promise<U>)): Future<T, E> {
+    performOnRejected<U>(f: ((error: E) => Future<U, E>) | ((error: E) => Promise<U>)): Future<T, E> {
         return new Future<T, E>(() =>
             new Promise<Settled<T, E>>(resolve =>
                 this.run(
@@ -279,6 +299,7 @@ export class Future<T, E> {
                         settled.perform(sideEffect)
                         resolve(settled)
                     })
+                    .catch()
             )
         )
     }
