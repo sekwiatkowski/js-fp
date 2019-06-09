@@ -95,16 +95,18 @@ describe('Failure', () => {
             .should.equal(error)
     })
 
-    it('should return the alternative when the value is requested', () => {
-        const alternativeText = 'alternative'
-        createFailureOfString()
-            .getOrElse(alternativeText)
-            .should.equal(alternativeText)
-    })
+    describe('should return', () => {
+        it('the alternative when the value is requested', () => {
+            const alternativeText = 'alternative'
+            createFailureOfString()
+                .getOrElse(alternativeText)
+                .should.equal(alternativeText)
+        })
 
-    it('should be able to return the error', () => {
-        createFailureOfString()
-            .getErrorOrElse(unsafeGet)
-            .should.equal(error)
+        it('the error when it is requested', () => {
+            createFailureOfString()
+                .getErrorOrElse(unsafeGet)
+                .should.equal(error)
+        })
     })
 })

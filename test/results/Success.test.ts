@@ -130,16 +130,18 @@ describe('Success', () => {
             .should.equal(containedValue)
     })
 
-    it('should return the alternative when the error is requested', () => {
-        const alternativeText = 'alternative'
-        createSuccessOfString()
-            .getErrorOrElse(alternativeText)
-            .should.equal(alternativeText)
-    })
+    describe('should return', () => {
+        it('the value when it is requested', () => {
+            createSuccessOfString()
+                .getOrElse(unsafeGet)
+                .should.equal(containedValue)
+        })
 
-    it('should be able to return the contained value', () => {
-        createSuccessOfString()
-            .getOrElse(unsafeGet)
-            .should.equal(containedValue)
+        it('the alternative when the error is requested', () => {
+            const alternativeText = 'alternative'
+            createSuccessOfString()
+                .getErrorOrElse(alternativeText)
+                .should.equal(alternativeText)
+        })
     })
 })

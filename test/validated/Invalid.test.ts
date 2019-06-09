@@ -31,31 +31,36 @@ describe('Invalid', () => {
             .should.eql(errors)
     })
 
-    it('should return itself when concatenated with a Valid instance', () => {
-        createInvalidInstance()
-            .concat(valid('value'))
-            .getErrorsOrElse(unsafeGetErrors)
-            .should.eql(errors)
+    describe('should concatenate', () => {
+        it('with a Valid instance by returning itself', () => {
+            createInvalidInstance()
+                .concat(valid('value'))
+                .getErrorsOrElse(unsafeGetErrors)
+                .should.eql(errors)
+        })
+
+        it('with another Invalid instance by concatenating the lists of errors when concatenated', () => {
+            invalid(['error 1a', 'error 1b'])
+                .concat(invalid(['error 2a', 'error 2b']))
+                .getErrorsOrElse(unsafeGetErrors)
+                .should.eql(['error 1a', 'error 1b', 'error 2a', 'error 2b'])
+        })
+
     })
 
-    it('should concatenate the lists of errors when concatenated with another Invalid instance', () => {
-        invalid(['error 1a', 'error 1b'])
-            .concat(invalid(['error 2a', 'error 2b']))
-            .getErrorsOrElse(unsafeGetErrors)
-            .should.eql(['error 1a', 'error 1b', 'error 2a', 'error 2b'])
-    })
+    describe('should return', () => {
+        it('should return the list of errors when it is requested', () => {
+            invalid(errors)
+                .getErrorsOrElse(unsafeGetErrors)
+                .should.eql(errors)
+        })
 
-    it('should return the list of errors when it is requested', () => {
-        invalid(errors)
-            .getErrorsOrElse(unsafeGetErrors)
-            .should.eql(errors)
-    })
-
-    it('should return the alternative when the list of errors is requested', () => {
-        const alternativeText = 'alternative'
-        createInvalidInstance()
-            .getOrElse(alternativeText)
-            .should.equal(alternativeText)
+        it('should return the alternative when the value is requested', () => {
+            const alternativeText = 'alternative'
+            createInvalidInstance()
+                .getOrElse(alternativeText)
+                .should.equal(alternativeText)
+        })
     })
 
     it('should indicate the correct path', () => {
@@ -90,18 +95,20 @@ describe('Invalid', () => {
             .should.eql(mappedErrors)
     })
 
-    it('should ignore attempts to perform a side-effect intended for the Valid path', () => {
-        expect(() => createInvalidInstance()
-            .performOnValid(() => { throw 'Unexpected side-effect!' }))
-            .not.to.throw()
-    })
+    describe('should perform', () => {
+        it('side-effects for the Invalid path using the errors', () => {
+            let mutable = noSideEffectText
+            const f = errors => `${errors[0]} ${errors[1]}`
+            createInvalidInstance()
+                .performOnInvalid(errors => mutable = f(errors))
 
-    it('should be able to perform side-effects using the errors', () => {
-        let mutable = noSideEffectText
-        const f = errors => `${errors[0]} ${errors[1]}`
-        createInvalidInstance()
-            .performOnInvalid(errors => mutable = f(errors))
+            mutable.should.equal(f(errors))
+        })
 
-        mutable.should.equal(f(errors))
+        it('not perform side-effect intended for the Valid path', () => {
+            expect(() => createInvalidInstance()
+                .performOnValid(() => { throw 'Unexpected side-effect!' }))
+                .not.to.throw()
+        })
     })
 })
