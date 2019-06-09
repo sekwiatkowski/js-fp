@@ -113,9 +113,19 @@ describe('Some', () => {
     })
 
     describe('should not fall back', () => {
+        const fallbackText = 'fallback'
+
         it('to a default value', () => {
             createSomeOfString()
-                .orElse('fallback')
+                .orElse(fallbackText)
+                .getOrElse(unsafeGet)
+                .should.equal(containedValue)
+
+        })
+
+        it('to the result of a guaranteed computation', () => {
+            createSomeOfString()
+                .orElse(() => fallbackText)
                 .getOrElse(unsafeGet)
                 .should.equal(containedValue)
 
@@ -123,7 +133,7 @@ describe('Some', () => {
 
         it('to an alternative attempt', () => {
             createSomeOfString()
-                .orAttempt(() => some('fallback'))
+                .orAttempt(() => some(fallbackText))
                 .getOrElse(unsafeGet)
                 .should.equal(containedValue)
         })

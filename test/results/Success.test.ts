@@ -11,21 +11,48 @@ describe('Success', () => {
     const createSuccessOfString = () => success<string, string>(containedValue)
     const noSideEffectText = 'no side-effect'
 
-    it('should be able to build an object that satisfies an interface', () => {
-        interface TestInterface {
-            first: string
-            second: number
-        }
+    describe('should be able to build an object', () => {
+        it('one member at a time', () => {
+            success({})
+                .assign('a', 1)
+                .assign('b', scope => scope.a + 1)
+                .assign('c', success(3))
+                .assign('d', scope => success(scope.c + 1))
+                .fold(
+                    scope => scope.a + scope.b + scope.c + scope.d,
+                    unsafeGet)
+                .should.equal(10)
+        })
 
-        const firstValue = 'text'
-        const secondValue = 1
-        const objectThatSatisfiesTestInterface: TestInterface = success({})
-            .assign('first', firstValue)
-            .assign('second', secondValue)
-            .getOrElse(unsafeGet)
+        it('that satisfies an interface', () => {
+            interface TestInterface {
+                first: string
+                second: number
+            }
 
-        objectThatSatisfiesTestInterface.first.should.equal(firstValue)
-        objectThatSatisfiesTestInterface.second.should.equal(secondValue)
+            const firstValue = 'text'
+            const secondValue = 1
+            const objectThatSatisfiesTestInterface: TestInterface = success({})
+                .assign('first', firstValue)
+                .assign('second', secondValue)
+                .getOrElse(unsafeGet)
+
+            objectThatSatisfiesTestInterface.first.should.equal(firstValue)
+            objectThatSatisfiesTestInterface.second.should.equal(secondValue)
+        })
+
+        it('but short-circuit when a failure is assigned', () => {
+            const notComputedText = 'not computed'
+            let mutable = notComputedText
+
+            success({})
+                .assign('firstMember', failure<string, string>('error'))
+                .assign('secondMember', () => { mutable = 'computed'; return success('second value') })
+                .isFailure()
+                .should.be.true
+
+            mutable.should.equal(notComputedText)
+        })
     })
 
     it('should be able to apply parameters', () => {
@@ -38,56 +65,44 @@ describe('Success', () => {
             .should.equal(10)
     })
 
-    it('should be able to build an object', () => {
-        success({})
-            .assign('a', 1)
-            .assign('b', scope => scope.a + 1)
-            .assign('c', success(3))
-            .assign('d', scope => success(scope.c + 1))
-            .fold(
-                scope => scope.a + scope.b + scope.c + scope.d,
-                unsafeGet)
-            .should.equal(10)
+    it('should perform', () => {
+        it('side-effects intended for the success path', () => {
+            let mutable = noSideEffectText
+
+            createSuccessOfString().performOnSuccess(value => mutable = value)
+
+            mutable.should.equal(containedValue)
+        })
+
+        it('no side-effects intended for the failure path', () => {
+            expect(() => createSuccessOfString().performOnFailure(() => { throw 'Unexpected side-effect!' }))
+                .not.to.throw()
+        })
     })
 
-    it('should short-circuit object building when a failure is assigned', () => {
-        const notComputedText = 'not computed'
-        let mutable = notComputedText
+    it('should not fall back', () => {
+        const fallbackText = 'fallback'
 
-        success({})
-            .assign('firstMember', failure<string, string>('error'))
-            .assign('secondMember', () => { mutable = 'computed'; return success('second value') })
-            .isFailure()
-            .should.be.true
+        it('to a default value', () => {
+            createSuccessOfString()
+                .orElse(fallbackText)
+                .getOrElse(unsafeGet)
+                .should.equal(containedValue)
+        })
 
-        mutable.should.equal(notComputedText)
-    })
+        it('to the result of a guaranteed computation', () => {
+            createSuccessOfString()
+                .orElse(() => fallbackText)
+                .getOrElse(unsafeGet)
+                .should.equal(containedValue)
+        })
 
-    it('should perform side-effects intended for the success path', () => {
-        let mutable = noSideEffectText
-
-        createSuccessOfString().performOnSuccess(value => mutable = value)
-
-        mutable.should.equal(containedValue)
-    })
-
-    it('should ignore side-effects intended for the failure path', () => {
-        expect(() => createSuccessOfString().performOnFailure(() => { throw 'Unexpected side-effect!' }))
-            .not.to.throw()
-    })
-
-    it('should ignore the default value', () => {
-        createSuccessOfString()
-            .orElse('default')
-            .getOrElse(unsafeGet)
-            .should.equal(containedValue)
-    })
-
-    it('should ignore the alternative guaranteed computation', () => {
-        createSuccessOfString()
-            .orAttempt(() => success('alternative'))
-            .getOrElse(unsafeGet)
-            .should.equal(containedValue)
+        it('to an alternative attempt', () => {
+            createSuccessOfString()
+                .orAttempt(() => success(fallbackText))
+                .getOrElse(unsafeGet)
+                .should.equal(containedValue)
+        })
     })
 
     it('should indicate the correct path', () => {

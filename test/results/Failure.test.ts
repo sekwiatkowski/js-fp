@@ -46,28 +46,27 @@ describe('Failure', () => {
     })
 
     describe('should be able to switch to the success path', () => {
+        const fallbackText = 'fallback'
+
         it('using a default value', () => {
-            const defaultText = 'default'
             createFailureOfString()
-                .orElse(defaultText)
+                .orElse(fallbackText)
                 .getOrElse(unsafeGet)
-                .should.equal(defaultText)
+                .should.equal(fallbackText)
         })
 
         it('using the result of a guaranteed computation', () => {
-            const resultOfGuaranteedComputation = 'alternative'
             createFailureOfString()
-                .orElse(() => resultOfGuaranteedComputation)
+                .orElse(() => fallbackText)
                 .getOrElse(unsafeGet)
-                .should.equal(resultOfGuaranteedComputation)
+                .should.equal(fallbackText)
         })
 
         it('using an alternative attempt', () => {
-            const textInSuccessPath = 'alternative'
             createFailureOfString()
-                .orAttempt(() => success(textInSuccessPath))
+                .orAttempt(() => success(fallbackText))
                 .getOrElse(unsafeGet)
-                .should.equal(textInSuccessPath)
+                .should.equal(fallbackText)
         })
     })
 
