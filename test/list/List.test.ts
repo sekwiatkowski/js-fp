@@ -1,18 +1,13 @@
-import {list} from '../../src/list/List'
+import {list} from '../../src'
 
 const chai = require('chai')
 
 chai.should()
 
 describe('List<T>', () => {
-
-    interface Number {
-        value: 1
-    }
-
     const createNumber = (value: number) => ({value})
 
-    it('should be able to map over the values', async() => {
+    it('should be able to map over the values', () => {
         const increment = x => x + 1
         const result = list(1, 2, 3)
             .map(increment)
@@ -21,41 +16,43 @@ describe('List<T>', () => {
         result.should.eql([1, 2, 3].map(increment))
     })
 
-    it('should be able to sort values', async() => {
-        const result = list(3, 1, 2)
-            .sort()
-            .toArray()
+    describe('should be able to sort values', () => {
+        it('ascendingly', () => {
+            const result = list(3, 1, 2)
+                .sort()
+                .toArray()
 
-        result.should.eql([1, 2, 3])
+            result.should.eql([1, 2, 3])
+        })
+
+        it('descendingly', () => {
+            const result = list(3, 2, 1)
+                .sortDescendingly()
+                .toArray()
+
+            result.should.eql([3, 2, 1])
+        })
+
+        it('ascendingly by a provided map', () => {
+            const result = list(createNumber(3), createNumber(1), createNumber(2))
+                .sortBy(x => x.value)
+                .map(x => x.value)
+                .toArray()
+
+            result.should.eql([1, 2, 3])
+        })
+
+        it('descendingly by a provided map', () => {
+            const result = list(createNumber(3), createNumber(1), createNumber(2))
+                .sortDescendinglyBy(x => x.value)
+                .map(x => x.value)
+                .toArray()
+
+            result.should.eql([3, 2, 1])
+        })
     })
 
-    it('should be able to sort values by a provided map', async() => {
-        const result = list(createNumber(3), createNumber(1), createNumber(2))
-            .sortBy(x => x.value)
-            .map(x => x.value)
-            .toArray()
-
-        result.should.eql([1, 2, 3])
-    })
-
-    it('should be able to sort values descendingly', async() => {
-        const result = list(3, 2, 1)
-            .sortDescendingly()
-            .toArray()
-
-        result.should.eql([3, 2, 1])
-    })
-
-    it('should be able to sort values descendingly by a provided map', async() => {
-        const result = list(createNumber(3), createNumber(1), createNumber(2))
-            .sortDescendinglyBy(x => x.value)
-            .map(x => x.value)
-            .toArray()
-
-        result.should.eql([3, 2, 1])
-    })
-
-    it('should be convertible to a Future<T[], E> instance', async() => {
+    it('should convert a Future<T[], E> instance', async() => {
         const result = await list(1, 2, 3)
             .parallelMap(x => x + 1)
             .getOrElse(() => {throw 'Unexpected rejection!'})
