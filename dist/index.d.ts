@@ -9,3 +9,4 @@ export { Validated } from './validated/Validated';
 export { Valid, valid, validatedObject } from './validated/Valid';
 export { Invalid, invalid } from './validated/Invalid';
 export { Future, future, fulfill, reject, futureObject } from './future/Future';
+export { List, list } from './list/List';

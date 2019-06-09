@@ -33,4 +33,7 @@ exports.future = Future_1.future;
 exports.fulfill = Future_1.fulfill;
 exports.reject = Future_1.reject;
 exports.futureObject = Future_1.futureObject;
+var List_1 = require("./list/List");
+exports.List = List_1.List;
+exports.list = List_1.list;
 //# sourceMappingURL=index.js.map
