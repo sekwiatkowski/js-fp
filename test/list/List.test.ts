@@ -5,9 +5,12 @@ const chai = require('chai')
 chai.should()
 
 describe('List<T>', () => {
-    const createNumber = (value: number) => ({value})
+    interface NumberValue {
+        value: Number
+    }
+    const createNumber = (value: number): NumberValue => ({value})
 
-    describe('should be able to map over the values', () => {
+    describe('should be able to map over the items', () => {
         it('sequentially', () => {
             const increment = x => x + 1
             const result = list(1, 2, 3)
@@ -26,10 +29,9 @@ describe('List<T>', () => {
 
             result.should.eql([2, 3, 4])
         })
-
     })
 
-    describe('should be able to sort values', () => {
+    describe('should be able to sort items', () => {
         it('ascendingly', () => {
             const result = list(3, 1, 2)
                 .sort()
@@ -136,6 +138,23 @@ describe('List<T>', () => {
         it('and none if they do not exist', () => {
             list().get(0).should.be.instanceOf(None)
             list(1).get(1).should.be.instanceOf(None)
+        })
+    })
+
+    describe('should be able to take', () => {
+        const l = list(1, 2, 3)
+        it('the first n items', () => {
+            l.take(1).toArray().should.eql([1])
+            l.take(2).toArray().should.eql([1, 2])
+        })
+
+        it('no items', () => {
+            l.take(0).toArray().should.eql([])
+        })
+
+        it('the last n items', () => {
+            l.take(-1).toArray().should.eql([3])
+            l.take(-2).toArray().should.eql([2, 3])
         })
     })
 })

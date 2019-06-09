@@ -110,7 +110,14 @@ export class List<T> {
     }
 
     take(n: number): List<T> {
-        return new List(this.array.slice(0, n))
+        if(n > 0) {
+            return new List(this.array.slice(0, n))
+        }
+        else {
+            const length = this.array.length
+            const res = this.array.slice(length+n, length)
+            return new List(res)
+        }
     }
 
     filter(predicate: (item: T) => boolean): List<T> {

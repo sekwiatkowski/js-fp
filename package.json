@@ -14,6 +14,7 @@
     "@types/node": "12.0.2",
     "chai": "4.2.0",
     "mocha": "6.1.4",
+    "nyc": "14.1.1",
     "rimraf": "2.6.3",
     "ts-node": "8.1.0",
     "typescript": "3.4.5"
@@ -41,8 +42,25 @@
     "clean": "rimraf dist/*",
     "transpile": "npm run clean && tsc -p tsconfig.production.json",
     "test": "mocha --require ts-node/register test/**/*.ts",
-    "test:watch": "mocha --require ts-node/register test/**/*.ts --watch --watch-extensions ts"
+    "test:watch": "mocha --require ts-node/register test/**/*.ts --watch --watch-extensions ts",
+    "coverage": "nyc mocha"
   },
   "author": "Sebastian E. Kwiatkowski",
-  "license": "MIT"
+  "license": "MIT",
+  "nyc": {
+    "all": true,
+    "extension": [
+      ".ts"
+    ],
+    "include": [
+      "src/**/*.ts"
+    ],
+    "exclude": [
+      "test/**/*.ts"
+    ],
+    "reporter": [
+      "html", "text-summary"
+    ],
+    "temp-dir": "coverage/.nyc_output"
+  }
 }
