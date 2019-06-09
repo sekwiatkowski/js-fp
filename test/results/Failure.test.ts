@@ -30,41 +30,45 @@ describe('Failure', () => {
             .should.equal(error)
     })
 
-    it('should perform side-effects intended for the failure path', () => {
-        let mutable = noSideEffectText
+    describe('should perform', () => {
+        it('side-effects intended for the failure path', () => {
+            let mutable = noSideEffectText
 
-        createFailureOfString().performOnFailure(error => mutable = error)
+            createFailureOfString().performOnFailure(error => mutable = error)
 
-        mutable.should.equal(error)
+            mutable.should.equal(error)
+        })
+
+        it('no side-effects intended for the success path', () => {
+            expect(() => createFailureOfString().performOnSuccess(() => { throw 'Unexpected side-effect!'}))
+                .not.to.throw()
+        })
     })
 
-    it('should ignore side-effects intended for the success path', () => {
-        expect(() => createFailureOfString().performOnSuccess(() => { throw 'Unexpected side-effect!'}))
-            .not.to.throw()
-    })
+    describe('should be able to switch to the success path', () => {
+        it('using a default value', () => {
+            const defaultText = 'default'
+            createFailureOfString()
+                .orElse(defaultText)
+                .getOrElse(unsafeGet)
+                .should.equal(defaultText)
+        })
 
-    it('should be able to switch to the success path with default value', () => {
-        const defaultText = 'default'
-        createFailureOfString()
-            .orElse(defaultText)
-            .getOrElse(unsafeGet)
-            .should.equal(defaultText)
-    })
+        it('using the result of a guaranteed computation', () => {
+            const resultOfGuaranteedComputation = 'alternative'
+            createFailureOfString()
+                .orElse(() => resultOfGuaranteedComputation)
+                .getOrElse(unsafeGet)
+                .should.equal(resultOfGuaranteedComputation)
+        })
 
-    it('should be able to switch to the success path with the result of the guaranteed computation', () => {
-        const resultOfGuaranteedComputation = 'alternative'
-        createFailureOfString()
-            .orElse(() => resultOfGuaranteedComputation)
-            .getOrElse(unsafeGet)
-            .should.equal(resultOfGuaranteedComputation)
-    })
-
-    it('should be able to successfuly attempt to switch to the success path', () => {
-        const textInSuccessPath = 'alternative'
-        createFailureOfString()
-            .orAttempt(() => success(textInSuccessPath))
-            .getOrElse(unsafeGet)
-            .should.equal(textInSuccessPath)
+        it('using an alternative attempt', () => {
+            const textInSuccessPath = 'alternative'
+            createFailureOfString()
+                .orAttempt(() => success(textInSuccessPath))
+                .getOrElse(unsafeGet)
+                .should.equal(textInSuccessPath)
+        })
     })
 
     it('should indicate the correct path', () => {

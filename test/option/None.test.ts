@@ -57,7 +57,7 @@ describe('None', () => {
             mutable.should.equal(sideEffectText)
         })
 
-        it('no side-effect intended for the Some path', () => {
+        it('no side-effects intended for the Some path', () => {
             expect(() => none.performOnSome(() => { throw 'Unexpected side-effect!' }))
                 .not.to.throw()
         })
