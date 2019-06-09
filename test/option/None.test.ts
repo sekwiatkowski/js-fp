@@ -47,7 +47,7 @@ describe('None', () => {
             () => alternativeText).should.equal(alternativeText)
     })
 
-    it('should perform', () => {
+    describe('should perform', () => {
         it('side-effects intended for the None path', () => {
             let mutable = 'before side-effect'
 
@@ -63,7 +63,7 @@ describe('None', () => {
         })
     })
 
-    it('should return', () => {
+    describe('should return', () => {
         it('a default value', () => {
             const defaultText = 'default';
             (none as Option<string>).getOrElse(defaultText).should.equal(defaultText)
@@ -76,11 +76,11 @@ describe('None', () => {
         })
     })
 
-    it('should fall back', () => {
-        it('to a Some instance with the result of an alternative computation', () => {
+    describe('should fall back', () => {
+        it('to a default value', () => {
             const defaultValue = 'default value';
             (none as Option<string>)
-                .orElse(() => defaultValue)
+                .orElse(defaultValue)
                 .isSome().should.be.true
         })
 

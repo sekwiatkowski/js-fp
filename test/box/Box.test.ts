@@ -7,7 +7,7 @@ chai.should()
 describe('Box', () => {
     const valueText = 'value'
 
-    it('should be able to build an object', () => {
+    describe('should be able to build an object', () => {
         it('one member at a time', () => {
             box({})
                 .assign('a', 1)
@@ -94,7 +94,7 @@ describe('Box', () => {
             .should.equal(f(valueText))
     })
 
-    it('should convert to', () => {
+    describe('should convert to', () => {
         it('an option', () => {
             (box(valueText).toOption() instanceof Some).should.be.true
         })

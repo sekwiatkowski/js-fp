@@ -12,21 +12,48 @@ describe('Some', () => {
     const satisfiedPredicate = value => value === containedValue
     const violatedPredicate = value => value === 'something else'
 
-    it('should be able to build an object that satisfies an interface', () => {
-        interface TestInterface {
-            first: string
-            second: number
-        }
+    describe('should be able to build an object', () => {
+        it('one member at a time', () => {
+            some({})
+                .assign('a', 1)
+                .assign('b', scope => scope.a + 1)
+                .assign('c', some(3))
+                .assign('d', scope => some(scope.c + 1))
+                .fold(
+                    scope => scope.a + scope.b + scope.c + scope.d,
+                    unsafeGet)
+                .should.equal(10)
+        })
 
-        const firstValue = 'text'
-        const secondValue = 1
-        const objectThatSatisfiesTestInterface: TestInterface = some({})
-            .assign('first', firstValue)
-            .assign('second', secondValue)
-            .getOrElse(unsafeGet)
+        it('that satisfies an interface', () => {
+            interface TestInterface {
+                first: string
+                second: number
+            }
 
-        objectThatSatisfiesTestInterface.first.should.equal(firstValue)
-        objectThatSatisfiesTestInterface.second.should.equal(secondValue)
+            const firstValue = 'text'
+            const secondValue = 1
+            const objectThatSatisfiesTestInterface: TestInterface = some({})
+                .assign('first', firstValue)
+                .assign('second', secondValue)
+                .getOrElse(unsafeGet)
+
+            objectThatSatisfiesTestInterface.first.should.equal(firstValue)
+            objectThatSatisfiesTestInterface.second.should.equal(secondValue)
+        })
+
+        it('but short-circuit when none is assigned', () => {
+            const notComputedText = 'not computed'
+            let mutable = notComputedText
+
+            some({})
+                .assign('firstMember', none)
+                .assign('secondMember', () => { mutable = 'computed'; return some('second value') })
+                .isNone()
+                .should.be.true
+
+            mutable.should.equal(notComputedText)
+        })
     })
 
     it('should be able to apply parameters', () => {
@@ -37,31 +64,6 @@ describe('Some', () => {
             .apply(() => some(4))
             .getOrElse(unsafeGet)
             .should.equal(10)
-    })
-
-    it('should be able to build an object', () => {
-        some({})
-            .assign('a', 1)
-            .assign('b', scope => scope.a + 1)
-            .assign('c', some(3))
-            .assign('d', scope => some(scope.c + 1))
-            .fold(
-                scope => scope.a + scope.b + scope.c + scope.d,
-                unsafeGet)
-            .should.equal(10)
-    })
-
-    it('should short-circuit object building when none is assigned', () => {
-        const notComputedText = 'not computed'
-        let mutable = notComputedText
-
-        some({})
-            .assign('firstMember', none)
-            .assign('secondMember', () => { mutable = 'computed'; return some('second value') })
-            .isNone()
-            .should.be.true
-
-        mutable.should.equal(notComputedText)
     })
 
     it('should map over the value', () => {
@@ -85,32 +87,46 @@ describe('Some', () => {
             .should.equal(containedValue)
     })
 
-    it('should be able to perform side-effects intended for the Some path', () => {
-        let mutable = 'before side-effect'
+    describe('should perform', () => {
+        it('side-effects intended for the Some path', () => {
+            let mutable = 'before side-effect'
 
-        createSomeOfString().performOnSome(value => mutable = value)
+            createSomeOfString().performOnSome(value => mutable = value)
 
-        mutable.should.equal(containedValue)
+            mutable.should.equal(containedValue)
+        })
+
+        it('no side-effects intended for the None path', () => {
+            expect(() => createSomeOfString().performOnNone(() => { throw 'Unexpected side-effect!' }))
+                .not.to.throw()
+        })
     })
 
-    it('should ignore the side-effects intended for the None path', () => {
-        expect(() => createSomeOfString().performOnNone(() => { throw 'Unexpected side-effect!' }))
-            .not.to.throw()
+    describe('should not return', () => {
+        it('a default value', () => {
+            createSomeOfString().getOrElse('default').should.equal(containedValue)
+        })
+
+        it('the result of an alternative computation', () => {
+            createSomeOfString().getOrElse(() => 'alternative computation').should.equal(containedValue)
+        })
     })
 
-    it('should ignore default value', () => {
-        createSomeOfString().getOrElse('default').should.equal(containedValue)
-    })
+    describe('should not fall back', () => {
+        it('to a default value', () => {
+            createSomeOfString()
+                .orElse('fallback')
+                .getOrElse(unsafeGet)
+                .should.equal(containedValue)
 
-    it('should ignore alternative computation', () => {
-        createSomeOfString().getOrElse(() => 'alternative computation').should.equal(containedValue)
-    })
+        })
 
-    it('should not ignore the alternative attempt', () => {
-        createSomeOfString()
-            .orAttempt(() => some('fallback'))
-            .getOrElse(unsafeGet)
-            .should.equal(containedValue)
+        it('to an alternative attempt', () => {
+            createSomeOfString()
+                .orAttempt(() => some('fallback'))
+                .getOrElse(unsafeGet)
+                .should.equal(containedValue)
+        })
     })
 
     it('should be able to test the contained value', () => {
