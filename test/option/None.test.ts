@@ -47,50 +47,57 @@ describe('None', () => {
             () => alternativeText).should.equal(alternativeText)
     })
 
-    it('should be able to perform side-effects', () => {
-        let mutable = 'before side-effect'
+    it('should perform', () => {
+        it('side-effects intended for the None path', () => {
+            let mutable = 'before side-effect'
 
-        const sideEffectText = 'after side-effect'
-        none.performOnNone(() => mutable = sideEffectText)
+            const sideEffectText = 'after side-effect'
+            none.performOnNone(() => mutable = sideEffectText)
 
-        mutable.should.equal(sideEffectText)
+            mutable.should.equal(sideEffectText)
+        })
+
+        it('no side-effect intended for the Some path', () => {
+            expect(() => none.performOnSome(() => { throw 'Unexpected side-effect!' }))
+                .not.to.throw()
+        })
     })
 
-    it('should be able to ignore side-effect intended for the Some path', () => {
-        expect(() => none.performOnSome(() => { throw 'Unexpected side-effect!' })).not.to.throw()
+    it('should return', () => {
+        it('a default value', () => {
+            const defaultText = 'default';
+            (none as Option<string>).getOrElse(defaultText).should.equal(defaultText)
+        })
+
+        it('the result of an alternative computation', () => {
+            const alternativeText = 'alternative'
+            const alternativeComputation = () => alternativeText;
+            (none as Option<string>).getOrElse(alternativeComputation).should.equal(alternativeText)
+        })
     })
 
-    it('should return the default value', () => {
-        const defaultText = 'default';
-        (none as Option<string>).getOrElse(defaultText).should.equal(defaultText)
-    })
+    it('should fall back', () => {
+        it('to a Some instance with the result of an alternative computation', () => {
+            const defaultValue = 'default value';
+            (none as Option<string>)
+                .orElse(() => defaultValue)
+                .isSome().should.be.true
+        })
 
-    it('should return the alternative computation', () => {
-        const alternativeText = 'alternative'
-        const alternativeComputation = () => alternativeText;
-        (none as Option<string>).getOrElse(alternativeComputation).should.equal(alternativeText)
-    })
-
-    it('should be replaced with default value', () => {
-        const fallbackText = 'fallback';
-        (none as Option<string>)
-            .orElse(() => fallbackText)
-            .isSome().should.be.true
-    })
-
-    it('should be replaced with fallback attempt', () => {
-        const fallbackText = 'fallback';
-        (none as Option<string>)
-            .orAttempt(() => some(fallbackText))
-            .getOrElse(unsafeGet)
-            .should.equal(fallbackText)
+        it('to an alternative attempt', () => {
+            const alternativeText = 'fallback';
+            (none as Option<string>)
+                .orAttempt(() => some(alternativeText))
+                .getOrElse(unsafeGet)
+                .should.equal(alternativeText)
+        })
     })
 
     it('should return false when tested', () => {
         none.test(() => true).should.be.false
     })
 
-    it('should return none when filtered', () => {
-        none.filter(() => true).isNone()
+    it('should always return none when filtered', () => {
+        none.filter(() => true).should.equal(none)
     })
 })
