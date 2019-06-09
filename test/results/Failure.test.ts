@@ -76,7 +76,7 @@ describe('Failure', () => {
         success.isFailure().should.be.true
     })
 
-    it('should map', () => {
+    describe('should map', () => {
         it('over the error', () => {
             const f = error => `mapped over ${error}`
             createFailureOfString()

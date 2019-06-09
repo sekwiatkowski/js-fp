@@ -58,7 +58,7 @@ describe('Success', () => {
             .should.equal(10)
     })
 
-    it('should perform', () => {
+    describe('should perform', () => {
         it('side-effects intended for the success path', () => {
             let mutable = noSideEffectText
 
@@ -73,7 +73,7 @@ describe('Success', () => {
         })
     })
 
-    it('should not fall back', () => {
+    describe('should not fall back', () => {
         const fallbackText = 'fallback'
 
         it('to a default value', () => {
@@ -104,7 +104,7 @@ describe('Success', () => {
         success.isFailure().should.be.false
     })
 
-    it('should map', () => {
+    describe('should map', () => {
         it('over the value', () => {
             const f = value => `mapped over ${value}`
             createSuccessOfString()
