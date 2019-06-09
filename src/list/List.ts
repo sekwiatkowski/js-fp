@@ -100,7 +100,7 @@ export class List<T> {
         return option(this.array[index])
     }
 
-    getOrElse(index: number, alternative: T|(() => T)) {
+    getOrElse(index: number, alternative: T|(() => T)): T {
         if (this.array.length >= index) {
             return this.array[index]
         }
@@ -109,7 +109,11 @@ export class List<T> {
         }
     }
 
-    filter(predicate: (item: T) => boolean) {
+    take(n: number): List<T> {
+        return new List(this.array.slice(0, n))
+    }
+
+    filter(predicate: (item: T) => boolean): List<T> {
         const filtered = new Array(this.array.length)
 
         for (let index = 0; index < this.array.length; index++) {
@@ -120,7 +124,7 @@ export class List<T> {
             }
         }
 
-        return filtered
+        return new List(filtered)
     }
     //endregion
 

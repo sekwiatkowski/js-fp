@@ -7,13 +7,26 @@ chai.should()
 describe('List<T>', () => {
     const createNumber = (value: number) => ({value})
 
-    it('should be able to map over the values', () => {
-        const increment = x => x + 1
-        const result = list(1, 2, 3)
-            .map(increment)
-            .toArray()
+    describe('should be able to map over the values', () => {
+        it('sequentially', () => {
+            const increment = x => x + 1
+            const result = list(1, 2, 3)
+                .map(increment)
+                .toArray()
 
-        result.should.eql([1, 2, 3].map(increment))
+            result.should.eql([1, 2, 3].map(increment))
+        })
+
+        it('in parallel', async() => {
+            const result = await list(1, 2, 3)
+                .parallelMap(x => x + 1)
+                .getOrElse(() => {
+                    throw 'Unexpected rejection!'
+                })
+
+            result.should.eql([2, 3, 4])
+        })
+
     })
 
     describe('should be able to sort values', () => {
@@ -52,22 +65,16 @@ describe('List<T>', () => {
         })
     })
 
-    it('should convert a Future<T[], E> instance', async() => {
-        const result = await list(1, 2, 3)
-            .parallelMap(x => x + 1)
-            .getOrElse(() => {throw 'Unexpected rejection!'})
+    describe('should be to indicate', () => {
+        it('whether it is empty', () => {
+            list().isNotEmpty().should.be.false
+            list(1).isNotEmpty().should.be.true
+        })
 
-        result.should.eql([2, 3, 4])
-    })
-
-    it('should be able to indicate whether it is empty', () => {
-        const empty = list()
-        empty.isEmpty().should.be.true
-        empty.isNotEmpty().should.be.false
-
-        const nonEmpty = list(1)
-        nonEmpty.isEmpty().should.be.false
-        nonEmpty.isNotEmpty().should.be.true
+        it('whether it is not empty', () => {
+            list().isEmpty().should.be.true
+            list().isNotEmpty().should.be.false
+        })
     })
 
     describe('should concatenate with another list', () => {
