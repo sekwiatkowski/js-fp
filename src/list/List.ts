@@ -114,6 +114,30 @@ export class List<T> {
 
         return new List(concatenation)
     }
+
+    all(predicate: (item: T) => boolean): boolean {
+        for (let index = 0; index < this.array.length; index++) {
+            if (!predicate(this.array[index])) {
+                return false
+            }
+        }
+
+        return true
+    }
+
+    some(predicate: (item: T) => boolean): boolean {
+        for (let index = 0; index < this.array.length; index++) {
+            if (predicate(this.array[index])) {
+                return true
+            }
+        }
+
+        return false
+    }
+
+    none(predicate: (item: T) => boolean): boolean {
+        return !this.some(predicate)
+    }
 }
 
 export function list<T>(...array: T[]): List<T> {

@@ -87,4 +87,31 @@ describe('List<T>', () => {
         })
     })
 
+    describe('should be able to test', () => {
+        const isEven = (x: number) => x % 2 == 0
+
+        it('if all items satisfy a predicate', () => {
+            list().all(isEven).should.be.true
+            list(1).all(isEven).should.be.false
+            list(1, 2).all(isEven).should.be.false
+            list(2).all(isEven).should.be.true
+            list(2, 4).all(isEven).should.be.true
+        })
+
+        it('if at least one items satisfy a predicate', () => {
+            list().some(isEven).should.be.false
+            list(1).some(isEven).should.be.false
+            list(1, 2).some(isEven).should.be.true
+            list(1, 2, 3).some(isEven).should.be.true
+            list(2, 4).some(isEven).should.be.true
+        })
+
+        it('if no items satisfy a predicate', () => {
+            list().none(isEven).should.be.true
+            list(1).none(isEven).should.be.true
+            list(1, 2).none(isEven).should.be.false
+            list(1, 2, 3).none(isEven).should.be.false
+            list(2, 4).none(isEven).should.be.false
+        })
+    })
 })

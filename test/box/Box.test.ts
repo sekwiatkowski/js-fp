@@ -7,21 +7,34 @@ chai.should()
 describe('Box', () => {
     const valueText = 'value'
 
-    it('should be able to build an object that satisfies an interface', () => {
-        interface TestInterface {
-            first: string
-            second: number
-        }
+    it('should be able to build an object', () => {
+        it('one member at a time', () => {
+            box({})
+                .assign('a', 1)
+                .assign('b', scope => scope.a + 1)
+                .assign('c', box(3))
+                .assign('d', scope => box(scope.c + 1))
+                .map(scope => scope.a + scope.b + scope.c + scope.d)
+                .get()
+                .should.equal(10)
+        })
 
-        const firstValue = 'text'
-        const secondValue = 1
-        const objectThatSatisfiesTestInterface: TestInterface = box({})
-            .assign('first', firstValue)
-            .assign('second', secondValue)
-            .get()
+        it('that satisfies an interface', () => {
+            interface TestInterface {
+                first: string
+                second: number
+            }
 
-        objectThatSatisfiesTestInterface.first.should.equal(firstValue)
-        objectThatSatisfiesTestInterface.second.should.equal(secondValue)
+            const firstValue = 'text'
+            const secondValue = 1
+            const objectThatSatisfiesTestInterface: TestInterface = box({})
+                .assign('first', firstValue)
+                .assign('second', secondValue)
+                .get()
+
+            objectThatSatisfiesTestInterface.first.should.equal(firstValue)
+            objectThatSatisfiesTestInterface.second.should.equal(secondValue)
+        })
     })
 
     it('should be able to apply parameters', () => {
@@ -30,17 +43,6 @@ describe('Box', () => {
             .apply(() => 2)
             .apply(box(3))
             .apply(() => box(4))
-            .get()
-            .should.equal(10)
-    })
-
-    it('should be able to build an object', () => {
-        box({})
-            .assign('a', 1)
-            .assign('b', scope => scope.a + 1)
-            .assign('c', box(3))
-            .assign('d', scope => box(scope.c + 1))
-            .map(scope => scope.a + scope.b + scope.c + scope.d)
             .get()
             .should.equal(10)
     })
@@ -92,19 +94,21 @@ describe('Box', () => {
             .should.equal(f(valueText))
     })
 
-    it('should be convertible to a Some instance', () => {
-        (box(valueText).toOption() instanceof Some).should.be.true
-    })
+    it('should convert to', () => {
+        it('an option', () => {
+            (box(valueText).toOption() instanceof Some).should.be.true
+        })
 
-    it('should be convertible to a Success instance', () => {
-        (box(valueText).toResult() instanceof Success).should.be.true
-    })
+        it('a result', () => {
+            (box(valueText).toResult() instanceof Success).should.be.true
+        })
 
-    it('should be convertible to a Valid instance', () => {
-        (box(valueText).toValidated() instanceof Valid).should.be.true
-    })
+        it('Validated', () => {
+            (box(valueText).toValidated() instanceof Valid).should.be.true
+        })
 
-    it('should be convertible to a Future instance', () => {
-        (box(valueText).toFuture() instanceof Future).should.be.true
+        it('to a future', () => {
+            (box(valueText).toFuture() instanceof Future).should.be.true
+        })
     })
 })

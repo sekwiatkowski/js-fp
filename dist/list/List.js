@@ -92,6 +92,25 @@ class List {
         }
         return new List(concatenation);
     }
+    all(predicate) {
+        for (let index = 0; index < this.array.length; index++) {
+            if (!predicate(this.array[index])) {
+                return false;
+            }
+        }
+        return true;
+    }
+    some(predicate) {
+        for (let index = 0; index < this.array.length; index++) {
+            if (predicate(this.array[index])) {
+                return true;
+            }
+        }
+        return false;
+    }
+    none(predicate) {
+        return !this.some(predicate);
+    }
 }
 exports.List = List;
 function list(...array) {

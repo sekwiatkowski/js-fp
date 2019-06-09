@@ -13,5 +13,8 @@ export declare class List<T> {
     isNotEmpty(): boolean;
     toArray(): T[];
     concat(otherList: List<T>): List<any>;
+    all(predicate: (item: T) => boolean): boolean;
+    some(predicate: (item: T) => boolean): boolean;
+    none(predicate: (item: T) => boolean): boolean;
 }
 export declare function list<T>(...array: T[]): List<T>;
