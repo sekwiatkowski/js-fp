@@ -1,4 +1,4 @@
-import {failure, success} from '../../src'
+import {Failure, failure, success} from '../../src'
 
 const chai = require('chai')
 
@@ -41,17 +41,10 @@ describe('Success', () => {
             objectThatSatisfiesTestInterface.second.should.equal(secondValue)
         })
 
-        it('but short-circuit when a failure is assigned', () => {
-            const notComputedText = 'not computed'
-            let mutable = notComputedText
-
+        it('but switch to Failure when a Failure instance is assigned to a member', () => {
             success({})
                 .assign('firstMember', failure<string, string>('error'))
-                .assign('secondMember', () => { mutable = 'computed'; return success('second value') })
-                .isFailure()
-                .should.be.true
-
-            mutable.should.equal(notComputedText)
+                .should.be.instanceOf(Failure)
         })
     })
 

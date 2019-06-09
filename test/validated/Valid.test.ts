@@ -1,4 +1,4 @@
-import {invalid, valid} from '../../src'
+import {Invalid, invalid, valid} from '../../src'
 
 const chai = require('chai')
 
@@ -21,50 +21,58 @@ describe('Valid', () => {
             .should.equal(10)
     })
 
-    it('should be able to build an object with values', () => {
-        valid({})
-            .assign('a', 1)
-            .assign('b', scope => scope.a + 1)
-            .assign('c', valid(3))
-            .assign('d', scope => valid(scope.c + 1))
-            .fold(
-                scope => scope.a + scope.b + scope.c + scope.d,
-                unsafeGet)
-            .should.equal(10)
+    describe('should be able to build objects', () => {
+        it('one member at a time', () => {
+            valid({})
+                .assign('a', 1)
+                .assign('b', scope => scope.a + 1)
+                .assign('c', valid(3))
+                .assign('d', scope => valid(scope.c + 1))
+                .fold(
+                    scope => scope.a + scope.b + scope.c + scope.d,
+                    unsafeGet)
+                .should.equal(10)
+        })
+
+        it('but switch to Invalid instance when an Invalid instance is assigned to a member', () => {
+            valid({})
+                .assign('x', invalid(['error']))
+                .should.be.instanceOf(Invalid)
+        })
     })
 
-    it('should return the Invalid instance when an attempt is made to build an object with an Invalid instance', () => {
-        const invalidInstance = invalid(['error'])
-        invalidInstance.should.equal(invalidInstance)
+    describe('should be able to return', () => {
+        it('the value when it is requested', () => {
+            createValidString()
+                .getOrElse(unsafeGet)
+                .should.equal(containedString)
+        })
 
-        valid({})
-            .assign('x', invalidInstance)
-            .should.eql(invalidInstance)
+        it('a default value when the errors are requested', () => {
+            const defaultValue = ['default']
+            createValidString()
+                .getErrorsOrElse(defaultValue)
+                .should.equal(defaultValue)
+        })
+
+        it('the result of a guaranteed computation when the errors are requested', () => {
+            const defaultValue = ['default']
+            createValidString()
+                .getErrorsOrElse(() => defaultValue)
+                .should.equal(defaultValue)
+        })
     })
 
-    it('should return the contained value when requeseted', () => {
-        createValidString()
-            .getOrElse(unsafeGet)
-            .should.equal(containedString)
-    })
+    describe('should concatenate', () => {
+        it('with another Valid instance by returning the other instance', () => {
+            const other = valid<string, string>('another string')
+            createValidString().concat(other).should.equal(other)
+        })
 
-    it('should be able to return a default value when the errors are requested', () => {
-        const defaultValue = ['default']
-        createValidString()
-            .getErrorsOrElse(defaultValue)
-            .should.equal(defaultValue)
-    })
-
-    it('should be able to return a the result of a guaranteed computation when the errors are requested', () => {
-        const defaultValue = ['default']
-        createValidString()
-            .getErrorsOrElse(() => defaultValue)
-            .should.equal(defaultValue)
-    })
-
-    it('should return the other Validated instance when concatenated', () => {
-        const otherValidated = valid<string, string>('other string')
-        createValidString().concat(otherValidated).should.equal(otherValidated)
+        it('with an Invalid instance by returning the Invalid instance', () => {
+            const other = invalid<string, string>('error')
+            createValidString().concat(other).should.equal(other)
+        })
     })
 
     it('should indicate the correct path', () => {
@@ -94,15 +102,17 @@ describe('Valid', () => {
             .should.equal(containedString)
     })
 
-    it('should be able to perform side-effects using the contained value', () => {
-        let mutable = noSideEffectText
-        const afterSideEffectText = 'after side-effect'
-        createValidString().perform(() => mutable = 'after side-effect' )
-        mutable.should.equal(afterSideEffectText)
-    })
+    describe('should perform', () => {
+        it('should be able to perform side-effects using the contained value', () => {
+            let mutable = noSideEffectText
+            const afterSideEffectText = 'after side-effect'
+            createValidString().perform(() => mutable = 'after side-effect' )
+            mutable.should.equal(afterSideEffectText)
+        })
 
-    it('should ignore side-effects intended for the Invalid path', () => {
-        expect(() => createValidString().performOnInvalid(() => { throw 'Unexpected side-effect!' }))
-            .not.to.throw()
+        it('should ignore side-effects intended for the Invalid path', () => {
+            expect(() => createValidString().performOnInvalid(() => { throw 'Unexpected side-effect!' }))
+                .not.to.throw()
+        })
     })
 })

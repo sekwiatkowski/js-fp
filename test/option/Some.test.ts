@@ -42,17 +42,10 @@ describe('Some', () => {
             objectThatSatisfiesTestInterface.second.should.equal(secondValue)
         })
 
-        it('but short-circuit when none is assigned', () => {
-            const notComputedText = 'not computed'
-            let mutable = notComputedText
-
+        it('but switch to none when none is assigned to a member', () => {
             some({})
                 .assign('firstMember', none)
-                .assign('secondMember', () => { mutable = 'computed'; return some('second value') })
-                .isNone()
-                .should.be.true
-
-            mutable.should.equal(notComputedText)
+                .should.equal(none)
         })
     })
 
