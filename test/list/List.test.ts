@@ -1,4 +1,4 @@
-import {list} from '../../src'
+import {list, None, Some} from '../../src'
 
 const chai = require('chai')
 
@@ -109,6 +109,26 @@ describe('List<T>', () => {
             list(1, 2).none(isEven).should.be.false
             list(1, 2, 3).none(isEven).should.be.false
             list(2, 4).none(isEven).should.be.false
+        })
+
+        it('how many items satisfy a predicate', () => {
+            list().count(isEven).should.equal(0)
+            list(1).count(isEven).should.equal(0)
+            list(1, 2).count(isEven).should.equal(1)
+            list(1, 2, 3).count(isEven).should.equal(1)
+            list(1, 2, 3, 4).count(isEven).should.equal(2)
+        })
+    })
+
+    describe('should return items', () => {
+        it('as Some instance if they do exist', () => {
+            list(1).get(0).should.be.instanceOf(Some)
+            list(1, 2).get(1).should.be.instanceOf(Some)
+        })
+
+        it('and none if they do not exist', () => {
+            list().get(0).should.be.instanceOf(None)
+            list(1).get(1).should.be.instanceOf(None)
         })
     })
 })

@@ -1,51 +1,13 @@
-import {Future} from '..'
+import {Future, Option, option} from '..'
 import {fulfilled} from '../future/Fulfilled'
 import {Settled} from '../future/Settled'
 import {rejected} from '../future/Rejected'
-
-const compare = (a: any, b: any) => {
-    const aIsNull = a === null
-    const bIsNull = b === null
-
-    if (aIsNull) {
-        if (bIsNull) {
-            return 0
-        }
-        else if (typeof b  === 'undefined') {
-            return -1
-        }
-        else {
-            return 1
-        }
-    }
-    else if (typeof a === 'undefined') {
-        if (bIsNull) {
-            return 1
-        }
-        else if (typeof b === 'undefined') {
-            return 0
-        }
-        else {
-            return 1
-        }
-    }
-    // a is neither null nor undefined
-    else if (bIsNull || typeof b === 'undefined') {
-        return -1
-    }
-    else {
-        return a < b ? -1 : (a > b ? 1 : 0)
-    }
-}
-const negatedCompare = (a, b) => -compare(a, b)
-
-const compareBy = (a: any, b: any, f: (value: any) => any) => compare(f(a), f(b))
-
-const negatedCompareBy = (a: any, b: any, f: (value: any) => any) => -compareBy(a, b, f)
+import {compare, compareBy, negatedCompare, negatedCompareBy} from './Comparison'
 
 export class List<T> {
     constructor(private readonly array: T[]) {}
 
+    //region Map items
     map<U>(f: (value: T) => U): List<U> {
         return new List(this.array.map(f))
     }
@@ -63,7 +25,9 @@ export class List<T> {
                 .catch(error => resolve(rejected(error)))
         }))
     }
+    //endregion
 
+    //region Sort items
     sort(): List<T> {
         return new List(this.array.sort(compare))
     }
@@ -79,7 +43,9 @@ export class List<T> {
     sortDescendinglyBy<U>(f: (value: T) => U): List<T> {
         return new List(this.array.sort((a, b) => negatedCompareBy(a, b, f)))
     }
+    //endregion
 
+    //region Size
     size(): number {
         return this.array.length
     }
@@ -91,30 +57,9 @@ export class List<T> {
     isNotEmpty(): boolean {
         return this.array.length > 0
     }
+    //endregion
 
-    toArray(): T[] {
-        return this.array
-    }
-
-    concat(otherList: List<T>) {
-        const thisArray = this.array
-        const otherArray = otherList.toArray()
-
-        const thisLength = thisArray.length
-        const otherLength = otherArray.length
-        const concatenation = Array(thisLength + otherLength)
-
-        for(let i = 0; i < thisLength; i++){
-            concatenation[i] = thisArray[i]
-        }
-
-        for(let j = 0; j < otherLength; j++){
-            concatenation[thisLength + j] = otherArray[j]
-        }
-
-        return new List(concatenation)
-    }
-
+    //region Test items
     all(predicate: (item: T) => boolean): boolean {
         for (let index = 0; index < this.array.length; index++) {
             if (!predicate(this.array[index])) {
@@ -138,6 +83,100 @@ export class List<T> {
     none(predicate: (item: T) => boolean): boolean {
         return !this.some(predicate)
     }
+
+    count(predicate: (item: T) => boolean): number {
+        let count = 0
+        for (let index = 0; index < this.array.length; index++) {
+            if (predicate(this.array[index])) {
+                count += 1
+            }
+        }
+        return count
+    }
+    //endregion
+
+    //region Get item(s)
+    get(index: number): Option<T> {
+        return option(this.array[index])
+    }
+
+    getOrElse(index: number, alternative: T|(() => T)) {
+        if (this.array.length >= index) {
+            return this.array[index]
+        }
+        else {
+            return alternative instanceof Function? alternative() : alternative
+        }
+    }
+
+    filter(predicate: (item: T) => boolean) {
+        const filtered = new Array(this.array.length)
+
+        for (let index = 0; index < this.array.length; index++) {
+            const item = this.array[index]
+
+            if (predicate(item)) {
+                filtered.push(item)
+            }
+        }
+
+        return filtered
+    }
+    //endregion
+
+    //region Concatenate lists
+    concat(otherList: List<T>): List<T> {
+        const thisArray = this.array
+        const otherArray = otherList.toArray()
+
+        const thisLength = thisArray.length
+        const otherLength = otherArray.length
+
+        const concatenation = Array(thisLength + otherLength)
+
+        for(let i = 0; i < thisLength; i++){
+            concatenation[i] = thisArray[i]
+        }
+
+        for(let j = 0; j < otherLength; j++){
+            concatenation[thisLength + j] = otherArray[j]
+        }
+
+        return new List(concatenation)
+    }
+    //endregion
+
+    //region Side-effects
+    perform(sideEffect: (list: List<T>) => void) {
+        sideEffect(this)
+    }
+
+    performOnEmpty(sideEffect: (list: List<T>) => void) {
+        if (this.array.length > 0) {
+            return
+        }
+
+        sideEffect(this)
+    }
+
+    performOnNonEmpty(sideEffect: (list: List<T>) => void) {
+        if (this.array.length > 0) {
+            return
+        }
+
+        sideEffect(this)
+    }
+
+    forEach(sideEffects: (item: T) => void) {
+        this.array.forEach(sideEffects)
+    }
+    //endregion
+
+    //region Convert list
+    toArray(): T[] {
+        return this.array
+    }
+    //endregion
 }
 
 export function list<T>(...array: T[]): List<T> {
