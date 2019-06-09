@@ -95,13 +95,36 @@ export class List<T> {
     }
     //endregion
 
+    //region tests equality
+    equals(otherList: List<T>): boolean {
+        if (otherList == null) {
+            return false
+        }
+
+        const otherArray = otherList.toArray()
+
+        if (this.array.length !== otherArray.length) {
+            return false
+        }
+
+        for (let i = 0; i < this.array.length; i++) {
+            if (this.array[i] !== otherArray[i]) {
+                return false
+            }
+        }
+
+        return true
+
+    }
+    //endregion
+
     //region Get item(s)
     get(index: number): Option<T> {
         return option(this.array[index])
     }
 
     getOrElse(index: number, alternative: T|(() => T)): T {
-        if (this.array.length >= index) {
+        if (this.array.length > index) {
             return this.array[index]
         }
         else {
@@ -121,17 +144,7 @@ export class List<T> {
     }
 
     filter(predicate: (item: T) => boolean): List<T> {
-        const filtered = new Array(this.array.length)
-
-        for (let index = 0; index < this.array.length; index++) {
-            const item = this.array[index]
-
-            if (predicate(item)) {
-                filtered.push(item)
-            }
-        }
-
-        return new List(filtered)
+        return new List(this.array.filter(predicate))
     }
     //endregion
 
@@ -171,7 +184,7 @@ export class List<T> {
     }
 
     performOnNonEmpty(sideEffect: (list: List<T>) => void) {
-        if (this.array.length > 0) {
+        if (this.array.length == 0) {
             return
         }
 
@@ -191,5 +204,20 @@ export class List<T> {
 }
 
 export function list<T>(...array: T[]): List<T> {
+    return new List(array)
+}
+
+export function range<T>(start: number, end?: number): List<T> {
+    if (!end) {
+        end = start
+        start = 0
+    }
+
+    const array = new Array(end-start)
+
+    for (let index = 0, value = start; index < end-start; index++, value++) {
+        array[index] = value
+    }
+
     return new List(array)
 }

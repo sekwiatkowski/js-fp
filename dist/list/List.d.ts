@@ -1,4 +1,4 @@
-import { Future } from '..';
+import { Future, Option } from '..';
 export declare class List<T> {
     private readonly array;
     constructor(array: T[]);
@@ -11,10 +11,21 @@ export declare class List<T> {
     size(): number;
     isEmpty(): boolean;
     isNotEmpty(): boolean;
-    toArray(): T[];
-    concat(otherList: List<T>): List<any>;
     all(predicate: (item: T) => boolean): boolean;
     some(predicate: (item: T) => boolean): boolean;
     none(predicate: (item: T) => boolean): boolean;
+    count(predicate: (item: T) => boolean): number;
+    equals(otherList: List<T>): boolean;
+    get(index: number): Option<T>;
+    getOrElse(index: number, alternative: T | (() => T)): T;
+    take(n: number): List<T>;
+    filter(predicate: (item: T) => boolean): List<T>;
+    concat(otherList: List<T>): List<T>;
+    perform(sideEffect: (list: List<T>) => void): void;
+    performOnEmpty(sideEffect: (list: List<T>) => void): void;
+    performOnNonEmpty(sideEffect: (list: List<T>) => void): void;
+    forEach(sideEffects: (item: T) => void): void;
+    toArray(): T[];
 }
 export declare function list<T>(...array: T[]): List<T>;
+export declare function range<T>(start: number, end?: number): List<T>;
