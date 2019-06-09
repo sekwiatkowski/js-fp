@@ -70,19 +70,21 @@ describe('Invalid', () => {
         invalidInstance.isValid().should.be.false
     })
 
-    it('should ignore maps', () => {
-        expect(() => createInvalidInstance()
-            .map(() => { throw 'Unexpected map!' }))
-            .not.to.throw()
-    })
+    describe('should map', () => {
+        it('over the list of errors', () => {
+            const f = error => `mapped ${error}`
+            const mappedErrors = errors.map(f)
+            createInvalidInstance()
+                .mapErrors(errors => errors.map(f))
+                .getErrorsOrElse(unsafeGetErrors)
+                .should.eql(mappedErrors)
+        })
 
-    it('should be able to map over the list of errors', () => {
-        const f = error => `mapped ${error}`
-        const mappedErrors = errors.map(f)
-        createInvalidInstance()
-            .mapErrors(errors => errors.map(f))
-            .getErrorsOrElse(unsafeGetErrors)
-            .should.eql(mappedErrors)
+        it('but ignore maps over the value', () => {
+            expect(() => createInvalidInstance()
+                .map(() => { throw 'Unexpected map!' }))
+                .not.to.throw()
+        })
     })
 
     it('should map over the errors when folded', () => {

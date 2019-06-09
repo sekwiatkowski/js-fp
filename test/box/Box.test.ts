@@ -54,7 +54,7 @@ describe('Box', () => {
             .should.equal(`${valueText} in new box`)
     })
 
-    it('should be foldable', () => {
+    it('should map over the value and return the result when folded', () => {
         box(1)
             .fold(x => x + 1)
             .should.equal(2)

@@ -104,20 +104,22 @@ describe('Success', () => {
         success.isFailure().should.be.false
     })
 
-    it('should map over the value', () => {
-        const f = value => `mapped over ${value}`
-        createSuccessOfString()
-            .map(f)
-            .getOrElse(unsafeGet)
-            .should.equal(f(containedValue))
+    it('should map', () => {
+        it('over the value', () => {
+            const f = value => `mapped over ${value}`
+            createSuccessOfString()
+                .map(f)
+                .getOrElse(unsafeGet)
+                .should.equal(f(containedValue))
+        })
+
+        it('but ignore maps over the error', () => {
+            expect(() => createSuccessOfString().mapError(() => { throw 'Unexpected map!' }))
+                .not.to.throw()
+        })
     })
 
-    it('should ignore maps over the error', () => {
-        expect(() => createSuccessOfString().mapError(() => { throw 'Unexpected map!' }))
-            .not.to.throw()
-    })
-
-    it('should return the contained value when folded', () => {
+    it('should return the value when folded', () => {
         createSuccessOfString()
             .fold(value => value, unsafeGet)
             .should.equal(containedValue)

@@ -26,5 +26,4 @@ describe('option', () => {
     it('should wrap values inside Some', () => {
         (option(1) instanceof Some).should.be.true
     })
-
 })

@@ -76,17 +76,19 @@ describe('Failure', () => {
         success.isFailure().should.be.true
     })
 
-    it('should ignore maps over the value', () => {
-        expect(() => createFailureOfString().map(() => { throw 'Unexpected map!' }))
-            .not.to.throw()
-    })
+    it('should map', () => {
+        it('over the error', () => {
+            const f = error => `mapped over ${error}`
+            createFailureOfString()
+                .mapError(f)
+                .getErrorOrElse(unsafeGet)
+                .should.equal(f(error))
+        })
 
-    it('should map over the error', () => {
-        const f = error => `mapped over ${error}`
-        createFailureOfString()
-            .mapError(f)
-            .getErrorOrElse(unsafeGet)
-            .should.equal(f(error))
+        it('but ignore maps over the value', () => {
+            expect(() => createFailureOfString().map(() => { throw 'Unexpected map!' }))
+                .not.to.throw()
+        })
     })
 
     it('should return the error when folded', () => {

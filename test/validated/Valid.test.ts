@@ -81,17 +81,19 @@ describe('Valid', () => {
         validString.isInvalid().should.be.false
     })
 
-    it('should be able to map over the contained string', () => {
-        const f = value => `mapped over ${value}`
-        createValidString()
-            .map(f)
-            .getOrElse(unsafeGet)
-            .should.equal(f(containedString))
-    })
+    describe('should map', () => {
+        it('map over the value', () => {
+            const f = value => `mapped over ${value}`
+            createValidString()
+                .map(f)
+                .getOrElse(unsafeGet)
+                .should.equal(f(containedString))
+        })
 
-    it('should ignore attempts to map over the errors', () => {
-        expect(() => createValidString().mapErrors(() => { throw 'Unexpected map!' }))
-            .not.to.throw()
+        it('but ignore attempts to map over the list of errors', () => {
+            expect(() => createValidString().mapErrors(() => { throw 'Unexpected map!' }))
+                .not.to.throw()
+        })
     })
 
     it('should return the contained value when folded', () => {
