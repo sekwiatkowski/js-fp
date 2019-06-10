@@ -302,22 +302,20 @@ export function range<T>(start: number, end?: number): List<T> {
     return new List(array)
 }
 
+export function rangeInclusive<T>(start: number, end?: number) {
+    if (!end) {
+        end = start
+        start = 0
+    }
+
+    return this.range(start, end+1)
+}
+
 export function repeat<T>(times: number, valueOrFunction: T|((index?: number) => T)): List<T> {
     const array = new Array(times)
     if (valueOrFunction instanceof Function) {
-        // The supplied function depends on no parameters.
-        if (valueOrFunction.length == 0) {
-            const value = valueOrFunction()
-
-            for (let index = 0; index < times; index++) {
-                array[index] = value
-            }
-        }
-        // The supplied function depends on the index.
-        else {
-            for (let index = 0; index < times; index++) {
-                array[index] = valueOrFunction(index)
-            }
+        for (let index = 0; index < times; index++) {
+            array[index] = valueOrFunction(index)
         }
     }
     else {

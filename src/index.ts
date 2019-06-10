@@ -14,4 +14,4 @@ export { Invalid, invalid } from './validated/Invalid'
 
 export { Future, future, fulfill, reject, futureObject } from './future/Future'
 
-export { List, emptyList, list, listFromArray, range, repeat } from './list/List'
+export { List, emptyList, list, listFromArray, range, rangeInclusive, repeat } from './list/List'

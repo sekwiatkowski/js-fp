@@ -243,21 +243,19 @@ function range(start, end) {
     return new List(array);
 }
 exports.range = range;
+function rangeInclusive(start, end) {
+    if (!end) {
+        end = start;
+        start = 0;
+    }
+    return this.range(start, end + 1);
+}
+exports.rangeInclusive = rangeInclusive;
 function repeat(times, valueOrFunction) {
     const array = new Array(times);
     if (valueOrFunction instanceof Function) {
-        // The supplied function depends on no parameters.
-        if (valueOrFunction.length == 0) {
-            const value = valueOrFunction();
-            for (let index = 0; index < times; index++) {
-                array[index] = value;
-            }
-        }
-        // The supplied function depends on the index.
-        else {
-            for (let index = 0; index < times; index++) {
-                array[index] = valueOrFunction(index);
-            }
+        for (let index = 0; index < times; index++) {
+            array[index] = valueOrFunction(index);
         }
     }
     else {
