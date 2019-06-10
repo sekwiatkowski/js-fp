@@ -1,5 +1,5 @@
 import {List, list, None, Some} from '../../src'
-import {range} from '../../src/list/List'
+import {emptyList, range} from '../../src/list/List'
 
 const chai = require('chai')
 
@@ -72,13 +72,13 @@ describe('List<T>', () => {
 
     describe('should be to indicate', () => {
         it('whether it is empty', () => {
-            list().isNotEmpty().should.be.false
+            emptyList().isNotEmpty().should.be.false
             list(1).isNotEmpty().should.be.true
         })
 
         it('whether it is not empty', () => {
-            list().isEmpty().should.be.true
-            list().isNotEmpty().should.be.false
+            emptyList().isEmpty().should.be.true
+            emptyList().isNotEmpty().should.be.false
         })
     })
 
@@ -98,7 +98,7 @@ describe('List<T>', () => {
 
     describe('should be able to test', () => {
         it('if all items satisfy a predicate', () => {
-            list().all(isEven).should.be.true
+            emptyList().all(isEven).should.be.true
             list(1).all(isEven).should.be.false
             list(1, 2).all(isEven).should.be.false
             list(2).all(isEven).should.be.true
@@ -106,7 +106,7 @@ describe('List<T>', () => {
         })
 
         it('if at least one items satisfy a predicate', () => {
-            list().some(isEven).should.be.false
+            emptyList().some(isEven).should.be.false
             list(1).some(isEven).should.be.false
             list(1, 2).some(isEven).should.be.true
             list(1, 2, 3).some(isEven).should.be.true
@@ -114,7 +114,7 @@ describe('List<T>', () => {
         })
 
         it('if no items satisfy a predicate', () => {
-            list().none(isEven).should.be.true
+            emptyList().none(isEven).should.be.true
             list(1).none(isEven).should.be.true
             list(1, 2).none(isEven).should.be.false
             list(1, 2, 3).none(isEven).should.be.false
@@ -122,7 +122,7 @@ describe('List<T>', () => {
         })
 
         it('how many items satisfy a predicate', () => {
-            list().count(isEven).should.equal(0)
+            emptyList().count(isEven).should.equal(0)
             list(1).count(isEven).should.equal(0)
             list(1, 2).count(isEven).should.equal(1)
             list(1, 2, 3).count(isEven).should.equal(1)
@@ -137,7 +137,7 @@ describe('List<T>', () => {
         })
 
         it('and none if they do not exist', () => {
-            list().get(0).should.be.instanceOf(None)
+            emptyList().get(0).should.be.instanceOf(None)
             list(1).get(1).should.be.instanceOf(None)
         })
     })
@@ -145,8 +145,8 @@ describe('List<T>', () => {
     describe('should return a default',  () => {
         const defaultText = "default"
         it('when an item at the provided index does not exists', () => {
-            list().getOrElse(0, defaultText).should.equal(defaultText)
-            list().getOrElse(0, () => defaultText).should.equal(defaultText)
+            emptyList().getOrElse(0, defaultText).should.equal(defaultText)
+            emptyList().getOrElse(0, () => defaultText).should.equal(defaultText)
         })
 
         it('but not when the item at the provided index exists', () => {
@@ -174,7 +174,7 @@ describe('List<T>', () => {
     })
 
     it('should be able to filter items', () => {
-        list().filter(isEven).toArray().should.eql([])
+        emptyList().filter(isEven).toArray().should.eql([])
         list(1).filter(isEven).toArray().should.eql([])
         list(1, 2).filter(isEven).toArray().should.eql([2])
         list(1, 2, 3).filter(isEven).toArray().should.eql([2])
@@ -182,7 +182,7 @@ describe('List<T>', () => {
     })
 
     it('should be able to return the number of items', () => {
-        list().size().should.equal(0)
+        emptyList().size().should.equal(0)
         list(1).size().should.equal(1)
         list(1, 2).size().should.equal(2)
     })
@@ -202,7 +202,7 @@ describe('List<T>', () => {
         it('and not if the list is empty', () => {
             let mutable = noSideEffectText
 
-            list().performOnNonEmpty(() => mutable = sideEffectText)
+            emptyList().performOnNonEmpty(() => mutable = sideEffectText)
 
             mutable.should.equal(noSideEffectText)
         })
@@ -210,7 +210,7 @@ describe('List<T>', () => {
         it('side-effects intended for the empty path only if the list is, in fact, empty', () => {
             let mutable = noSideEffectText
 
-            list().performOnEmpty(() => mutable = sideEffectText)
+            emptyList().performOnEmpty(() => mutable = sideEffectText)
 
             mutable.should.equal(sideEffectText)
         })
@@ -226,7 +226,7 @@ describe('List<T>', () => {
         it('side-effects on intended for both paths if the list is empty', () => {
             let mutable = noSideEffectText
 
-            list().perform(() => mutable = sideEffectText)
+            emptyList().perform(() => mutable = sideEffectText)
 
             mutable.should.equal(sideEffectText)
         })
@@ -254,9 +254,9 @@ describe('List<T>', () => {
 
     describe('should consider another list to be', () => {
         it('equal if it contains the same items', () => {
-            list().equals(list()).should.be.true
-            list().equals(list(1)).should.be.false
-            list(1).equals(list()).should.be.false
+            emptyList().equals(emptyList()).should.be.true
+            emptyList().equals(list(1)).should.be.false
+            list(1).equals(emptyList()).should.be.false
             list(1).equals(list(1, 2)).should.be.false
             list(1, 2).equals(list(1)).should.be.false
             list(1, 1, 2).equals(list(1, 2)).should.be.false
@@ -268,8 +268,8 @@ describe('List<T>', () => {
         })
 
         it('and unequal if the other list is null or undefined', () => {
-            list().equals(null).should.be.false
-            list().equals(undefined).should.be.false
+            emptyList().equals(null).should.be.false
+            emptyList().equals(undefined).should.be.false
         })
     })
 
@@ -291,11 +291,11 @@ describe('List<T>', () => {
         })
 
         it('two empty arrays by returning an empty list', () => {
-            list([], []).equals(list())
+            list([], []).equals(emptyList())
         })
 
         it('two empty lists by returning another empty list', () => {
-            list(list(), list()).equals(list())
+            list(emptyList(), emptyList()).equals(emptyList())
         })
     })
 })
@@ -307,7 +307,7 @@ describe('range', () => {
                 range(n).equals(expected).should.be.true
             }
 
-            check(0, list())
+            check(0, emptyList())
             check(1, list(0))
             check(2, list(0, 1))
         })
@@ -317,10 +317,10 @@ describe('range', () => {
                 range(start, end).equals(expected).should.be.true
             }
 
-            check(0, 0, list())
+            check(0, 0, emptyList())
             check(0, 1, list(0))
             check(0, 2, list(0, 1))
-            check(1, 1, list())
+            check(1, 1, emptyList())
             check(1, 2, list(1))
             check(1, 3, list(1, 2))
         })

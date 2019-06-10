@@ -1,7 +1,8 @@
 import { Future, Option } from '..';
 export declare class List<T> {
-    private readonly array;
-    constructor(array: T[]);
+    private readonly items;
+    private readonly length;
+    constructor(items: T[]);
     map<U>(f: (value: T) => U): List<U>;
     parallelMap<U, E>(f: (value: T) => U): Future<U[], E>;
     sort(): List<T>;
@@ -26,6 +27,9 @@ export declare class List<T> {
     performOnNonEmpty(sideEffect: (list: List<T>) => void): void;
     forEach(sideEffects: (item: T) => void): void;
     toArray(): T[];
+    flatten<U>(this: List<List<U> | U[]>): List<U>;
+    chain(f: (T: any) => List<T>): List<T>;
 }
 export declare function list<T>(...array: T[]): List<T>;
+export declare function emptyList<T>(): List<T>;
 export declare function range<T>(start: number, end?: number): List<T>;
