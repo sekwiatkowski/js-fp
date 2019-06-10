@@ -5,16 +5,19 @@ import {rejected} from '../future/Rejected'
 import {compare, compareBy, negatedCompare, negatedCompareBy} from './Comparison'
 
 export class List<T> {
-    constructor(private readonly array: T[]) {}
+    private readonly length: number
+    constructor(private readonly items: T[]) {
+        this.length = items.length
+    }
 
-    //region Map items
+    //region Mapping
     map<U>(f: (value: T) => U): List<U> {
-        return new List(this.array.map(f))
+        return new List(this.items.map(f))
     }
 
     parallelMap<U, E>(f: (value: T) => U): Future<U[], E> {
         return new Future(() => new Promise<Settled<U[], E>>(resolve => {
-            const promises = this.array.map(x =>
+            const promises = this.items.map(x =>
                 new Promise<U>(resolve =>
                     resolve(f(x))
                 )
@@ -27,42 +30,42 @@ export class List<T> {
     }
     //endregion
 
-    //region Sort items
+    //region Sorting
     sort(): List<T> {
-        return new List(this.array.sort(compare))
+        return new List(this.items.sort(compare))
     }
 
     sortBy<U>(f: (value: T) => U): List<T> {
-        return new List(this.array.sort((a, b) => compareBy(a, b, f)))
+        return new List(this.items.sort((a, b) => compareBy(a, b, f)))
     }
 
     sortDescendingly(): List<T> {
-        return new List(this.array.sort(negatedCompare))
+        return new List(this.items.sort(negatedCompare))
     }
 
     sortDescendinglyBy<U>(f: (value: T) => U): List<T> {
-        return new List(this.array.sort((a, b) => negatedCompareBy(a, b, f)))
+        return new List(this.items.sort((a, b) => negatedCompareBy(a, b, f)))
     }
     //endregion
 
     //region Size
     size(): number {
-        return this.array.length
+        return this.length
     }
 
     isEmpty(): boolean {
-        return this.array.length === 0
+        return this.items.length === 0
     }
 
     isNotEmpty(): boolean {
-        return this.array.length > 0
+        return this.items.length > 0
     }
     //endregion
 
-    //region Test items
+    //region Item tests
     all(predicate: (item: T) => boolean): boolean {
-        for (let index = 0; index < this.array.length; index++) {
-            if (!predicate(this.array[index])) {
+        for (let index = 0; index < this.items.length; index++) {
+            if (!predicate(this.items[index])) {
                 return false
             }
         }
@@ -71,8 +74,8 @@ export class List<T> {
     }
 
     some(predicate: (item: T) => boolean): boolean {
-        for (let index = 0; index < this.array.length; index++) {
-            if (predicate(this.array[index])) {
+        for (let index = 0; index < this.items.length; index++) {
+            if (predicate(this.items[index])) {
                 return true
             }
         }
@@ -86,8 +89,8 @@ export class List<T> {
 
     count(predicate: (item: T) => boolean): number {
         let count = 0
-        for (let index = 0; index < this.array.length; index++) {
-            if (predicate(this.array[index])) {
+        for (let index = 0; index < this.items.length; index++) {
+            if (predicate(this.items[index])) {
                 count += 1
             }
         }
@@ -95,7 +98,7 @@ export class List<T> {
     }
     //endregion
 
-    //region tests equality
+    //region Equality test
     equals(otherList: List<T>): boolean {
         if (otherList == null) {
             return false
@@ -103,12 +106,12 @@ export class List<T> {
 
         const otherArray = otherList.toArray()
 
-        if (this.array.length !== otherArray.length) {
+        if (this.items.length !== otherArray.length) {
             return false
         }
 
-        for (let i = 0; i < this.array.length; i++) {
-            if (this.array[i] !== otherArray[i]) {
+        for (let i = 0; i < this.items.length; i++) {
+            if (this.items[i] !== otherArray[i]) {
                 return false
             }
         }
@@ -118,14 +121,14 @@ export class List<T> {
     }
     //endregion
 
-    //region Get item(s)
+    //region Access
     get(index: number): Option<T> {
-        return option(this.array[index])
+        return option(this.items[index])
     }
 
     getOrElse(index: number, alternative: T|(() => T)): T {
-        if (this.array.length > index) {
-            return this.array[index]
+        if (this.items.length > index) {
+            return this.items[index]
         }
         else {
             return alternative instanceof Function? alternative() : alternative
@@ -134,23 +137,23 @@ export class List<T> {
 
     take(n: number): List<T> {
         if(n > 0) {
-            return new List(this.array.slice(0, n))
+            return new List(this.items.slice(0, n))
         }
         else {
-            const length = this.array.length
-            const res = this.array.slice(length+n, length)
+            const length = this.items.length
+            const res = this.items.slice(length+n, length)
             return new List(res)
         }
     }
 
     filter(predicate: (item: T) => boolean): List<T> {
-        return new List(this.array.filter(predicate))
+        return new List(this.items.filter(predicate))
     }
     //endregion
 
-    //region Concatenate lists
+    //region Concatenation
     concat(otherList: List<T>): List<T> {
-        const thisArray = this.array
+        const thisArray = this.items
         const otherArray = otherList.toArray()
 
         const thisLength = thisArray.length
@@ -176,7 +179,7 @@ export class List<T> {
     }
 
     performOnEmpty(sideEffect: (list: List<T>) => void) {
-        if (this.array.length > 0) {
+        if (this.items.length > 0) {
             return
         }
 
@@ -184,7 +187,7 @@ export class List<T> {
     }
 
     performOnNonEmpty(sideEffect: (list: List<T>) => void) {
-        if (this.array.length == 0) {
+        if (this.items.length == 0) {
             return
         }
 
@@ -192,13 +195,38 @@ export class List<T> {
     }
 
     forEach(sideEffects: (item: T) => void) {
-        this.array.forEach(sideEffects)
+        this.items.forEach(sideEffects)
     }
     //endregion
 
-    //region Convert list
+    //region Conversion
     toArray(): T[] {
-        return this.array
+        return this.items
+    }
+    //endregion
+
+    //region Chaining
+    flatten<U>(this: List<List<U>|U[]>): List<U> {
+        let size = 0
+        const listOfArrays = this as List<U[]>
+        for (let i = 0; i < listOfArrays.items.length; i++) {
+            size += listOfArrays.items[i].length
+        }
+
+        const flattened = new Array<U>(size)
+
+        let flattenedIndex = 0
+        for(let listIndex = 0; listIndex < this.items.length; listIndex++) {
+            this.items[listIndex].forEach(item => {
+                flattened[flattenedIndex++] = item
+            })
+        }
+
+        return new List(flattened)
+    }
+
+    chain(f: (T) => List<T>): List<T> {
+        return this.map(f).flatten()
     }
     //endregion
 }

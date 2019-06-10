@@ -272,6 +272,32 @@ describe('List<T>', () => {
             list().equals(undefined).should.be.false
         })
     })
+
+    describe('should flatten', () => {
+        it('arrays of the same size', () => {
+            list([1, 2], [3, 4]).flatten().equals(list(1, 2, 3, 4))
+        })
+
+        it('lists of the same size', () => {
+            list(list(1, 2), list(3, 4)).flatten().equals(list(1, 2, 3, 4))
+        })
+
+        it('arrays of the different sizes', () => {
+            list([1, 2], [3, 4, 5]).flatten().equals(list(1, 2, 3, 4, 5))
+        })
+
+        it('lists of different sizes', () => {
+            list(list(1, 2), list(3, 4, 5)).flatten().equals(list(1, 2, 3, 4, 5))
+        })
+
+        it('two empty arrays by returning an empty list', () => {
+            list([], []).equals(list())
+        })
+
+        it('two empty lists by returning another empty list', () => {
+            list(list(), list()).equals(list())
+        })
+    })
 })
 
 describe('range', () => {
