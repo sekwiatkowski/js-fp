@@ -106,6 +106,15 @@ export class List<T> {
         }
         return count
     }
+
+    contains(item: T): boolean {
+        for (let i = 0; i < this.length; i++) {
+            if (this.items[i] === item) {
+                return true
+            }
+        }
+        return false
+    }
     //endregion
 
     //region Equality test
@@ -299,44 +308,5 @@ export function emptyList<T>(): List<T> {
 }
 
 export function listFromArray<T>(array: T[]): List<T> {
-    return new List(array)
-}
-
-export function range<T>(start: number, end?: number): List<T> {
-    if (!end) {
-        end = start
-        start = 0
-    }
-
-    const array = new Array(end-start)
-
-    for (let index = 0, item = start; index < end-start; index++, item++) {
-        array[index] = item
-    }
-
-    return new List(array)
-}
-
-export function rangeInclusive<T>(start: number, end?: number) {
-    if (!end) {
-        end = start
-        start = 0
-    }
-
-    return this.range(start, end+1)
-}
-
-export function repeat<T>(times: number, valueOrFunction: T|((index?: number) => T)): List<T> {
-    const array = new Array(times)
-    if (valueOrFunction instanceof Function) {
-        for (let index = 0; index < times; index++) {
-            array[index] = valueOrFunction(index)
-        }
-    }
-    else {
-        for (let index = 0; index < times; index++) {
-            array[index] = valueOrFunction
-        }
-    }
     return new List(array)
 }

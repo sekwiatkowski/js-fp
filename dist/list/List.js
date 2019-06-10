@@ -84,6 +84,14 @@ class List {
         }
         return count;
     }
+    contains(item) {
+        for (let i = 0; i < this.length; i++) {
+            if (this.items[i] === item) {
+                return true;
+            }
+        }
+        return false;
+    }
     //endregion
     //region Equality test
     equals(otherList) {
@@ -245,39 +253,4 @@ function listFromArray(array) {
     return new List(array);
 }
 exports.listFromArray = listFromArray;
-function range(start, end) {
-    if (!end) {
-        end = start;
-        start = 0;
-    }
-    const array = new Array(end - start);
-    for (let index = 0, item = start; index < end - start; index++, item++) {
-        array[index] = item;
-    }
-    return new List(array);
-}
-exports.range = range;
-function rangeInclusive(start, end) {
-    if (!end) {
-        end = start;
-        start = 0;
-    }
-    return this.range(start, end + 1);
-}
-exports.rangeInclusive = rangeInclusive;
-function repeat(times, valueOrFunction) {
-    const array = new Array(times);
-    if (valueOrFunction instanceof Function) {
-        for (let index = 0; index < times; index++) {
-            array[index] = valueOrFunction(index);
-        }
-    }
-    else {
-        for (let index = 0; index < times; index++) {
-            array[index] = valueOrFunction;
-        }
-    }
-    return new List(array);
-}
-exports.repeat = repeat;
 //# sourceMappingURL=List.js.map

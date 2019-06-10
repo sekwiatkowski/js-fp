@@ -9,4 +9,6 @@ export { Validated } from './validated/Validated';
 export { Valid, valid, validatedObject } from './validated/Valid';
 export { Invalid, invalid } from './validated/Invalid';
 export { Future, future, fulfill, reject, futureObject } from './future/Future';
-export { List, emptyList, list, listFromArray, range, rangeInclusive, repeat } from './list/List';
+export { List, emptyList, list, listFromArray } from './list/List';
+export { range, rangeInclusive } from './list/Range';
+export { repeat } from './list/Repetition';

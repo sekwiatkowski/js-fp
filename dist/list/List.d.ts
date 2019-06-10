@@ -18,6 +18,7 @@ export declare class List<T> {
     some(predicate: (item: T) => boolean): boolean;
     none(predicate: (item: T) => boolean): boolean;
     count(predicate: (item: T) => boolean): number;
+    contains(item: T): boolean;
     equals(otherList: List<T>): boolean;
     get(index: number): Option<T>;
     getOrElse(index: number, alternative: T | (() => T)): T;
@@ -40,6 +41,3 @@ export declare class List<T> {
 export declare function list<T>(...array: T[]): List<T>;
 export declare function emptyList<T>(): List<T>;
 export declare function listFromArray<T>(array: T[]): List<T>;
-export declare function range<T>(start: number, end?: number): List<T>;
-export declare function rangeInclusive<T>(start: number, end?: number): any;
-export declare function repeat<T>(times: number, valueOrFunction: T | ((index?: number) => T)): List<T>;

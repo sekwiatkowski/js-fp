@@ -127,6 +127,17 @@ describe('List<T>', () => {
             list(1, 2, 3).count(isEven).should.equal(1)
             list(1, 2, 3, 4).count(isEven).should.equal(2)
         })
+
+        it('for the presence of an item', () => {
+            emptyList().contains("A").should.be.false
+            emptyList().contains(1).should.be.false
+            list(1).contains(1).should.be.true
+            list(2).contains(1).should.be.false
+            list(1, 2).contains(1).should.be.true
+            list("A").contains("A").should.be.true
+            list("B").contains("A").should.be.false
+            list("A", "B").contains("A").should.be.true
+        })
     })
 
     describe('should safely return items', () => {
