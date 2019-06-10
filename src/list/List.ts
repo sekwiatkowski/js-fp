@@ -1,4 +1,4 @@
-import {Future, Option, option} from '..'
+import {Future, none, Option, option, some} from '..'
 import {fulfilled} from '../future/Fulfilled'
 import {Settled} from '../future/Settled'
 import {rejected} from '../future/Rejected'
@@ -54,17 +54,17 @@ export class List<T> {
     }
 
     isEmpty(): boolean {
-        return this.items.length === 0
+        return this.length === 0
     }
 
     isNotEmpty(): boolean {
-        return this.items.length > 0
+        return this.length > 0
     }
     //endregion
 
     //region Item tests
     all(predicate: (item: T) => boolean): boolean {
-        for (let index = 0; index < this.items.length; index++) {
+        for (let index = 0; index < this.length; index++) {
             if (!predicate(this.items[index])) {
                 return false
             }
@@ -74,7 +74,7 @@ export class List<T> {
     }
 
     some(predicate: (item: T) => boolean): boolean {
-        for (let index = 0; index < this.items.length; index++) {
+        for (let index = 0; index < this.length; index++) {
             if (predicate(this.items[index])) {
                 return true
             }
@@ -89,7 +89,7 @@ export class List<T> {
 
     count(predicate: (item: T) => boolean): number {
         let count = 0
-        for (let index = 0; index < this.items.length; index++) {
+        for (let index = 0; index < this.length; index++) {
             if (predicate(this.items[index])) {
                 count += 1
             }
@@ -106,11 +106,11 @@ export class List<T> {
 
         const otherArray = otherList.toArray()
 
-        if (this.items.length !== otherArray.length) {
+        if (this.length !== otherArray.length) {
             return false
         }
 
-        for (let i = 0; i < this.items.length; i++) {
+        for (let i = 0; i < this.length; i++) {
             if (this.items[i] !== otherArray[i]) {
                 return false
             }
@@ -127,7 +127,7 @@ export class List<T> {
     }
 
     getOrElse(index: number, alternative: T|(() => T)): T {
-        if (this.items.length > index) {
+        if (this.length > index) {
             return this.items[index]
         }
         else {
@@ -140,7 +140,7 @@ export class List<T> {
             return new List(this.items.slice(0, n))
         }
         else {
-            const length = this.items.length
+            const length = this.length
             const res = this.items.slice(length+n, length)
             return new List(res)
         }
@@ -148,6 +148,40 @@ export class List<T> {
 
     filter(predicate: (item: T) => boolean): List<T> {
         return new List(this.items.filter(predicate))
+    }
+
+    first(predicate?: (item: T) => boolean): Option<T> {
+        if (predicate == null) {
+            return this.get(0)
+        }
+        else {
+            for (let i = 0; i < this.length; i++) {
+                const item = this.items[i]
+                if (predicate(item)) {
+                    return some(item)
+                }
+            }
+
+            return none
+        }
+    }
+
+    last(predicate?: (item: T) => boolean): Option<T> {
+        const lastIndex = this.length-1
+        if (predicate == null) {
+            return this.get(lastIndex)
+        }
+        else {
+            for (let i = lastIndex; i >= 0; i--) {
+                const item = this.items[i]
+                if (predicate(item)) {
+                    return some(item)
+                }
+            }
+
+            return none
+        }
+
     }
     //endregion
 
@@ -179,7 +213,7 @@ export class List<T> {
     }
 
     performOnEmpty(sideEffect: (list: List<T>) => void) {
-        if (this.items.length > 0) {
+        if (this.length > 0) {
             return
         }
 
@@ -187,7 +221,7 @@ export class List<T> {
     }
 
     performOnNonEmpty(sideEffect: (list: List<T>) => void) {
-        if (this.items.length == 0) {
+        if (this.length == 0) {
             return
         }
 
@@ -209,14 +243,14 @@ export class List<T> {
     flatten<U>(this: List<List<U>|U[]>): List<U> {
         let size = 0
         const listOfArrays = this as List<U[]>
-        for (let i = 0; i < listOfArrays.items.length; i++) {
+        for (let i = 0; i < listOfArrays.length; i++) {
             size += listOfArrays.items[i].length
         }
 
         const flattened = new Array<U>(size)
 
         let flattenedIndex = 0
-        for(let listIndex = 0; listIndex < this.items.length; listIndex++) {
+        for(let listIndex = 0; listIndex < this.length; listIndex++) {
             this.items[listIndex].forEach(item => {
                 flattened[flattenedIndex++] = item
             })

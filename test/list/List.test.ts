@@ -1,4 +1,4 @@
-import {List, list, None, Some} from '../../src'
+import {List, list, none, None, some, Some} from '../../src'
 import {emptyList, range} from '../../src/list/List'
 
 const chai = require('chai')
@@ -296,6 +296,52 @@ describe('List<T>', () => {
 
         it('two empty lists by returning another empty list', () => {
             list(emptyList(), emptyList()).equals(emptyList())
+        })
+    })
+
+    describe('should return the first item', () => {
+        it('as none', () => {
+            it('if the list is empty', () => {
+                emptyList().first().should.equal(none)
+            })
+
+            it('if the predicate does not match any items', () => {
+                emptyList().first(isEven).equals(none).should.be.true
+                list(1).first(isEven).equals(none).should.be.true
+            })
+        })
+
+        it('as an instance of Some', () => {
+            it('if the list is not empty', () => {
+                list(1, 2).first().equals(some(1)).should.be.true
+            })
+
+            it('if the predicate matches an item', () => {
+                list(1, 2, 3, 4).first(isEven).equals(some(2)).should.be.true
+            })
+        })
+    })
+
+    describe('should return the last item', () => {
+        it('as none', () => {
+            it('if the list is empty', () => {
+                emptyList().last().should.equal(none)
+            })
+
+            it('if the predicate does not match any items', () => {
+                emptyList().last(isEven).equals(none).should.be.true
+                list(1).last(isEven).equals(none).should.be.true
+            })
+        })
+
+        it('as an instance of Some', () => {
+            it('if the list is not empty', () => {
+                list(1, 2).last().equals(some(2)).should.be.true
+            })
+
+            it('if the predicate matches an item', () => {
+                list(1, 2, 3, 4).last(isEven).equals(some(4)).should.be.true
+            })
         })
     })
 })

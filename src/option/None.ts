@@ -22,6 +22,13 @@ export class None<A> implements Option<A> {
         return none
     }
 
+    equals(other: Option<A>) {
+        return other.fold(
+            otherValue => false,
+            () => true
+        )
+    }
+
     test(predicate: (value: A) => boolean): boolean {
         return false
     }

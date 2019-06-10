@@ -40,6 +40,13 @@ export class Some<A> implements Option<A> {
         return f(this.value)
     }
 
+    equals(other: Option<A>) {
+        return other.fold(
+            otherValue => this.value == otherValue,
+            () => false
+        )
+    }
+
     test(predicate: (value: A) => boolean): boolean {
         return predicate(this.value)
     }
