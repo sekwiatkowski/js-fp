@@ -10,12 +10,22 @@ export class List<T> {
         this.length = items.length
     }
 
+    //region Add items
+    append(item: T) {
+        return new List([...this.items, item])
+    }
+
+    prepend(item: T) {
+        return new List([item, ...this.items])
+    }
+    //endregion
+
     //region Mapping
-    map<U>(f: (value: T) => U): List<U> {
+    map<U>(f: (item: T) => U): List<U> {
         return new List(this.items.map(f))
     }
 
-    parallelMap<U, E>(f: (value: T) => U): Future<U[], E> {
+    parallelMap<U, E>(f: (item: T) => U): Future<U[], E> {
         return new Future(() => new Promise<Settled<U[], E>>(resolve => {
             const promises = this.items.map(x =>
                 new Promise<U>(resolve =>
@@ -24,7 +34,7 @@ export class List<T> {
             )
 
             return Promise.all(promises)
-                .then(values => resolve(fulfilled(values)))
+                .then(items => resolve(fulfilled(items)))
                 .catch(error => resolve(rejected(error)))
         }))
     }
@@ -35,7 +45,7 @@ export class List<T> {
         return new List(this.items.sort(compare))
     }
 
-    sortBy<U>(f: (value: T) => U): List<T> {
+    sortBy<U>(f: (item: T) => U): List<T> {
         return new List(this.items.sort((a, b) => compareBy(a, b, f)))
     }
 
@@ -43,7 +53,7 @@ export class List<T> {
         return new List(this.items.sort(negatedCompare))
     }
 
-    sortDescendinglyBy<U>(f: (value: T) => U): List<T> {
+    sortDescendinglyBy<U>(f: (item: T) => U): List<T> {
         return new List(this.items.sort((a, b) => negatedCompareBy(a, b, f)))
     }
     //endregion
@@ -285,8 +295,8 @@ export function range<T>(start: number, end?: number): List<T> {
 
     const array = new Array(end-start)
 
-    for (let index = 0, value = start; index < end-start; index++, value++) {
-        array[index] = value
+    for (let index = 0, item = start; index < end-start; index++, item++) {
+        array[index] = item
     }
 
     return new List(array)

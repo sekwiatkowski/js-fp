@@ -9,6 +9,14 @@ class List {
         this.items = items;
         this.length = items.length;
     }
+    //region Add items
+    append(item) {
+        return new List([...this.items, item]);
+    }
+    prepend(item) {
+        return new List([item, ...this.items]);
+    }
+    //endregion
     //region Mapping
     map(f) {
         return new List(this.items.map(f));
@@ -17,7 +25,7 @@ class List {
         return new __1.Future(() => new Promise(resolve => {
             const promises = this.items.map(x => new Promise(resolve => resolve(f(x))));
             return Promise.all(promises)
-                .then(values => resolve(Fulfilled_1.fulfilled(values)))
+                .then(items => resolve(Fulfilled_1.fulfilled(items)))
                 .catch(error => resolve(Rejected_1.rejected(error)));
         }));
     }
@@ -219,14 +227,18 @@ function emptyList() {
     return new List([]);
 }
 exports.emptyList = emptyList;
+function listFromArray(array) {
+    return new List(array);
+}
+exports.listFromArray = listFromArray;
 function range(start, end) {
     if (!end) {
         end = start;
         start = 0;
     }
     const array = new Array(end - start);
-    for (let index = 0, value = start; index < end - start; index++, value++) {
-        array[index] = value;
+    for (let index = 0, item = start; index < end - start; index++, item++) {
+        array[index] = item;
     }
     return new List(array);
 }

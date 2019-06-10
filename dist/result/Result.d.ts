@@ -9,6 +9,7 @@ export interface Result<T, E> {
         [key in K]: U;
     }, E>;
     chain<U>(f: (value: T) => Result<U, E>): Result<U, E>;
+    equals(otherResult: Result<T, E>): boolean;
     getErrorOrElse(alternative: E | ((value: T) => E)): E;
     getOrElse(alternative: T | ((error: E) => T)): T;
     isFailure(): boolean;

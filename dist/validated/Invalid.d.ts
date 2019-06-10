@@ -7,7 +7,8 @@ export declare class Invalid<T, E> implements Validated<T, E> {
     assign<T extends object, K extends string, U>(this: Invalid<T, E>, key: K, memberOrFunction: Validated<U, E> | ((value: T) => Validated<U, E>) | U | ((value: T) => U)): Validated<T & {
         [key in K]: U;
     }, E>;
-    concat(other: Validated<T, E>): Validated<T, E>;
+    concat(otherValidated: Validated<T, E>): Validated<T, E>;
+    equals(otherValidated: Validated<T, E>): boolean;
     getErrorsOrElse(alternative: E[] | ((value: T) => E[])): E[];
     getOrElse(alternative: T | ((errors: E[]) => T)): T;
     isInvalid(): boolean;

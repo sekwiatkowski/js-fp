@@ -344,6 +344,16 @@ describe('List<T>', () => {
             })
         })
     })
+
+    describe('should add an item', () => {
+        it('to the end', () => {
+            list(1).append(2).equals(list(1, 2)).should.be.true
+        })
+
+        it('to the start', () => {
+            list(1).prepend(2).equals(list(2, 1)).should.be.true
+        })
+    })
 })
 
 describe('range', () => {

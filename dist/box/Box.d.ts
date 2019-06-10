@@ -7,6 +7,7 @@ export declare class Box<A> {
         [key in K]: B;
     }>;
     chain<B>(f: (value: A) => Box<B>): Box<B>;
+    equals(otherBox: Box<A>): boolean;
     fold<B>(f: (value: A) => B): B;
     get(): A;
     map<B>(f: (value: A) => B): Box<B>;
