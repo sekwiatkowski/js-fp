@@ -8,6 +8,7 @@ export declare class Failure<T, E> implements Result<T, E> {
         [key in K]: U;
     }, E>;
     chain<U>(f: (t: T) => Result<U, E>): Result<U, E>;
+    equals(otherResult: Result<T, E>): boolean;
     isFailure(): boolean;
     isSuccess(): boolean;
     getErrorOrElse(alternative: E | ((value: T) => E)): E;

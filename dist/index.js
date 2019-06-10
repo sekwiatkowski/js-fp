@@ -39,4 +39,5 @@ exports.emptyList = List_1.emptyList;
 exports.list = List_1.list;
 exports.listFromArray = List_1.listFromArray;
 exports.range = List_1.range;
+exports.repeat = List_1.repeat;
 //# sourceMappingURL=index.js.map

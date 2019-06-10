@@ -17,6 +17,14 @@ class Box {
     chain(f) {
         return f(this.value);
     }
+    equals(otherBox) {
+        if (otherBox == null) {
+            return false;
+        }
+        else {
+            return otherBox.fold(otherValue => this.value === otherValue);
+        }
+    }
     fold(f) {
         return f(this.value);
     }

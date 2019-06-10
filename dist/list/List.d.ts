@@ -3,12 +3,14 @@ export declare class List<T> {
     private readonly items;
     private readonly length;
     constructor(items: T[]);
-    map<U>(f: (value: T) => U): List<U>;
-    parallelMap<U, E>(f: (value: T) => U): Future<U[], E>;
+    append(item: T): List<T>;
+    prepend(item: T): List<T>;
+    map<U>(f: (item: T) => U): List<U>;
+    parallelMap<U, E>(f: (item: T) => U): Future<U[], E>;
     sort(): List<T>;
-    sortBy<U>(f: (value: T) => U): List<T>;
+    sortBy<U>(f: (item: T) => U): List<T>;
     sortDescendingly(): List<T>;
-    sortDescendinglyBy<U>(f: (value: T) => U): List<T>;
+    sortDescendinglyBy<U>(f: (item: T) => U): List<T>;
     size(): number;
     isEmpty(): boolean;
     isNotEmpty(): boolean;
@@ -34,4 +36,6 @@ export declare class List<T> {
 }
 export declare function list<T>(...array: T[]): List<T>;
 export declare function emptyList<T>(): List<T>;
+export declare function listFromArray<T>(array: T[]): List<T>;
 export declare function range<T>(start: number, end?: number): List<T>;
+export declare function repeat<T>(times: number, valueOrFunction: T | ((index?: number) => T)): List<T>;

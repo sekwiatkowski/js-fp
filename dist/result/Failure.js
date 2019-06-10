@@ -15,6 +15,9 @@ class Failure {
     chain(f) {
         return new Failure(this.error);
     }
+    equals(otherResult) {
+        return otherResult.fold(() => false, otherError => this.error === otherError);
+    }
     isFailure() {
         return true;
     }

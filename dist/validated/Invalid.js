@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const __1 = require("..");
+const List_1 = require("../list/List");
 class Invalid {
     constructor(errors) {
         this.errors = errors;
@@ -11,8 +12,11 @@ class Invalid {
     assign(key, memberOrFunction) {
         return new Invalid(this.errors);
     }
-    concat(other) {
-        return other.fold(() => this, otherList => new Invalid(this.errors.concat(otherList)));
+    concat(otherValidated) {
+        return otherValidated.fold(() => this, otherList => new Invalid(this.errors.concat(otherList)));
+    }
+    equals(otherValidated) {
+        return otherValidated.fold(() => false, otherErrors => List_1.listFromArray(this.errors).equals(List_1.listFromArray(otherErrors)));
     }
     getErrorsOrElse(alternative) {
         return this.errors;

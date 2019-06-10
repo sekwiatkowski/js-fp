@@ -27,6 +27,9 @@ class Success {
     chain(f) {
         return f(this.value);
     }
+    equals(otherResult) {
+        return otherResult.fold(otherValue => this.value == otherValue, () => false);
+    }
     getErrorOrElse(alternative) {
         return alternative instanceof Function ? alternative(this.value) : alternative;
     }

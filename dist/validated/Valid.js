@@ -24,8 +24,11 @@ class Valid {
             return this.map(obj => (Object.assign({}, Object(obj), { [key]: member })));
         }
     }
-    concat(validated) {
-        return validated;
+    concat(otherValidated) {
+        return otherValidated;
+    }
+    equals(otherValidated) {
+        return otherValidated.fold(otherValue => this.value === otherValue, () => false);
     }
     getErrorsOrElse(alternative) {
         return alternative instanceof Function ? alternative(this.value) : alternative;
