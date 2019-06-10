@@ -173,6 +173,20 @@ class List {
         return new List(concatenation);
     }
     //endregion
+    //region Grouping
+    groupBy(computeKey) {
+        let dictionary = {};
+        for (let i = 0; i < this.length; i++) {
+            const item = this.items[i];
+            const key = computeKey(item);
+            if (!(key in dictionary)) {
+                dictionary[key] = [];
+            }
+            dictionary[key].push(item);
+        }
+        return dictionary;
+    }
+    //endregion
     //region Side-effects
     perform(sideEffect) {
         sideEffect(this);

@@ -217,6 +217,21 @@ export class List<T> {
     }
     //endregion
 
+    //region Grouping
+    groupBy(computeKey: (item: T) => string): { [id: string]: T[] } {
+        let dictionary:{ [id: string]: T[] } = {}
+        for(let i = 0; i < this.length; i++){
+            const item = this.items[i]
+            const key = computeKey(item)
+            if (!(key in dictionary)) {
+                dictionary[key] = []
+            }
+            dictionary[key].push(item)
+        }
+        return dictionary
+    }
+    //endregion
+
     //region Side-effects
     perform(sideEffect: (list: List<T>) => void) {
         sideEffect(this)

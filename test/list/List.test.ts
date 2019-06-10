@@ -1,4 +1,4 @@
-import {emptyList, list, none, None, range, repeat, some, Some} from '../../src'
+import {emptyList, list, none, None, range, some, Some} from '../../src'
 
 const chai = require('chai')
 
@@ -298,8 +298,44 @@ describe('List<T>', () => {
         })
     })
 
+    describe('should group', () => {
+        interface WithKeyAndValue {
+            key: string
+            value: number
+        }
+
+        function create(key: string, value: number) {
+            return { key, value }
+        }
+
+        it('an empty list as an empty object', () => {
+            emptyList<WithKeyAndValue>().groupBy(item => item.key).should.be.empty
+        })
+
+        it('a list with one key as an object with one property', () => {
+            const A1 = create('A', 1)
+            const A2 = create('A', 2)
+
+            list(A1).groupBy(item => item.key).should.eql({'A': [A1]})
+            list(A1, A1).groupBy(item => item.key).should.eql({'A': [A1, A1]})
+            list(A1, A2).groupBy(item => item.key).should.eql({'A': [A1, A2]})
+        })
+
+        it('a list with one key as an object with two properties', () => {
+            const A1 = create('A', 1)
+            const A2 = create('A', 2)
+            const B1 = create('B', 1)
+            const B2 = create('B', 2)
+
+            list(A1, B1).groupBy(item => item.key).should.eql({'A': [A1], 'B': [B1]})
+            list(A1, A2, B1).groupBy(item => item.key).should.eql({'A': [A1, A2], 'B': [B1]})
+            list(A1, B1, B2).groupBy(item => item.key).should.eql({'A': [A1], 'B': [B1, B2]})
+            list(A1, A2, B1, B2).groupBy(item => item.key).should.eql({'A': [A1, A2], 'B': [B1, B2]})
+        })
+    })
+
     describe('should return the first item', () => {
-        it('as none', () => {
+        describe('as none', () => {
             it('if the list is empty', () => {
                 emptyList().first().should.equal(none)
             })
@@ -310,7 +346,7 @@ describe('List<T>', () => {
             })
         })
 
-        it('as an instance of Some', () => {
+        describe('as an instance of Some', () => {
             it('if the list is not empty', () => {
                 list(1, 2).first().equals(some(1)).should.be.true
             })
@@ -322,7 +358,7 @@ describe('List<T>', () => {
     })
 
     describe('should return the last item', () => {
-        it('as none', () => {
+        describe('as none', () => {
             it('if the list is empty', () => {
                 emptyList().last().should.equal(none)
             })
@@ -333,7 +369,7 @@ describe('List<T>', () => {
             })
         })
 
-        it('as an instance of Some', () => {
+        describe('as an instance of Some', () => {
             it('if the list is not empty', () => {
                 list(1, 2).last().equals(some(2)).should.be.true
             })
@@ -352,34 +388,5 @@ describe('List<T>', () => {
         it('to the start', () => {
             list(1).prepend(2).equals(list(2, 1)).should.be.true
         })
-    })
-})
-
-describe('should repeat', () => {
-    const value = 'value'
-
-    it('the same value n times', () => {
-        repeat(0, value).equals(emptyList()).should.be.true
-        repeat(1, value).equals(list(value)).should.be.true
-        repeat(2, value).equals(list(value, value)).should.be.true
-    })
-
-    it('a computation n times, each time with a different index', () => {
-        const f = index => index
-        repeat(0, f).equals(emptyList()).should.be.true
-        repeat(1, f).equals(list(0)).should.be.true
-        repeat(2, f).equals(list(0, 1)).should.be.true
-    })
-
-    it('the result of a single computation n times', () => {
-        let counter = 0
-        const f = () => {
-            counter++
-            return value
-        }
-        repeat(0, f).equals(emptyList()).should.be.true
-        repeat(1, f).equals(list(value)).should.be.true
-        repeat(2, f).equals(list(value, value)).should.be.true
-        counter.should.equal(3)
     })
 })

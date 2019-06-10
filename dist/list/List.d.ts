@@ -26,6 +26,9 @@ export declare class List<T> {
     first(predicate?: (item: T) => boolean): Option<T>;
     last(predicate?: (item: T) => boolean): Option<T>;
     concat(otherList: List<T>): List<T>;
+    groupBy(computeKey: (item: T) => string): {
+        [id: string]: T[];
+    };
     perform(sideEffect: (list: List<T>) => void): void;
     performOnEmpty(sideEffect: (list: List<T>) => void): void;
     performOnNonEmpty(sideEffect: (list: List<T>) => void): void;
