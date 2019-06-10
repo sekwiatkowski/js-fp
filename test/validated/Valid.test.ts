@@ -1,4 +1,4 @@
-import {Invalid, invalid, valid} from '../../src'
+import {invalid, valid} from '../../src'
 
 const chai = require('chai')
 
@@ -17,8 +17,8 @@ describe('Valid', () => {
             .apply(() => 2)
             .apply(valid(3))
             .apply(() => valid(4))
-            .getOrElse(unsafeGet)
-            .should.equal(10)
+            .equals(valid(10))
+            .should.be.true
     })
 
     describe('should be able to build objects', () => {
@@ -28,16 +28,17 @@ describe('Valid', () => {
                 .assign('b', scope => scope.a + 1)
                 .assign('c', valid(3))
                 .assign('d', scope => valid(scope.c + 1))
-                .fold(
-                    scope => scope.a + scope.b + scope.c + scope.d,
-                    unsafeGet)
-                .should.equal(10)
+                .map(scope => scope.a + scope.b + scope.c + scope.d)
+                .equals(valid(10))
+                .should.be.true
         })
 
-        it('but switch to Invalid instance when an Invalid instance is assigned to a member', () => {
+        it('but switch to the Invalid path when an invalid instance is assigned to a member', () => {
+            const errors = ['error']
             valid({})
-                .assign('x', invalid(['error']))
-                .should.be.instanceOf(Invalid)
+                .assign('x', invalid(errors))
+                .equals(invalid(errors))
+                .should.be.true
         })
     })
 
@@ -48,23 +49,22 @@ describe('Valid', () => {
                 .should.equal(containedString)
         })
 
+        const fallback = ['fallback']
         it('a default value when the errors are requested', () => {
-            const defaultValue = ['default']
             createValidString()
-                .getErrorsOrElse(defaultValue)
-                .should.equal(defaultValue)
+                .getErrorsOrElse(fallback)
+                .should.equal(fallback)
         })
 
         it('the result of a guaranteed computation when the errors are requested', () => {
-            const defaultValue = ['default']
             createValidString()
-                .getErrorsOrElse(() => defaultValue)
-                .should.equal(defaultValue)
+                .getErrorsOrElse(() => fallback)
+                .should.equal(fallback)
         })
     })
 
     describe('should concatenate', () => {
-        it('with another Valid instance by returning the other instance', () => {
+        it('with another Valid instance by returning that other instance', () => {
             const other = valid<string, string>('another string')
             createValidString().concat(other).should.equal(other)
         })
@@ -82,12 +82,12 @@ describe('Valid', () => {
     })
 
     describe('should map', () => {
-        it('map over the value', () => {
+        it('over the value', () => {
             const f = value => `mapped over ${value}`
             createValidString()
                 .map(f)
-                .getOrElse(unsafeGet)
-                .should.equal(f(containedString))
+                .equals(valid(f(containedString)))
+                .should.be.true
         })
 
         it('but ignore attempts to map over the list of errors', () => {

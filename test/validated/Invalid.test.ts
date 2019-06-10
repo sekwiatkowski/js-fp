@@ -5,7 +5,6 @@ chai.should()
 const expect = chai.expect
 
 describe('Invalid', () => {
-    const unsafeGetErrors = () => { throw 'Unexpected failure to get the errors!' }
     const errors = ['error 1', 'error 2']
     const createInvalidInstance = <T>() => invalid<T, string>(errors)
     const noSideEffectText = 'no side-effect'
@@ -16,8 +15,8 @@ describe('Invalid', () => {
             .apply(() => 2)
             .apply(valid(3))
             .apply(() => valid(4))
-            .getErrorsOrElse(unsafeGetErrors)
-            .should.eql(errors)
+            .equals(invalid(errors))
+            .should.be.true
     })
 
     it('should ignore attempts be build an object with values', () => {
@@ -27,23 +26,25 @@ describe('Invalid', () => {
             .assign('c', valid(3))
             .assign('d', scope => valid(scope.c + 1))
             .map(scope => scope.a + scope.b + scope.c + scope.d)
-            .getErrorsOrElse(unsafeGetErrors)
-            .should.eql(errors)
+            .equals(invalid(errors))
+            .should.be.true
     })
 
     describe('should concatenate', () => {
         it('with a Valid instance by returning itself', () => {
-            createInvalidInstance()
+            const invalidInstance = createInvalidInstance()
+            invalidInstance
                 .concat(valid('value'))
-                .getErrorsOrElse(unsafeGetErrors)
-                .should.eql(errors)
+                .should.equal(invalidInstance)
         })
 
         it('with another Invalid instance by concatenating the lists of errors when concatenated', () => {
-            invalid(['error 1a', 'error 1b'])
-                .concat(invalid(['error 2a', 'error 2b']))
-                .getErrorsOrElse(unsafeGetErrors)
-                .should.eql(['error 1a', 'error 1b', 'error 2a', 'error 2b'])
+            const firstErrors = ['error 1a', 'error 1b']
+            const secondErrors = ['error 2a', 'error 2b']
+            invalid(firstErrors)
+                .concat(invalid(secondErrors))
+                .equals(invalid(firstErrors.concat(secondErrors)))
+                .should.be.true
         })
 
     })
@@ -51,15 +52,22 @@ describe('Invalid', () => {
     describe('should return', () => {
         it('should return the list of errors when it is requested', () => {
             invalid(errors)
-                .getErrorsOrElse(unsafeGetErrors)
+                .getErrorsOrElse(() => { throw 'Unexpected failure to get the errors!' })
                 .should.eql(errors)
         })
 
-        it('should return the alternative when the value is requested', () => {
-            const alternativeText = 'alternative'
+        const fallbackText = 'alternative'
+
+        it('the default when the value is requested', () => {
             createInvalidInstance()
-                .getOrElse(alternativeText)
-                .should.equal(alternativeText)
+                .getOrElse(fallbackText)
+                .should.equal(fallbackText)
+        })
+
+        it('the result of a guaranteed computation when the value is requested', () => {
+            createInvalidInstance()
+                .getOrElse(() => fallbackText)
+                .should.equal(fallbackText)
         })
     })
 
@@ -76,8 +84,8 @@ describe('Invalid', () => {
             const mappedErrors = errors.map(f)
             createInvalidInstance()
                 .mapErrors(errors => errors.map(f))
-                .getErrorsOrElse(unsafeGetErrors)
-                .should.eql(mappedErrors)
+                .equals(invalid(mappedErrors))
+                .should.be.true
         })
 
         it('but ignore maps over the value', () => {

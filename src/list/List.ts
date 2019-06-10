@@ -273,6 +273,10 @@ export function emptyList<T>(): List<T> {
     return new List<T>([])
 }
 
+export function listFromArray<T>(array: T[]): List<T> {
+    return new List(array)
+}
+
 export function range<T>(start: number, end?: number): List<T> {
     if (!end) {
         end = start

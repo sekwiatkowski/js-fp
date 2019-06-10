@@ -15,9 +15,9 @@ export interface Result<T, E> {
         key: K,
         memberOrFunction: Result<U, E> | ((value: T) => Result<U, E>) | U | ((value: T) => U)): Result<T & { [key in K]: U }, E>
 
-    equals(otherResult: Result<T, E>): boolean
-
     chain<U>(f: (value: T) => Result<U, E>): Result<U, E>
+
+    equals(otherResult: Result<T, E>): boolean
 
     getErrorOrElse(alternative: E|((value: T) => E)): E
     getOrElse(alternative: T|((error: E) => T)): T

@@ -38,8 +38,15 @@ export class Valid<T, E> implements Validated<T, E> {
         }
     }
 
-    concat(validated: Validated<T, E>): Validated<T, E> {
-        return validated
+    concat(otherValidated: Validated<T, E>): Validated<T, E> {
+        return otherValidated
+    }
+
+    equals(otherValidated: Validated<T, E>): boolean {
+        return otherValidated.fold(
+            otherValue => this.value === otherValue,
+            () => false,
+        )
     }
 
     getErrorsOrElse(alternative: E[]|((value: T) => E[])): E[] {

@@ -43,7 +43,7 @@ describe('Success', () => {
         it('but switch to Failure when a Failure instance is assigned to a member', () => {
             const errorText = 'error'
             success({})
-                .assign('firstMember', failure<string, string>(errorText))
+                .assign('firstMember', failure(errorText))
                 .equals(failure(errorText))
                 .should.be.true
         })

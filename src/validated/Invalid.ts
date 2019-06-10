@@ -1,5 +1,6 @@
 import {Validated} from './Validated'
 import {failure, Future, none, Option, reject, Result} from '..'
+import {listFromArray} from '../list/List'
 
 export class Invalid<T, E> implements Validated<T, E> {
     constructor(private readonly errors: E[]) {}
@@ -18,10 +19,17 @@ export class Invalid<T, E> implements Validated<T, E> {
         return new Invalid<T & { [key in K]: U }, E>(this.errors)
     }
 
-    concat(other: Validated<T, E>): Validated<T, E> {
-        return other.fold(
+    concat(otherValidated: Validated<T, E>): Validated<T, E> {
+        return otherValidated.fold(
             () => this,
             otherList => new Invalid<T, E>(this.errors.concat(otherList)))
+    }
+
+    equals(otherValidated: Validated<T, E>): boolean {
+        return otherValidated.fold(
+            () => false,
+            otherErrors => listFromArray(this.errors).equals(listFromArray(otherErrors))
+        )
     }
 
     getErrorsOrElse(alternative: E[]|((value: T) => E[])): E[] {
