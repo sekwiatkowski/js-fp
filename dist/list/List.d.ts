@@ -21,6 +21,8 @@ export declare class List<T> {
     getOrElse(index: number, alternative: T | (() => T)): T;
     take(n: number): List<T>;
     filter(predicate: (item: T) => boolean): List<T>;
+    first(predicate?: (item: T) => boolean): Option<T>;
+    last(predicate?: (item: T) => boolean): Option<T>;
     concat(otherList: List<T>): List<T>;
     perform(sideEffect: (list: List<T>) => void): void;
     performOnEmpty(sideEffect: (list: List<T>) => void): void;

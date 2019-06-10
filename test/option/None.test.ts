@@ -6,8 +6,6 @@ chai.should()
 const expect = chai.expect
 
 describe('None', () => {
-    const unsafeGet = () => { throw 'Unexpected failure to get the value!' }
-
     it('should be able to apply parameters', () => {
         (none as Option<(a: number) => (b: number) => (c: number) => (d: number) => number>)
             .apply(1)
@@ -77,19 +75,27 @@ describe('None', () => {
     })
 
     describe('should fall back', () => {
+        const fallbackText = 'fallback';
+
         it('to a default value', () => {
-            const defaultValue = 'default value';
             (none as Option<string>)
-                .orElse(defaultValue)
-                .isSome().should.be.true
+                .orElse(fallbackText)
+                .equals(some(fallbackText))
+                .should.be.true
+        })
+
+        it('to the result of a guaranteed computation', () => {
+            (none as Option<string>)
+                .orElse(() => fallbackText)
+                .equals(some(fallbackText))
+                .should.be.true
         })
 
         it('to an alternative attempt', () => {
-            const alternativeText = 'fallback';
             (none as Option<string>)
-                .orAttempt(() => some(alternativeText))
-                .getOrElse(unsafeGet)
-                .should.equal(alternativeText)
+                .orAttempt(() => some(fallbackText))
+                .equals(some(fallbackText))
+                .should.be.true
         })
     })
 

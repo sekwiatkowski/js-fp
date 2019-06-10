@@ -19,10 +19,9 @@ describe('Some', () => {
                 .assign('b', scope => scope.a + 1)
                 .assign('c', some(3))
                 .assign('d', scope => some(scope.c + 1))
-                .fold(
-                    scope => scope.a + scope.b + scope.c + scope.d,
-                    unsafeGet)
-                .should.equal(10)
+                .map(scope => scope.a + scope.b + scope.c + scope.d)
+                .equals(some(10))
+                .should.be.true
         })
 
         it('that satisfies an interface', () => {
@@ -55,15 +54,16 @@ describe('Some', () => {
             .apply(() => 2)
             .apply(some(3))
             .apply(() => some(4))
-            .getOrElse(unsafeGet)
-            .should.equal(10)
+            .equals(some(10))
+            .should.be.true
     })
 
     it('should map over the value', () => {
+        const text = 'mapped over value'
         createSomeOfString()
-            .map(() => 'mapped over value')
-            .getOrElse(unsafeGet)
-            .should.equal('mapped over value')
+            .map(() => text)
+            .equals(some(text))
+            .should.be.true
     })
 
     it('should indicate the correct path', () => {
@@ -109,26 +109,26 @@ describe('Some', () => {
         const fallbackText = 'fallback'
 
         it('to a default value', () => {
-            createSomeOfString()
+            const instance = createSomeOfString()
+            instance
                 .orElse(fallbackText)
-                .getOrElse(unsafeGet)
-                .should.equal(containedValue)
+                .should.equal(instance)
 
         })
 
         it('to the result of a guaranteed computation', () => {
-            createSomeOfString()
+            const instance = createSomeOfString()
+            instance
                 .orElse(() => fallbackText)
-                .getOrElse(unsafeGet)
-                .should.equal(containedValue)
+                .should.equal(instance)
 
         })
 
         it('to an alternative attempt', () => {
-            createSomeOfString()
+            const instance = createSomeOfString()
+            instance
                 .orAttempt(() => some(fallbackText))
-                .getOrElse(unsafeGet)
-                .should.equal(containedValue)
+                .should.equal(instance)
         })
     })
 
@@ -138,7 +138,8 @@ describe('Some', () => {
     })
 
     it('should be able to filter', () => {
-        createSomeOfString().filter(satisfiedPredicate).isSome().should.be.true
-        createSomeOfString().filter(violatedPredicate).isNone().should.be.true
+        const instance = createSomeOfString()
+        instance.filter(satisfiedPredicate).should.equal(instance)
+        instance.filter(violatedPredicate).should.equal(none)
     })
 })

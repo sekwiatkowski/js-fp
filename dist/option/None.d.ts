@@ -8,6 +8,7 @@ export declare class None<A> implements Option<A> {
         [key in K]: B;
     }>;
     chain<B>(f: (a: A) => Option<B>): Option<B>;
+    equals(other: Option<A>): boolean;
     test(predicate: (value: A) => boolean): boolean;
     filter(predicate: (value: A) => boolean): Option<A>;
     getOrElse(alternative: A | (() => A)): A;

@@ -27,6 +27,9 @@ class Some {
     chain(f) {
         return f(this.value);
     }
+    equals(other) {
+        return other.fold(otherValue => this.value == otherValue, () => false);
+    }
     test(predicate) {
         return predicate(this.value);
     }

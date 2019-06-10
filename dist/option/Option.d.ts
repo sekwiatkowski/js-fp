@@ -5,6 +5,7 @@ export interface Option<A> {
         [key in K]: B;
     }>;
     chain<B>(f: (value: A) => Option<B>): Option<B>;
+    equals(other: Option<A>): boolean;
     filter(predicate: (value: A) => boolean): Option<A>;
     getOrElse(alternative: A | (() => A)): A;
     isSome(): boolean;

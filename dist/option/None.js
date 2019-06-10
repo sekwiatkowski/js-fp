@@ -13,6 +13,9 @@ class None {
     chain(f) {
         return exports.none;
     }
+    equals(other) {
+        return other.fold(otherValue => false, () => true);
+    }
     test(predicate) {
         return false;
     }

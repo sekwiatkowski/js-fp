@@ -41,15 +41,15 @@ class List {
         return this.length;
     }
     isEmpty() {
-        return this.items.length === 0;
+        return this.length === 0;
     }
     isNotEmpty() {
-        return this.items.length > 0;
+        return this.length > 0;
     }
     //endregion
     //region Item tests
     all(predicate) {
-        for (let index = 0; index < this.items.length; index++) {
+        for (let index = 0; index < this.length; index++) {
             if (!predicate(this.items[index])) {
                 return false;
             }
@@ -57,7 +57,7 @@ class List {
         return true;
     }
     some(predicate) {
-        for (let index = 0; index < this.items.length; index++) {
+        for (let index = 0; index < this.length; index++) {
             if (predicate(this.items[index])) {
                 return true;
             }
@@ -69,7 +69,7 @@ class List {
     }
     count(predicate) {
         let count = 0;
-        for (let index = 0; index < this.items.length; index++) {
+        for (let index = 0; index < this.length; index++) {
             if (predicate(this.items[index])) {
                 count += 1;
             }
@@ -83,10 +83,10 @@ class List {
             return false;
         }
         const otherArray = otherList.toArray();
-        if (this.items.length !== otherArray.length) {
+        if (this.length !== otherArray.length) {
             return false;
         }
-        for (let i = 0; i < this.items.length; i++) {
+        for (let i = 0; i < this.length; i++) {
             if (this.items[i] !== otherArray[i]) {
                 return false;
             }
@@ -99,7 +99,7 @@ class List {
         return __1.option(this.items[index]);
     }
     getOrElse(index, alternative) {
-        if (this.items.length > index) {
+        if (this.length > index) {
             return this.items[index];
         }
         else {
@@ -111,13 +111,42 @@ class List {
             return new List(this.items.slice(0, n));
         }
         else {
-            const length = this.items.length;
+            const length = this.length;
             const res = this.items.slice(length + n, length);
             return new List(res);
         }
     }
     filter(predicate) {
         return new List(this.items.filter(predicate));
+    }
+    first(predicate) {
+        if (predicate == null) {
+            return this.get(0);
+        }
+        else {
+            for (let i = 0; i < this.length; i++) {
+                const item = this.items[i];
+                if (predicate(item)) {
+                    return __1.some(item);
+                }
+            }
+            return __1.none;
+        }
+    }
+    last(predicate) {
+        const lastIndex = this.length - 1;
+        if (predicate == null) {
+            return this.get(lastIndex);
+        }
+        else {
+            for (let i = lastIndex; i >= 0; i--) {
+                const item = this.items[i];
+                if (predicate(item)) {
+                    return __1.some(item);
+                }
+            }
+            return __1.none;
+        }
     }
     //endregion
     //region Concatenation
@@ -141,13 +170,13 @@ class List {
         sideEffect(this);
     }
     performOnEmpty(sideEffect) {
-        if (this.items.length > 0) {
+        if (this.length > 0) {
             return;
         }
         sideEffect(this);
     }
     performOnNonEmpty(sideEffect) {
-        if (this.items.length == 0) {
+        if (this.length == 0) {
             return;
         }
         sideEffect(this);
@@ -165,12 +194,12 @@ class List {
     flatten() {
         let size = 0;
         const listOfArrays = this;
-        for (let i = 0; i < listOfArrays.items.length; i++) {
+        for (let i = 0; i < listOfArrays.length; i++) {
             size += listOfArrays.items[i].length;
         }
         const flattened = new Array(size);
         let flattenedIndex = 0;
-        for (let listIndex = 0; listIndex < this.items.length; listIndex++) {
+        for (let listIndex = 0; listIndex < this.length; listIndex++) {
             this.items[listIndex].forEach(item => {
                 flattened[flattenedIndex++] = item;
             });
