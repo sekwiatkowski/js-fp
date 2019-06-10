@@ -42,6 +42,13 @@ export class Success<T, E> implements Result<T, E> {
         return f(this.value)
     }
 
+    equals(otherResult: Result<T, E>): boolean {
+        return otherResult.fold(
+            otherValue => this.value == otherValue,
+            () => false
+        )
+    }
+
     getErrorOrElse(alternative: E|((value: T) => E)): E {
         return alternative instanceof Function ? alternative(this.value) : alternative
     }

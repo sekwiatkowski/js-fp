@@ -26,6 +26,15 @@ export class Box<A> {
         return f(this.value)
     }
 
+    equals(otherBox: Box<A>): boolean {
+        if (otherBox == null) {
+            return false
+        }
+        else {
+            return otherBox.fold(otherValue => this.value === otherValue)
+        }
+    }
+
     fold<B>(f: (value: A) => B): B {
         return f(this.value)
     }

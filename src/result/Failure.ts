@@ -23,6 +23,13 @@ export class Failure<T, E> implements Result<T, E> {
         return new Failure<U, E>(this.error)
     }
 
+    equals(otherResult: Result<T, E>): boolean {
+        return otherResult.fold(
+            () => false,
+            otherError => this.error === otherError
+        )
+    }
+
     isFailure(): boolean {
         return true
     }

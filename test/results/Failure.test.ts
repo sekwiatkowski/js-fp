@@ -15,8 +15,8 @@ describe('Failure', () => {
             .apply(() => 2)
             .apply(success(3))
             .apply(() => success(4))
-            .getErrorOrElse(unsafeGet)
-            .should.equal(error)
+            .equals(failure(error))
+            .should.be.true
     })
 
     it('should ignore attempts to build an object', () => {
@@ -26,8 +26,8 @@ describe('Failure', () => {
             .assign('c', success(3))
             .assign('d', scope => success(scope.c + 1))
             .map(scope => scope.a + scope.b + scope.c + scope.d)
-            .getErrorOrElse(unsafeGet)
-            .should.equal(error)
+            .equals(failure(error))
+            .should.be.true
     })
 
     describe('should perform', () => {
@@ -51,22 +51,22 @@ describe('Failure', () => {
         it('using a default value', () => {
             createFailureOfString()
                 .orElse(fallbackText)
-                .getOrElse(unsafeGet)
-                .should.equal(fallbackText)
+                .equals(success(fallbackText))
+                .should.be.true
         })
 
         it('using the result of a guaranteed computation', () => {
             createFailureOfString()
                 .orElse(() => fallbackText)
-                .getOrElse(unsafeGet)
-                .should.equal(fallbackText)
+                .equals(success(fallbackText))
+                .should.be.true
         })
 
         it('using an alternative attempt', () => {
             createFailureOfString()
                 .orAttempt(() => success(fallbackText))
-                .getOrElse(unsafeGet)
-                .should.equal(fallbackText)
+                .equals(success(fallbackText))
+                .should.be.true
         })
     })
 
@@ -81,8 +81,8 @@ describe('Failure', () => {
             const f = error => `mapped over ${error}`
             createFailureOfString()
                 .mapError(f)
-                .getErrorOrElse(unsafeGet)
-                .should.equal(f(error))
+                .equals(failure(f(error)))
+                .should.be.true
         })
 
         it('but ignore maps over the value', () => {

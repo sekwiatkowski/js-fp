@@ -1,4 +1,4 @@
-import {Failure, failure, success} from '../../src'
+import {failure, success} from '../../src'
 
 const chai = require('chai')
 
@@ -18,10 +18,9 @@ describe('Success', () => {
                 .assign('b', scope => scope.a + 1)
                 .assign('c', success(3))
                 .assign('d', scope => success(scope.c + 1))
-                .fold(
-                    scope => scope.a + scope.b + scope.c + scope.d,
-                    unsafeGet)
-                .should.equal(10)
+                .map(scope => scope.a + scope.b + scope.c + scope.d)
+                .equals(success(10))
+                .should.be.true
         })
 
         it('that satisfies an interface', () => {
@@ -42,9 +41,11 @@ describe('Success', () => {
         })
 
         it('but switch to Failure when a Failure instance is assigned to a member', () => {
+            const errorText = 'error'
             success({})
-                .assign('firstMember', failure<string, string>('error'))
-                .should.be.instanceOf(Failure)
+                .assign('firstMember', failure<string, string>(errorText))
+                .equals(failure(errorText))
+                .should.be.true
         })
     })
 
@@ -54,8 +55,8 @@ describe('Success', () => {
             .apply(() => 2)
             .apply(success(3))
             .apply(() => success(4))
-            .getOrElse(unsafeGet)
-            .should.equal(10)
+            .equals(success(10))
+            .should.be.true
     })
 
     describe('should perform', () => {
@@ -77,24 +78,24 @@ describe('Success', () => {
         const fallbackText = 'fallback'
 
         it('to a default value', () => {
-            createSuccessOfString()
+            const instance = createSuccessOfString()
+            instance
                 .orElse(fallbackText)
-                .getOrElse(unsafeGet)
-                .should.equal(containedValue)
+                .should.equal(instance)
         })
 
         it('to the result of a guaranteed computation', () => {
-            createSuccessOfString()
+            const instance = createSuccessOfString()
+            instance
                 .orElse(() => fallbackText)
-                .getOrElse(unsafeGet)
-                .should.equal(containedValue)
+                .should.equal(instance)
         })
 
         it('to an alternative attempt', () => {
-            createSuccessOfString()
+            const instance = createSuccessOfString()
+            instance
                 .orAttempt(() => success(fallbackText))
-                .getOrElse(unsafeGet)
-                .should.equal(containedValue)
+                .should.equal(instance)
         })
     })
 
@@ -109,8 +110,8 @@ describe('Success', () => {
             const f = value => `mapped over ${value}`
             createSuccessOfString()
                 .map(f)
-                .getOrElse(unsafeGet)
-                .should.equal(f(containedValue))
+                .equals(success(f(containedValue)))
+                .should.be.true
         })
 
         it('but ignore maps over the error', () => {
