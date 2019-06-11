@@ -4,6 +4,7 @@ const __1 = require("..");
 const Fulfilled_1 = require("../future/Fulfilled");
 const Rejected_1 = require("../future/Rejected");
 const Comparison_1 = require("./Comparison");
+const Monoids_1 = require("../monoids/Monoids");
 class List {
     constructor(items) {
         this.items = items;
@@ -146,15 +147,48 @@ class List {
     }
     //endregion
     //region Folding
-    fold(f, initialValue) {
+    foldBy(by, operation, initialValue) {
         if (this.length == 0) {
             return __1.none;
         }
         let accumulator = initialValue;
         for (let i = 0; i < this.length; i++) {
-            accumulator = f(accumulator, this.items[i]);
+            accumulator = operation(accumulator)(by(this.items[i]));
         }
         return __1.some(accumulator);
+    }
+    fold(operation, initialValue) {
+        return this.foldBy(x => x, operation, initialValue);
+    }
+    foldWithMonoid(monoid) {
+        return this.fold(monoid.operation, monoid.identityElement);
+    }
+    foldByWithMonoid(by, monoid) {
+        return this.foldBy(by, monoid.operation, monoid.identityElement);
+    }
+    max() {
+        return this.foldWithMonoid(Monoids_1.Max);
+    }
+    maxBy(by) {
+        return this.foldByWithMonoid(by, Monoids_1.Max);
+    }
+    min() {
+        return this.foldWithMonoid(Monoids_1.Min);
+    }
+    minBy(by) {
+        return this.foldByWithMonoid(by, Monoids_1.Min);
+    }
+    sum() {
+        return this.foldWithMonoid(Monoids_1.Sum);
+    }
+    sumBy(by) {
+        return this.foldByWithMonoid(by, Monoids_1.Sum);
+    }
+    product() {
+        return this.foldWithMonoid(Monoids_1.Product);
+    }
+    productBy(by) {
+        return this.foldByWithMonoid(by, Monoids_1.Product);
     }
     //endregion
     //region Side-effects

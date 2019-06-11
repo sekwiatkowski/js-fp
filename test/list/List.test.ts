@@ -403,16 +403,69 @@ describe('List<T>', () => {
 
     describe('should fold', () => {
         const unusedFunction = () => { throw 'Unexpected functional application' }
-        const max = (a, b) => Math.max(a, b)
 
         it('an empty list to none', () => {
             emptyList<number>().fold(unusedFunction, undefined).should.equal(none)
         })
 
-        it('to the maximum value when the max(a, b) operation is specified', () => {
-            list(1).fold(max, -Infinity).equals(some(1))
-            list(1, 2).fold(max, -Infinity).equals(some(2))
-            list(2, 1).fold(max, -Infinity).equals(some(1))
+        describe('a list of objects', () => {
+            const one = {number:1}
+            const two = {number:2}
+            const byNumber = x => x.number
+
+            it('with the Max monoid by selecting a number', () => {
+                list(one).maxBy(byNumber).equals(some(1))
+                list(one, two).maxBy(byNumber).equals(some(2))
+                list(two, one).maxBy(byNumber).equals(some(2))
+            })
+
+            it('with the Min monoid by selecting a number', () => {
+                list(one).minBy(byNumber).equals(some(1))
+                list(one, two).minBy(byNumber).equals(some(1))
+                list(two, one).minBy(byNumber).equals(some(1))
+            })
+
+            it('with the Sum monoid by selecting a number', () => {
+                list(one).sumBy(byNumber).equals(some(1))
+                list(one, two).sumBy(byNumber).equals(some(3))
+                list(two, one).sumBy(byNumber).equals(some(3))
+            })
+
+            it('with the Product monoid by selecting a number', () => {
+                list(one).sumBy(byNumber).equals(some(1))
+                list(one, two).productBy(byNumber).equals(some(2))
+                list(two, one).productBy(byNumber).equals(some(2))
+            })
+        })
+
+        describe('a list of numbers', () => {
+            it('with the Max monoid', () => {
+                emptyList<number>().max().should.equal(none)
+                list(1).max().equals(some(1)).should.be.true
+                list(1, 2).max().equals(some(2)).should.be.true
+                list(2, 1).max().equals(some(2)).should.be.true
+            })
+
+            it('with the Min monoid', () => {
+                emptyList<number>().min().should.equal(none)
+                list(1).min().equals(some(1)).should.be.true
+                list(1, 2).min().equals(some(1)).should.be.true
+                list(2, 1).min().equals(some(1)).should.be.true
+            })
+
+            it('with the Sum monoid', () => {
+                emptyList<number>().sum().should.equal(none)
+                list(1).sum().equals(some(1)).should.be.true
+                list(1, 2).sum().equals(some(3)).should.be.true
+                list(2, 1).sum().equals(some(3)).should.be.true
+            })
+
+            it('with the Product monoid', () => {
+                emptyList<number>().product().should.equal(none)
+                list(1).product().equals(some(1)).should.be.true
+                list(1, 2).product().equals(some(2)).should.be.true
+                list(2, 1).product().equals(some(2)).should.be.true
+            })
         })
     })
 })

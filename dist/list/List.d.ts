@@ -1,4 +1,5 @@
 import { Future, Option } from '..';
+import { Monoid } from '../monoids/Monoids';
 export declare class List<T> {
     private readonly items;
     private readonly length;
@@ -21,7 +22,18 @@ export declare class List<T> {
     map<U>(f: (item: T) => U): List<U>;
     parallelMap<U, E>(f: (item: T) => U): Future<U[], E>;
     match<X>(onNonEmpty: (array: T[]) => X, onEmpty: () => X): X;
-    fold(f: (a: T, b: T) => T, initialValue: T): Option<T>;
+    foldBy<U>(by: (item: T) => U, operation: (a: U) => (b: U) => U, initialValue: U): Option<U>;
+    fold(operation: (a: T) => (b: T) => T, initialValue: T): Option<T>;
+    foldWithMonoid(monoid: Monoid<T>): Option<T>;
+    foldByWithMonoid<U>(by: (item: T) => U, monoid: Monoid<U>): Option<U>;
+    max(this: List<number>): Option<number>;
+    maxBy(by: (item: T) => number): Option<number>;
+    min(this: List<number>): Option<number>;
+    minBy(by: (item: T) => number): Option<number>;
+    sum(this: List<number>): Option<number>;
+    sumBy(by: (item: T) => number): Option<number>;
+    product(this: List<number>): Option<number>;
+    productBy(by: (item: T) => number): Option<number>;
     perform(sideEffect: (list: List<T>) => void): void;
     performOnEmpty(sideEffect: (list: List<T>) => void): void;
     performOnNonEmpty(sideEffect: (list: List<T>) => void): void;

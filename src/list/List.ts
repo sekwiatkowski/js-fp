@@ -3,6 +3,7 @@ import {fulfilled} from '../future/Fulfilled'
 import {Settled} from '../future/Settled'
 import {rejected} from '../future/Rejected'
 import {compare, compareBy, negatedCompare, negatedCompareBy} from './Comparison'
+import {Max, Min, Monoid, Product, Sum} from '../monoids/Monoids'
 
 export class List<T> {
     private readonly length: number
@@ -181,17 +182,61 @@ export class List<T> {
     //endregion
 
     //region Folding
-    fold(f: (a: T, b: T) => T, initialValue: T): Option<T> {
+    foldBy<U>(by: (item: T) => U, operation: (a: U) => (b: U) => U, initialValue: U): Option<U> {
         if (this.length == 0) {
             return none
         }
 
         let accumulator = initialValue
         for(let i = 0; i < this.length; i++) {
-            accumulator = f(accumulator, this.items[i])
+            accumulator = operation(accumulator)(by(this.items[i]))
         }
 
         return some(accumulator)
+    }
+
+    fold(operation: (a: T) => (b: T) => T, initialValue: T): Option<T> {
+        return this.foldBy(x => x, operation, initialValue)
+    }
+
+    foldWithMonoid(monoid: Monoid<T>) {
+        return this.fold(monoid.operation, monoid.identityElement)
+    }
+
+    foldByWithMonoid<U>(by: (item: T) => U, monoid: Monoid<U>) {
+        return this.foldBy(by, monoid.operation, monoid.identityElement)
+    }
+
+    max(this: List<number>) {
+        return this.foldWithMonoid(Max)
+    }
+
+    maxBy(by: (item: T) => number) {
+        return this.foldByWithMonoid(by, Max)
+    }
+
+    min(this: List<number>) {
+        return this.foldWithMonoid(Min)
+    }
+
+    minBy(by: (item: T) => number) {
+        return this.foldByWithMonoid(by, Min)
+    }
+
+    sum(this: List<number>) {
+        return this.foldWithMonoid(Sum)
+    }
+
+    sumBy(by: (item: T) => number) {
+        return this.foldByWithMonoid(by, Sum)
+    }
+
+    product(this: List<number>) {
+        return this.foldWithMonoid(Product)
+    }
+
+    productBy(by: (item: T) => number) {
+        return this.foldByWithMonoid(by, Product)
     }
     //endregion
 
