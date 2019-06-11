@@ -5,81 +5,49 @@ import {rejected} from './Rejected'
 export class Future<T, E> {
     constructor(private readonly createPromise: () => Promise<Settled<T, E>>) {}
 
+    //region Access
+    getOrElse(alternative: T|((error: E) => T)) : Promise<T> {
+        return this.createPromise()
+            .then(settled => settled.getOrElse(alternative))
+    }
+
+    getErrorOrElse(alternative: E|((value: T) => E)): Promise<E> {
+        return this.createPromise()
+            .then(settled => settled.getErrorOrElse(alternative))
+    }
+    //endregion
+
+    //region Application
     apply<B, C>(
         this: Future<(parameter: B) => C, E>,
-        parameterValueOrFunction: B | (() => B) | Future<B, E> | (() => Future<B, E>) | Promise<B> | (() => Promise<B>)) : Future<C, E> {
+        argumentOrFutureOrPromiseOrFunction: B | (() => B) | Future<B, E> | (() => Future<B, E>) | Promise<B> | (() => Promise<B>)) : Future<C, E> {
         return new Future(() =>
             new Promise(resolve => {
                 this.run(
                     f => {
-                        const futureOrPromiseOrValue = parameterValueOrFunction instanceof Function ? parameterValueOrFunction() : parameterValueOrFunction
+                        const argumentOrFutureOrPromise = argumentOrFutureOrPromiseOrFunction instanceof Function ? argumentOrFutureOrPromiseOrFunction() : argumentOrFutureOrPromiseOrFunction
 
-                        if (futureOrPromiseOrValue instanceof Future) {
-                            futureOrPromiseOrValue.run(
+                        if (argumentOrFutureOrPromise instanceof Future) {
+                            argumentOrFutureOrPromise.run(
                                 parameter => resolve(fulfilled(f(parameter))),
                                 secondError => resolve(rejected(secondError)))
                         }
-                        else if (futureOrPromiseOrValue instanceof Promise) {
-                            futureOrPromiseOrValue.then(
+                        else if (argumentOrFutureOrPromise instanceof Promise) {
+                            argumentOrFutureOrPromise.then(
                                 parameter => { resolve(fulfilled(f(parameter))) })
                                 .catch(secondError => resolve(rejected(secondError)))
                         }
                         else {
-                            resolve(fulfilled(f(futureOrPromiseOrValue)))
+                            resolve(fulfilled(f(argumentOrFutureOrPromise)))
                         }
                     },
                     firstError => resolve(rejected(firstError)))
             })
         )
     }
+    //endregion
 
-    assign<T extends object, K extends string, U>(
-        this: Future<T, E>,
-        key: K,
-        memberValueOrFunction: Future<U, E> | ((value: T) => Future<U, E>) | Promise<U> | ((value: T) => Promise<U>) | U | ((value: T) => U)): Future<T & { [key in K]: U }, E> {
-        return new Future(() =>
-            new Promise(resolve => {
-                this.run(
-                    existingObject => {
-                        const futureOrPromiseOrValue = memberValueOrFunction instanceof Function ? memberValueOrFunction(existingObject) : memberValueOrFunction
-
-                        if (futureOrPromiseOrValue instanceof Future) {
-                            futureOrPromiseOrValue.run(
-                                member => {
-                                    const updatedObject = {
-                                        ...Object(existingObject),
-                                        [key]: member
-                                    }
-                                    resolve(fulfilled(updatedObject))
-                                },
-                                secondError => resolve(rejected(secondError)))
-                        }
-                        else if (futureOrPromiseOrValue instanceof Promise) {
-                            futureOrPromiseOrValue
-                                .then(member => {
-                                    const updatedObject = {
-                                        ...Object(existingObject),
-                                        [key]: member
-                                    }
-                                    resolve(fulfilled(updatedObject))
-                                })
-                                .catch(secondError => resolve(rejected(secondError)))
-                        }
-                        else {
-                            const updatedObject = {
-                                ...Object(existingObject),
-                                [key]: futureOrPromiseOrValue
-                            }
-
-                            resolve(fulfilled(updatedObject))
-                        }
-                    },
-                    firstError => resolve(rejected(firstError))
-                )
-            })
-        )
-    }
-
+    //region Chaining
     // There are three scenarios:
     // (1) Both promises are fulfilled
     // (2) The first promise is fulfilled, but the second is rejected.
@@ -100,7 +68,7 @@ export class Future<T, E> {
                         }
                         else {
                             futureOrPromise
-                                // Scenario 1
+                            // Scenario 1
                                 .then(secondValue => resolve(fulfilled(secondValue)))
                                 // Scenario 2
                                 .catch(secondError => resolve(rejected(secondError)))
@@ -112,54 +80,58 @@ export class Future<T, E> {
             )
         )
     }
+    //endregion
 
-    getOrElse(alternative: T|((error: E) => T)) : Promise<T> {
-        return this.createPromise()
-            .then(settled => settled.getOrElse(alternative))
-    }
-
-    getErrorOrElse(alternative: E|((value: T) => E)): Promise<E> {
-        return this.createPromise()
-            .then(settled => settled.getErrorOrElse(alternative))
-    }
-
-    map<U>(f : (value: T) => U): Future<U, E> {
+    //region Comprehension
+    assign<T extends object, K extends string, U>(
+        this: Future<T, E>,
+        key: K,
+        memberOrFutureOrPromiseOrFunction: Future<U, E> | ((value: T) => Future<U, E>) | Promise<U> | ((value: T) => Promise<U>) | U | ((value: T) => U)): Future<T & { [key in K]: U }, E> {
         return new Future(() =>
-            new Promise<Settled<U, E>>(resolve =>
-                this.createPromise()
-                    .then(settled => resolve(settled.map(f)))
-            )
+            new Promise(resolve => {
+                this.run(
+                    existingObject => {
+                        const memberOrFutureOrPromise = memberOrFutureOrPromiseOrFunction instanceof Function ? memberOrFutureOrPromiseOrFunction(existingObject) : memberOrFutureOrPromiseOrFunction
+
+                        if (memberOrFutureOrPromise instanceof Future) {
+                            memberOrFutureOrPromise.run(
+                                member => {
+                                    const updatedObject = {
+                                        ...Object(existingObject),
+                                        [key]: member
+                                    }
+                                    resolve(fulfilled(updatedObject))
+                                },
+                                secondError => resolve(rejected(secondError)))
+                        }
+                        else if (memberOrFutureOrPromise instanceof Promise) {
+                            memberOrFutureOrPromise
+                                .then(member => {
+                                    const updatedObject = {
+                                        ...Object(existingObject),
+                                        [key]: member
+                                    }
+                                    resolve(fulfilled(updatedObject))
+                                })
+                                .catch(secondError => resolve(rejected(secondError)))
+                        }
+                        else {
+                            const updatedObject = {
+                                ...Object(existingObject),
+                                [key]: memberOrFutureOrPromise
+                            }
+
+                            resolve(fulfilled(updatedObject))
+                        }
+                    },
+                    firstError => resolve(rejected(firstError))
+                )
+            })
         )
     }
+    //endregion
 
-    mapError<F>(f : (error: E) => F): Future<T, F> {
-        return new Future(() =>
-            new Promise<Settled<T, F>>(resolve =>
-                this.createPromise()
-                    .then(settled => resolve(settled.mapError(f)))
-            )
-        )
-    }
-
-    fold<X>(
-        onFulfilled: (value: T) => X,
-        onRejected: (error: E) => X) : Promise<X> {
-        return this.createPromise()
-            .then(settled => settled.fold(onFulfilled, onRejected))
-    }
-
-    isFulfilled() : Promise<boolean> {
-        return this.fold(
-        () => true,
-        () => false)
-    }
-
-    isRejected() : Promise<boolean> {
-        return this.fold(
-        () => false,
-        () => true)
-    }
-
+    //region Fallback
     orAttempt(alternative: Future<T, E>|((error: E) => Future<T, E>)): Future<T, E> {
         return new Future<T, E>(() =>
             new Promise<Settled<T, E>>(resolve => {
@@ -205,7 +177,61 @@ export class Future<T, E> {
             })
         )
     }
+    //endregion
 
+    //region Laziness
+    run(whenFulfilled: (value: T) => void, whenRejected: (error: E) => void) {
+        this.createPromise()
+            .then(settled => {
+                settled.run(whenFulfilled, whenRejected)
+            })
+    }
+    //endregion
+
+    //region Mapping
+    map<U>(f : (value: T) => U): Future<U, E> {
+        return new Future(() =>
+            new Promise<Settled<U, E>>(resolve =>
+                this.createPromise()
+                    .then(settled => resolve(settled.map(f)))
+            )
+        )
+    }
+
+    mapError<F>(f : (error: E) => F): Future<T, F> {
+        return new Future(() =>
+            new Promise<Settled<T, F>>(resolve =>
+                this.createPromise()
+                    .then(settled => resolve(settled.mapError(f)))
+            )
+        )
+    }
+    //endregion
+
+    //region Reduction
+    fold<X>(
+        onFulfilled: (value: T) => X,
+        onRejected: (error: E) => X) : Promise<X> {
+        return this.createPromise()
+            .then(settled => settled.fold(onFulfilled, onRejected))
+    }
+    //endregion
+
+    //region Status
+    isFulfilled() : Promise<boolean> {
+        return this.fold(
+        () => true,
+        () => false)
+    }
+
+    isRejected() : Promise<boolean> {
+        return this.fold(
+        () => false,
+        () => true)
+    }
+    //endregion
+
+    //region Side-effects
     perform<U>(f: (() => Future<U, E>) | (() => Promise<U>)): Future<T, E> {
         return new Future<T, E>(() =>
             new Promise<Settled<T, E>>(resolve => {
@@ -327,14 +353,7 @@ export class Future<T, E> {
             )
         )
     }
-
-    run(whenFulfilled: (value: T) => void, whenRejected: (error: E) => void) {
-        this.createPromise()
-            .then(settled => {
-                settled.run(whenFulfilled, whenRejected)
-            })
-    }
-
+    //endregion
 }
 
 export function fulfill<T, E>(value: T): Future<T, E> {

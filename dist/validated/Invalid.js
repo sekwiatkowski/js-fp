@@ -1,44 +1,58 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const __1 = require("..");
-const List_1 = require("../list/List");
 class Invalid {
     constructor(errors) {
         this.errors = errors;
     }
-    apply(parameterOrFunction) {
-        return new Invalid(this.errors);
-    }
-    assign(key, memberOrFunction) {
-        return new Invalid(this.errors);
-    }
-    concat(otherValidated) {
-        return otherValidated.fold(() => this, otherList => new Invalid(this.errors.concat(otherList)));
-    }
-    equals(otherValidated) {
-        return otherValidated.fold(() => false, otherErrors => List_1.listFromArray(this.errors).equals(List_1.listFromArray(otherErrors)));
-    }
+    //region Access
     getErrorsOrElse(alternative) {
         return this.errors;
     }
     getOrElse(alternative) {
         return alternative instanceof Function ? alternative(this.errors) : alternative;
     }
-    isInvalid() {
-        return true;
+    //endregion
+    //region Application
+    apply(argumentOrValidatedOrFunction) {
+        return new Invalid(this.errors);
     }
-    isValid() {
-        return false;
+    //endregion
+    //region Comprehension
+    assign(key, memberOrValidatedOrFunction) {
+        return new Invalid(this.errors);
     }
+    //endregion
+    //region Concatenation
+    concat(otherValidated) {
+        return otherValidated.fold(() => this, otherList => new Invalid(this.errors.concat(otherList)));
+    }
+    //endregion
+    //region Conversion
+    toFuture() {
+        return __1.reject(this.errors);
+    }
+    toOption() {
+        return __1.none;
+    }
+    toResult() {
+        return __1.failure(this.errors);
+    }
+    //endregion
+    //region Mapping
     map(f) {
         return new Invalid(this.errors);
     }
     mapErrors(f) {
         return new Invalid(f(this.errors));
     }
+    //endregion
+    //region Reduction
     fold(onValid, onInvalid) {
         return onInvalid(this.errors);
     }
+    //endregion
+    //region Side-effects
     perform(sideEffect) {
         sideEffect();
         return this;
@@ -50,14 +64,18 @@ class Invalid {
         sideEffect(this.errors);
         return this;
     }
-    toFuture() {
-        return __1.reject(this.errors);
+    //endregion
+    //region Status
+    isInvalid() {
+        return true;
     }
-    toOption() {
-        return __1.none;
+    isValid() {
+        return false;
     }
-    toResult() {
-        return __1.failure(this.errors);
+    //endregion
+    //region Testing
+    equals(otherValidated) {
+        return otherValidated.fold(() => false, otherErrors => __1.listFromArray(this.errors).equals(__1.listFromArray(otherErrors)));
     }
 }
 exports.Invalid = Invalid;

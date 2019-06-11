@@ -4,45 +4,69 @@ const Some_1 = require("./Some");
 const __1 = require("..");
 class None {
     constructor() { }
-    apply(parameterOrFunction) {
-        return exports.none;
-    }
-    assign(key, memberOrFunction) {
-        return exports.none;
-    }
-    chain(f) {
-        return exports.none;
-    }
-    equals(other) {
-        return other.fold(otherValue => false, () => true);
-    }
-    test(predicate) {
-        return false;
-    }
-    filter(predicate) {
-        return exports.none;
-    }
+    //region Access
     getOrElse(alternative) {
         return alternative instanceof Function ? alternative() : alternative;
     }
-    isSome() {
-        return false;
-    }
-    isNone() {
-        return true;
-    }
-    map(f) {
+    //endregion
+    //region Application
+    apply(argumentOrOptionOrFunction) {
         return exports.none;
     }
-    fold(onSome, onNone) {
-        return onNone();
+    //endregion
+    //region Chaining
+    chain(f) {
+        return exports.none;
     }
+    //endregion
+    //region Comprehension
+    assign(key, memberOrOptionOrFunction) {
+        return exports.none;
+    }
+    //endregion
+    //region Conversion
+    toFuture(error) {
+        return __1.reject(error);
+    }
+    toResult(error) {
+        return __1.failure(error);
+    }
+    toValidated(error) {
+        return __1.invalid([error]);
+    }
+    //endregion
+    //region Fallback
     orElse(alternative) {
         return Some_1.some(alternative instanceof Function ? alternative() : alternative);
     }
     orAttempt(alternative) {
         return alternative();
     }
+    //endregion
+    //region Filtering
+    filter(predicate) {
+        return exports.none;
+    }
+    //endregion
+    //region Mapping
+    map(f) {
+        return exports.none;
+    }
+    //endregion
+    //region Testing
+    equals(other) {
+        return other.fold(otherValue => false, () => true);
+    }
+    test(predicate) {
+        return false;
+    }
+    //endregion
+    //region Reduction
+    fold(onSome, onNone) {
+        return onNone();
+    }
+    //endregion
+    //region Side-effects
     perform(sideEffect) {
         sideEffect();
         return exports.none;
@@ -54,14 +78,13 @@ class None {
         sideEffect();
         return exports.none;
     }
-    toFuture(error) {
-        return __1.reject(error);
+    //endregion
+    //region Status
+    isNone() {
+        return true;
     }
-    toResult(error) {
-        return __1.failure(error);
-    }
-    toValidated(error) {
-        return __1.invalid([error]);
+    isSome() {
+        return false;
     }
 }
 None.value = new None();

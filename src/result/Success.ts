@@ -5,50 +5,7 @@ import {fulfill, Future, Option, some, valid, Validated} from '..'
 export class Success<T, E> implements Result<T, E> {
     constructor(private readonly value: T) {}
 
-    apply<U, V>(
-        this: Result<(parameter: U) => V, E>,
-        parameterOrFunction: U | (() => U) | Result<U, E> | (() => Result<U, E>)): Result<V, E> {
-        const parameter = parameterOrFunction instanceof Function ? parameterOrFunction() : parameterOrFunction
-
-        if (parameter instanceof Success || parameter instanceof Failure) {
-            return parameter.chain(parameterValue => this.map(f => f(parameterValue)))
-        }
-        else {
-            return this.map(f => f(<U>parameter))
-        }
-    }
-
-    assign<T extends object, K extends string, U>(
-        this: Success<T, E>,
-        key: K,
-        memberOrFunction: Result<U, E> | ((value: T) => Result<U, E>) | U | ((value: T) => U)): Result<T & { [key in K]: U }, E> {
-        const member = memberOrFunction instanceof Function ? memberOrFunction(this.value) : memberOrFunction
-
-        if(member instanceof Success || member instanceof Failure) {
-            return member.map<T & { [key in K]: U }>(memberValue => ({
-                ...Object(this.value),
-                [key]: memberValue
-            }))
-        }
-        else {
-            return this.map<T & { [key in K]: U }>(obj  => ({
-                ...Object(obj),
-                [key]: member
-            }))
-        }
-    }
-
-    chain<U>(f: (t: T) => Result<U, E>): Result<U, E> {
-        return f(this.value)
-    }
-
-    equals(otherResult: Result<T, E>): boolean {
-        return otherResult.fold(
-            otherValue => this.value == otherValue,
-            () => false
-        )
-    }
-
+    //region Access
     getErrorOrElse(alternative: E|((value: T) => E)): E {
         return alternative instanceof Function ? alternative(this.value) : alternative
     }
@@ -56,27 +13,66 @@ export class Success<T, E> implements Result<T, E> {
     getOrElse(alternative: T|((error: E) => T)): T {
         return this.value
     }
+    //endregion
 
-    isFailure(): boolean {
-        return false
+    //region Application
+    apply<U, V>(
+        this: Result<(parameter: U) => V, E>,
+        argumentOrFunctionOrResult: U | (() => U) | Result<U, E> | (() => Result<U, E>)): Result<V, E> {
+        const argumentOrResult = argumentOrFunctionOrResult instanceof Function ? argumentOrFunctionOrResult() : argumentOrFunctionOrResult
+
+        if (argumentOrResult instanceof Success || argumentOrResult instanceof Failure) {
+            return argumentOrResult.chain(argument => this.map(f => f(argument)))
+        }
+        else {
+            return this.map(f => f(<U>argumentOrResult))
+        }
+    }
+    //endregion
+
+    //region Chaining
+    chain<U>(f: (t: T) => Result<U, E>): Result<U, E> {
+        return f(this.value)
+    }
+    //endregion
+
+    //region Comprehension
+    assign<T extends object, K extends string, U>(
+        this: Success<T, E>,
+        key: K,
+        memberOrResultOrFunction: Result<U, E> | ((value: T) => Result<U, E>) | U | ((value: T) => U)): Result<T & { [key in K]: U }, E> {
+        const memberOrResult = memberOrResultOrFunction instanceof Function ? memberOrResultOrFunction(this.value) : memberOrResultOrFunction
+
+        if(memberOrResult instanceof Success || memberOrResult instanceof Failure) {
+            return memberOrResult.map<T & { [key in K]: U }>(memberValue => ({
+                ...Object(this.value),
+                [key]: memberValue
+            }))
+        }
+        else {
+            return this.map<T & { [key in K]: U }>(obj  => ({
+                ...Object(obj),
+                [key]: memberOrResult
+            }))
+        }
+    }
+    //endregion
+
+    //region Conversion
+    toFuture(): Future<T, E> {
+        return fulfill<T, E>(this.value)
     }
 
-    isSuccess(): boolean {
-        return true
+    toOption(): Option<T> {
+        return some(this.value)
     }
 
-    map<U>(f: (value: T) => U): Result<U, E> {
-        return new Success(f(this.value))
+    toValidated(): Validated<T, E> {
+        return valid(this.value)
     }
+    //endregion
 
-    mapError<F>(f: (error: E) => F): Result<T, F> {
-        return new Success(this.value)
-    }
-
-    fold<X>(onSuccess: (value: T) => X, onFailure: (error: E) => X) : X {
-        return onSuccess(this.value)
-    }
-
+    //region Fallback
     orElse(alternative: T|((error: E) => T)): Result<T, E> {
         return this
     }
@@ -84,7 +80,25 @@ export class Success<T, E> implements Result<T, E> {
     orAttempt(alternative: (error: E) => Result<T, E>): Result<T, E> {
         return this
     }
+    //endregion
 
+    //region Mapping
+    map<U>(f: (value: T) => U): Result<U, E> {
+        return new Success(f(this.value))
+    }
+
+    mapError<F>(f: (error: E) => F): Result<T, F> {
+        return new Success(this.value)
+    }
+    //endregion
+
+    //region Reduction
+    fold<X>(onSuccess: (value: T) => X, onFailure: (error: E) => X) : X {
+        return onSuccess(this.value)
+    }
+    //endregion
+
+    //region Side-effects
     perform(sideEffect: () => void): Result<T, E> {
         sideEffect()
         return this
@@ -98,18 +112,26 @@ export class Success<T, E> implements Result<T, E> {
     performOnFailure(sideEffect: (error: E) => void): Result<T, E> {
         return this
     }
+    //endregion
 
-    toFuture(): Future<T, E> {
-        return fulfill<T, E>(this.value)
+    //region Status
+    isFailure(): boolean {
+        return false
     }
 
-    toOption(): Option<T> {
-        return some(this.value)
+    isSuccess(): boolean {
+        return true
     }
+    //endregion
 
-    toValidated(): Validated<T, E> {
-        return valid(this.value)
+    //region Testing
+    equals(otherResult: Result<T, E>): boolean {
+        return otherResult.fold(
+            otherValue => this.value == otherValue,
+            () => false
+        )
     }
+    //endregion
 }
 
 export function success<T, E>(value: T) : Success<T, E> {

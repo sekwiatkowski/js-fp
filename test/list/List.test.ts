@@ -17,7 +17,7 @@ describe('List<T>', () => {
             const increment = x => x + 1
             const result = list(1, 2, 3)
                 .map(increment)
-                .toArray()
+                .getArray()
 
             result.should.eql([1, 2, 3].map(increment))
         })
@@ -37,7 +37,7 @@ describe('List<T>', () => {
         it('ascendingly', () => {
             const result = list(3, 1, 2)
                 .sort()
-                .toArray()
+                .getArray()
 
             result.should.eql([1, 2, 3])
         })
@@ -45,7 +45,7 @@ describe('List<T>', () => {
         it('descendingly', () => {
             const result = list(3, 2, 1)
                 .sortDescendingly()
-                .toArray()
+                .getArray()
 
             result.should.eql([3, 2, 1])
         })
@@ -54,7 +54,7 @@ describe('List<T>', () => {
             const result = list(createNumber(3), createNumber(1), createNumber(2))
                 .sortBy(x => x.value)
                 .map(x => x.value)
-                .toArray()
+                .getArray()
 
             result.should.eql([1, 2, 3])
         })
@@ -63,7 +63,7 @@ describe('List<T>', () => {
             const result = list(createNumber(3), createNumber(1), createNumber(2))
                 .sortDescendinglyBy(x => x.value)
                 .map(x => x.value)
-                .toArray()
+                .getArray()
 
             result.should.eql([3, 2, 1])
         })
@@ -83,15 +83,15 @@ describe('List<T>', () => {
 
     describe('should concatenate with another list', () => {
         it('when the first list is larger than the second', () => {
-            list(1, 2, 3).concat(list(4, 5)).toArray().should.eql([1, 2, 3, 4, 5])
+            list(1, 2, 3).concat(list(4, 5)).getArray().should.eql([1, 2, 3, 4, 5])
         })
 
         it('when both lists are of equal size', () => {
-            list(1, 2).concat(list(3, 4)).toArray().should.eql([1, 2, 3, 4])
+            list(1, 2).concat(list(3, 4)).getArray().should.eql([1, 2, 3, 4])
         })
 
         it('when the second list is larger than the first', () => {
-            list(1, 2).concat(list(3, 4, 5)).toArray().should.eql([1, 2, 3, 4, 5])
+            list(1, 2).concat(list(3, 4, 5)).getArray().should.eql([1, 2, 3, 4, 5])
         })
     })
 
@@ -169,26 +169,26 @@ describe('List<T>', () => {
     describe('should be able to take', () => {
         const l = list(1, 2, 3)
         it('the first n items', () => {
-            l.take(1).toArray().should.eql([1])
-            l.take(2).toArray().should.eql([1, 2])
+            l.take(1).getArray().should.eql([1])
+            l.take(2).getArray().should.eql([1, 2])
         })
 
         it('no items', () => {
-            l.take(0).toArray().should.eql([])
+            l.take(0).getArray().should.eql([])
         })
 
         it('the last n items', () => {
-            l.take(-1).toArray().should.eql([3])
-            l.take(-2).toArray().should.eql([2, 3])
+            l.take(-1).getArray().should.eql([3])
+            l.take(-2).getArray().should.eql([2, 3])
         })
     })
 
     it('should be able to filter items', () => {
-        emptyList().filter(isEven).toArray().should.eql([])
-        list(1).filter(isEven).toArray().should.eql([])
-        list(1, 2).filter(isEven).toArray().should.eql([2])
-        list(1, 2, 3).filter(isEven).toArray().should.eql([2])
-        list(1, 2, 3, 4).filter(isEven).toArray().should.eql([2, 4])
+        emptyList().filter(isEven).getArray().should.eql([])
+        list(1).filter(isEven).getArray().should.eql([])
+        list(1, 2).filter(isEven).getArray().should.eql([2])
+        list(1, 2, 3).filter(isEven).getArray().should.eql([2])
+        list(1, 2, 3, 4).filter(isEven).getArray().should.eql([2, 4])
     })
 
     it('should be able to return the number of items', () => {

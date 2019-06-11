@@ -6,48 +6,36 @@ class Future {
     constructor(createPromise) {
         this.createPromise = createPromise;
     }
-    apply(parameterValueOrFunction) {
+    //region Access
+    getOrElse(alternative) {
+        return this.createPromise()
+            .then(settled => settled.getOrElse(alternative));
+    }
+    getErrorOrElse(alternative) {
+        return this.createPromise()
+            .then(settled => settled.getErrorOrElse(alternative));
+    }
+    //endregion
+    //region Application
+    apply(argumentOrFutureOrPromiseOrFunction) {
         return new Future(() => new Promise(resolve => {
             this.run(f => {
-                const futureOrPromiseOrValue = parameterValueOrFunction instanceof Function ? parameterValueOrFunction() : parameterValueOrFunction;
-                if (futureOrPromiseOrValue instanceof Future) {
-                    futureOrPromiseOrValue.run(parameter => resolve(Fulfilled_1.fulfilled(f(parameter))), secondError => resolve(Rejected_1.rejected(secondError)));
+                const argumentOrFutureOrPromise = argumentOrFutureOrPromiseOrFunction instanceof Function ? argumentOrFutureOrPromiseOrFunction() : argumentOrFutureOrPromiseOrFunction;
+                if (argumentOrFutureOrPromise instanceof Future) {
+                    argumentOrFutureOrPromise.run(parameter => resolve(Fulfilled_1.fulfilled(f(parameter))), secondError => resolve(Rejected_1.rejected(secondError)));
                 }
-                else if (futureOrPromiseOrValue instanceof Promise) {
-                    futureOrPromiseOrValue.then(parameter => { resolve(Fulfilled_1.fulfilled(f(parameter))); })
+                else if (argumentOrFutureOrPromise instanceof Promise) {
+                    argumentOrFutureOrPromise.then(parameter => { resolve(Fulfilled_1.fulfilled(f(parameter))); })
                         .catch(secondError => resolve(Rejected_1.rejected(secondError)));
                 }
                 else {
-                    resolve(Fulfilled_1.fulfilled(f(futureOrPromiseOrValue)));
+                    resolve(Fulfilled_1.fulfilled(f(argumentOrFutureOrPromise)));
                 }
             }, firstError => resolve(Rejected_1.rejected(firstError)));
         }));
     }
-    assign(key, memberValueOrFunction) {
-        return new Future(() => new Promise(resolve => {
-            this.run(existingObject => {
-                const futureOrPromiseOrValue = memberValueOrFunction instanceof Function ? memberValueOrFunction(existingObject) : memberValueOrFunction;
-                if (futureOrPromiseOrValue instanceof Future) {
-                    futureOrPromiseOrValue.run(member => {
-                        const updatedObject = Object.assign({}, Object(existingObject), { [key]: member });
-                        resolve(Fulfilled_1.fulfilled(updatedObject));
-                    }, secondError => resolve(Rejected_1.rejected(secondError)));
-                }
-                else if (futureOrPromiseOrValue instanceof Promise) {
-                    futureOrPromiseOrValue
-                        .then(member => {
-                        const updatedObject = Object.assign({}, Object(existingObject), { [key]: member });
-                        resolve(Fulfilled_1.fulfilled(updatedObject));
-                    })
-                        .catch(secondError => resolve(Rejected_1.rejected(secondError)));
-                }
-                else {
-                    const updatedObject = Object.assign({}, Object(existingObject), { [key]: futureOrPromiseOrValue });
-                    resolve(Fulfilled_1.fulfilled(updatedObject));
-                }
-            }, firstError => resolve(Rejected_1.rejected(firstError)));
-        }));
-    }
+    //endregion
+    //region Chaining
     // There are three scenarios:
     // (1) Both promises are fulfilled
     // (2) The first promise is fulfilled, but the second is rejected.
@@ -73,32 +61,35 @@ class Future {
         // Scenario 3
         firstError => resolve(Rejected_1.rejected(firstError)))));
     }
-    getOrElse(alternative) {
-        return this.createPromise()
-            .then(settled => settled.getOrElse(alternative));
+    //endregion
+    //region Comprehension
+    assign(key, memberOrFutureOrPromiseOrFunction) {
+        return new Future(() => new Promise(resolve => {
+            this.run(existingObject => {
+                const memberOrFutureOrPromise = memberOrFutureOrPromiseOrFunction instanceof Function ? memberOrFutureOrPromiseOrFunction(existingObject) : memberOrFutureOrPromiseOrFunction;
+                if (memberOrFutureOrPromise instanceof Future) {
+                    memberOrFutureOrPromise.run(member => {
+                        const updatedObject = Object.assign({}, Object(existingObject), { [key]: member });
+                        resolve(Fulfilled_1.fulfilled(updatedObject));
+                    }, secondError => resolve(Rejected_1.rejected(secondError)));
+                }
+                else if (memberOrFutureOrPromise instanceof Promise) {
+                    memberOrFutureOrPromise
+                        .then(member => {
+                        const updatedObject = Object.assign({}, Object(existingObject), { [key]: member });
+                        resolve(Fulfilled_1.fulfilled(updatedObject));
+                    })
+                        .catch(secondError => resolve(Rejected_1.rejected(secondError)));
+                }
+                else {
+                    const updatedObject = Object.assign({}, Object(existingObject), { [key]: memberOrFutureOrPromise });
+                    resolve(Fulfilled_1.fulfilled(updatedObject));
+                }
+            }, firstError => resolve(Rejected_1.rejected(firstError)));
+        }));
     }
-    getErrorOrElse(alternative) {
-        return this.createPromise()
-            .then(settled => settled.getErrorOrElse(alternative));
-    }
-    map(f) {
-        return new Future(() => new Promise(resolve => this.createPromise()
-            .then(settled => resolve(settled.map(f)))));
-    }
-    mapError(f) {
-        return new Future(() => new Promise(resolve => this.createPromise()
-            .then(settled => resolve(settled.mapError(f)))));
-    }
-    fold(onFulfilled, onRejected) {
-        return this.createPromise()
-            .then(settled => settled.fold(onFulfilled, onRejected));
-    }
-    isFulfilled() {
-        return this.fold(() => true, () => false);
-    }
-    isRejected() {
-        return this.fold(() => false, () => true);
-    }
+    //endregion
+    //region Fallback
     orAttempt(alternative) {
         return new Future(() => new Promise(resolve => {
             this.createPromise().then(previousAttempt => previousAttempt.run(() => resolve(previousAttempt), previousError => (alternative instanceof Function ? alternative(previousError) : alternative)
@@ -120,6 +111,40 @@ class Future {
                 .catch(newError => resolve(Rejected_1.rejected(newError)))));
         }));
     }
+    //endregion
+    //region Laziness
+    run(whenFulfilled, whenRejected) {
+        this.createPromise()
+            .then(settled => {
+            settled.run(whenFulfilled, whenRejected);
+        });
+    }
+    //endregion
+    //region Mapping
+    map(f) {
+        return new Future(() => new Promise(resolve => this.createPromise()
+            .then(settled => resolve(settled.map(f)))));
+    }
+    mapError(f) {
+        return new Future(() => new Promise(resolve => this.createPromise()
+            .then(settled => resolve(settled.mapError(f)))));
+    }
+    //endregion
+    //region Reduction
+    fold(onFulfilled, onRejected) {
+        return this.createPromise()
+            .then(settled => settled.fold(onFulfilled, onRejected));
+    }
+    //endregion
+    //region Status
+    isFulfilled() {
+        return this.fold(() => true, () => false);
+    }
+    isRejected() {
+        return this.fold(() => false, () => true);
+    }
+    //endregion
+    //region Side-effects
     perform(f) {
         return new Future(() => new Promise(resolve => {
             this.run(firstValue => {
@@ -196,12 +221,6 @@ class Future {
             settled.performOnRejected(sideEffect);
             resolve(settled);
         })));
-    }
-    run(whenFulfilled, whenRejected) {
-        this.createPromise()
-            .then(settled => {
-            settled.run(whenFulfilled, whenRejected);
-        });
     }
 }
 exports.Future = Future;

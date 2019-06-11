@@ -3,27 +3,27 @@ import { Future, Result, Validated } from '..';
 export declare class Some<A> implements Option<A> {
     private readonly value;
     constructor(value: A);
-    apply<B, C>(this: Option<(parameter: B) => C>, parameterOrFunction: B | (() => B) | Option<B> | (() => Option<B>)): Option<C>;
-    assign<A extends object, K extends string, B>(this: Some<A>, key: K, memberOrFunction: Option<B> | ((obj: A) => Option<B>) | B | ((obj: A) => B)): Option<A & {
+    getOrElse(alternative: A | (() => A)): A;
+    apply<B, C>(this: Option<(parameter: B) => C>, argumentOrFunctionOrOption: B | (() => B) | Option<B> | (() => Option<B>)): Option<C>;
+    chain<B>(f: (value: A) => Option<B>): Option<B>;
+    assign<A extends object, K extends string, B>(this: Some<A>, key: K, memberOrOptionOrFunction: Option<B> | ((value: A) => Option<B>) | B | ((value: A) => B)): Option<A & {
         [key in K]: B;
     }>;
-    chain<B>(f: (value: A) => Option<B>): Option<B>;
-    equals(other: Option<A>): boolean;
-    test(predicate: (value: A) => boolean): boolean;
-    filter(predicate: (value: A) => boolean): Option<A>;
-    getOrElse(alternative: A | (() => A)): A;
-    isSome(): boolean;
-    isNone(): boolean;
-    map<B>(f: (value: A) => B): Option<B>;
-    fold<B>(onSome: (value: A) => B, onNone: () => B): B;
-    orElse(alternative: A | (() => A)): Option<A>;
-    orAttempt(alternative: () => Option<A>): Option<A>;
-    perform(sideEffect: () => void): Option<A>;
-    performOnSome(sideEffect: (value: A) => void): Option<A>;
-    performOnNone(sideEffect: () => void): Option<A>;
     toResult<E>(error: E): Result<A, E>;
     toFuture<E>(error: E): Future<A, E>;
     toValidated<E>(errorMessage: E): Validated<A, E>;
+    orElse(alternative: A | (() => A)): Option<A>;
+    orAttempt(alternative: () => Option<A>): Option<A>;
+    filter(predicate: (value: A) => boolean): Option<A>;
+    map<B>(f: (value: A) => B): Option<B>;
+    isSome(): boolean;
+    isNone(): boolean;
+    fold<B>(onSome: (value: A) => B, onNone: () => B): B;
+    perform(sideEffect: () => void): Option<A>;
+    performOnSome(sideEffect: (value: A) => void): Option<A>;
+    performOnNone(sideEffect: () => void): Option<A>;
+    equals(other: Option<A>): boolean;
+    test(predicate: (value: A) => boolean): boolean;
 }
 export declare function some<A>(value: A): Some<A>;
 export declare function optionObject(): Option<{}>;

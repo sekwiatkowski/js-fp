@@ -5,42 +5,30 @@ class Box {
     constructor(value) {
         this.value = value;
     }
-    apply(parameterOrFunction) {
-        const parameter = parameterOrFunction instanceof Function ? parameterOrFunction() : parameterOrFunction;
-        return this.map(f => f(parameter instanceof Box ? parameter.get() : parameter));
-    }
-    assign(key, memberOrFunction) {
-        const member = memberOrFunction instanceof Function ? memberOrFunction(this.value) : memberOrFunction;
-        const memberValue = member instanceof Box ? member.get() : member;
-        return this.map(obj => (Object.assign({}, Object(obj), { [key]: memberValue })));
-    }
-    chain(f) {
-        return f(this.value);
-    }
-    equals(otherBox) {
-        if (otherBox == null) {
-            return false;
-        }
-        else {
-            return otherBox.fold(otherValue => this.value === otherValue);
-        }
-    }
-    fold(f) {
-        return f(this.value);
-    }
+    //region Access
     get() {
         return this.value;
     }
-    map(f) {
-        return new Box(f(this.value));
+    // endregion
+    //region Application
+    apply(argumentOrBoxOrFunction) {
+        const argumentOrBox = argumentOrBoxOrFunction instanceof Function ? argumentOrBoxOrFunction() : argumentOrBoxOrFunction;
+        return this.map(f => f(argumentOrBox instanceof Box ? argumentOrBox.get() : argumentOrBox));
     }
-    perform(sideEffect) {
-        sideEffect(this.value);
-        return new Box(this.value);
+    //endregion
+    //region Chaining
+    chain(f) {
+        return f(this.value);
     }
-    test(predicate) {
-        return predicate(this.value);
+    //endregion
+    //region Comprehension
+    assign(key, memberOrBoxOrFunction) {
+        const memberOrBox = memberOrBoxOrFunction instanceof Function ? memberOrBoxOrFunction(this.value) : memberOrBoxOrFunction;
+        const member = memberOrBox instanceof Box ? memberOrBox.get() : memberOrBox;
+        return this.map(obj => (Object.assign({}, Object(obj), { [key]: member })));
     }
+    //endregion
+    //region Conversion
     toFuture() {
         return __1.fulfill(this.value);
     }
@@ -52,6 +40,35 @@ class Box {
     }
     toValidated() {
         return __1.valid(this.value);
+    }
+    //endregion
+    //region Mapping
+    map(f) {
+        return new Box(f(this.value));
+    }
+    //endregion
+    //region Reduction
+    fold(f) {
+        return f(this.value);
+    }
+    //endregion
+    //region Side-effects
+    perform(sideEffect) {
+        sideEffect(this.value);
+        return new Box(this.value);
+    }
+    //endregion
+    //region Testing
+    equals(otherBox) {
+        if (otherBox == null) {
+            return false;
+        }
+        else {
+            return otherBox.fold(otherValue => this.value === otherValue);
+        }
+    }
+    test(predicate) {
+        return predicate(this.value);
     }
 }
 exports.Box = Box;

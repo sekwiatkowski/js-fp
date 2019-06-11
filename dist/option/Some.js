@@ -6,57 +6,81 @@ class Some {
     constructor(value) {
         this.value = value;
     }
-    apply(parameterOrFunction) {
-        const parameter = parameterOrFunction instanceof Function ? parameterOrFunction() : parameterOrFunction;
-        if (parameter instanceof Some || parameter instanceof None_1.None) {
-            return parameter.chain(parameterValue => this.map(f => f(parameterValue)));
-        }
-        else {
-            return this.map(f => f(parameter));
-        }
-    }
-    assign(key, memberOrFunction) {
-        const member = memberOrFunction instanceof Function ? memberOrFunction(this.value) : memberOrFunction;
-        if (member instanceof Some || member instanceof None_1.None) {
-            return member.map(otherValue => (Object.assign({}, Object(this.value), { [key]: otherValue })));
-        }
-        else {
-            return this.map(obj => (Object.assign({}, Object(obj), { [key]: member })));
-        }
-    }
-    chain(f) {
-        return f(this.value);
-    }
-    equals(other) {
-        return other.fold(otherValue => this.value == otherValue, () => false);
-    }
-    test(predicate) {
-        return predicate(this.value);
-    }
-    filter(predicate) {
-        return this.test(predicate) ? this : None_1.none;
-    }
+    //region Access
     getOrElse(alternative) {
         return this.value;
     }
-    isSome() {
-        return true;
+    //endregion
+    //region Application
+    apply(argumentOrFunctionOrOption) {
+        const argumentOrOption = argumentOrFunctionOrOption instanceof Function ? argumentOrFunctionOrOption() : argumentOrFunctionOrOption;
+        if (argumentOrOption instanceof Some || argumentOrOption instanceof None_1.None) {
+            return argumentOrOption.chain(argument => this.map(f => f(argument)));
+        }
+        else {
+            return this.map(f => f(argumentOrOption));
+        }
     }
-    isNone() {
-        return false;
+    //endregion
+    //region Chaining
+    chain(f) {
+        return f(this.value);
     }
-    map(f) {
-        return new Some(f(this.value));
+    //endregion
+    //region Comprehension
+    assign(key, memberOrOptionOrFunction) {
+        const memberOrOption = memberOrOptionOrFunction instanceof Function ? memberOrOptionOrFunction(this.value) : memberOrOptionOrFunction;
+        if (memberOrOption instanceof Some || memberOrOption instanceof None_1.None) {
+            return memberOrOption.map(otherValue => (Object.assign({}, Object(this.value), { [key]: otherValue })));
+        }
+        else {
+            return this.map(obj => (Object.assign({}, Object(obj), { [key]: memberOrOption })));
+        }
     }
-    fold(onSome, onNone) {
-        return onSome(this.value);
+    //endregion
+    //region Conversion
+    toResult(error) {
+        return __1.success(this.value);
     }
+    toFuture(error) {
+        return __1.fulfill(this.value);
+    }
+    toValidated(errorMessage) {
+        return __1.valid(this.value);
+    }
+    //endregion
+    //region Fallback
     orElse(alternative) {
         return this;
     }
     orAttempt(alternative) {
         return this;
     }
+    //endregion
+    //region Filtering
+    filter(predicate) {
+        return this.test(predicate) ? this : None_1.none;
+    }
+    //endregion
+    //region Mapping
+    map(f) {
+        return new Some(f(this.value));
+    }
+    //endregion
+    //region Status
+    isSome() {
+        return true;
+    }
+    isNone() {
+        return false;
+    }
+    //endregion
+    //region Reduction
+    fold(onSome, onNone) {
+        return onSome(this.value);
+    }
+    //endregion
+    //region Side-effects
     perform(sideEffect) {
         sideEffect();
         return None_1.none;
@@ -68,14 +92,13 @@ class Some {
     performOnNone(sideEffect) {
         return this;
     }
-    toResult(error) {
-        return __1.success(this.value);
+    //endregion
+    //region Testing
+    equals(other) {
+        return other.fold(otherValue => this.value == otherValue, () => false);
     }
-    toFuture(error) {
-        return __1.fulfill(this.value);
-    }
-    toValidated(errorMessage) {
-        return __1.valid(this.value);
+    test(predicate) {
+        return predicate(this.value);
     }
 }
 exports.Some = Some;

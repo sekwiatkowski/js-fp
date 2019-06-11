@@ -5,24 +5,37 @@ import {fulfill, Future, Option, Result, some, success} from '..'
 export class Valid<T, E> implements Validated<T, E> {
     constructor(private readonly value: T) {}
 
-    apply<U, V>(
-        this: Valid<(parameter: U) => V, E>,
-        parameterOrFunction: Validated<U, E> | (() => U) | (() => Validated<U, E>) | U): Validated<V, E> {
-        const parameter = parameterOrFunction instanceof Function ? parameterOrFunction() : parameterOrFunction
-
-        if (parameter instanceof Invalid || parameter instanceof Valid) {
-            return parameter.map(parameterValue => this.value(parameterValue))
-        }
-        else {
-            return this.map(f => f(<U>parameter))
-        }
+    //region Access
+    getErrorsOrElse(alternative: E[]|((value: T) => E[])): E[] {
+        return alternative instanceof Function ? alternative(this.value) : alternative
     }
 
+    getOrElse(alternative: T|((errors: E[]) => T)): T {
+        return this.value
+    }
+    //endregion
+
+    //region Application
+    apply<U, V>(
+        this: Valid<(parameter: U) => V, E>,
+        argumentOrFunctionOrValidated: Validated<U, E> | (() => U) | (() => Validated<U, E>) | U): Validated<V, E> {
+        const argumentOrValidated = argumentOrFunctionOrValidated instanceof Function ? argumentOrFunctionOrValidated() : argumentOrFunctionOrValidated
+
+        if (argumentOrValidated instanceof Invalid || argumentOrValidated instanceof Valid) {
+            return argumentOrValidated.map(argument => this.value(argument))
+        }
+        else {
+            return this.map(f => f(<U>argumentOrValidated))
+        }
+    }
+    //endregion
+
+    //region Comprehension
     assign<T extends object, K extends string, U>(
         this: Valid<T, E>,
         key: K,
-        memberOrFunction: Validated<U, E> | ((value: T) => Validated<U, E>) | U | ((value: T) => U)): Validated<T & { [key in K]: U }, E> {
-        const member = memberOrFunction instanceof Function ? memberOrFunction(this.value) : memberOrFunction
+        memberOrValidatedOrFunction: Validated<U, E> | ((value: T) => Validated<U, E>) | U | ((value: T) => U)): Validated<T & { [key in K]: U }, E> {
+        const member = memberOrValidatedOrFunction instanceof Function ? memberOrValidatedOrFunction(this.value) : memberOrValidatedOrFunction
 
         if (member instanceof Valid || member instanceof Invalid) {
             return member.map<T & { [key in K]: U }>(memberValue => ({
@@ -37,34 +50,29 @@ export class Valid<T, E> implements Validated<T, E> {
             }))
         }
     }
+    //endregion
 
+    //region Concatenation
     concat(otherValidated: Validated<T, E>): Validated<T, E> {
         return otherValidated
     }
+    //endregion
 
-    equals(otherValidated: Validated<T, E>): boolean {
-        return otherValidated.fold(
-            otherValue => this.value === otherValue,
-            () => false,
-        )
+    //region Conversion
+    toFuture(): Future<T, E[]> {
+        return fulfill<T, E[]>(this.value)
     }
 
-    getErrorsOrElse(alternative: E[]|((value: T) => E[])): E[] {
-        return alternative instanceof Function ? alternative(this.value) : alternative
+    toOption(): Option<T> {
+        return some(this.value)
     }
 
-    getOrElse(alternative: T|((errors: E[]) => T)): T {
-        return this.value
+    toResult(): Result<T, E[]> {
+        return success(this.value)
     }
+    //endregion
 
-    isInvalid(): boolean {
-        return false
-    }
-
-    isValid(): boolean {
-        return true
-    }
-
+    //region Mapping
     map<U>(f: (value: T) => U): Validated<U, E> {
         return new Valid(f(this.value))
     }
@@ -72,11 +80,15 @@ export class Valid<T, E> implements Validated<T, E> {
     mapErrors(f: (errors: E[]) => E[]): Validated<T, E> {
         return this
     }
+    //endregion
 
+    //region Reduction
     fold<U>(onValid: (value: T) => U, onInvalid: (list: E[]) => U): U {
         return onValid(this.value)
     }
+    //endregion
 
+    //region Side-effects
     perform(sideEffect: () => void): Validated<T, E> {
         sideEffect()
         return this
@@ -90,18 +102,26 @@ export class Valid<T, E> implements Validated<T, E> {
     performOnInvalid(sideEffect: (errors: E[]) => void): Validated<T, E> {
         return this
     }
+    //endregion
 
-    toFuture(): Future<T, E[]> {
-        return fulfill<T, E[]>(this.value)
+    //region Status
+    isInvalid(): boolean {
+        return false
     }
 
-    toOption(): Option<T> {
-        return some(this.value)
+    isValid(): boolean {
+        return true
     }
+    //endregion
 
-    toResult(): Result<T, E[]> {
-        return success(this.value)
+    //region Testing
+    equals(otherValidated: Validated<T, E>): boolean {
+        return otherValidated.fold(
+            otherValue => this.value === otherValue,
+            () => false,
+        )
     }
+    //endregion
 }
 
 export function valid<T, E>(value: T): Valid<T, E> {

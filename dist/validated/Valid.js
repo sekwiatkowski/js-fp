@@ -6,17 +6,28 @@ class Valid {
     constructor(value) {
         this.value = value;
     }
-    apply(parameterOrFunction) {
-        const parameter = parameterOrFunction instanceof Function ? parameterOrFunction() : parameterOrFunction;
-        if (parameter instanceof Invalid_1.Invalid || parameter instanceof Valid) {
-            return parameter.map(parameterValue => this.value(parameterValue));
+    //region Access
+    getErrorsOrElse(alternative) {
+        return alternative instanceof Function ? alternative(this.value) : alternative;
+    }
+    getOrElse(alternative) {
+        return this.value;
+    }
+    //endregion
+    //region Application
+    apply(argumentOrFunctionOrValidated) {
+        const argumentOrValidated = argumentOrFunctionOrValidated instanceof Function ? argumentOrFunctionOrValidated() : argumentOrFunctionOrValidated;
+        if (argumentOrValidated instanceof Invalid_1.Invalid || argumentOrValidated instanceof Valid) {
+            return argumentOrValidated.map(argument => this.value(argument));
         }
         else {
-            return this.map(f => f(parameter));
+            return this.map(f => f(argumentOrValidated));
         }
     }
-    assign(key, memberOrFunction) {
-        const member = memberOrFunction instanceof Function ? memberOrFunction(this.value) : memberOrFunction;
+    //endregion
+    //region Comprehension
+    assign(key, memberOrValidatedOrFunction) {
+        const member = memberOrValidatedOrFunction instanceof Function ? memberOrValidatedOrFunction(this.value) : memberOrValidatedOrFunction;
         if (member instanceof Valid || member instanceof Invalid_1.Invalid) {
             return member.map(memberValue => (Object.assign({}, Object(this.value), { [key]: memberValue })));
         }
@@ -24,33 +35,37 @@ class Valid {
             return this.map(obj => (Object.assign({}, Object(obj), { [key]: member })));
         }
     }
+    //endregion
+    //region Concatenation
     concat(otherValidated) {
         return otherValidated;
     }
-    equals(otherValidated) {
-        return otherValidated.fold(otherValue => this.value === otherValue, () => false);
+    //endregion
+    //region Conversion
+    toFuture() {
+        return __1.fulfill(this.value);
     }
-    getErrorsOrElse(alternative) {
-        return alternative instanceof Function ? alternative(this.value) : alternative;
+    toOption() {
+        return __1.some(this.value);
     }
-    getOrElse(alternative) {
-        return this.value;
+    toResult() {
+        return __1.success(this.value);
     }
-    isInvalid() {
-        return false;
-    }
-    isValid() {
-        return true;
-    }
+    //endregion
+    //region Mapping
     map(f) {
         return new Valid(f(this.value));
     }
     mapErrors(f) {
         return this;
     }
+    //endregion
+    //region Reduction
     fold(onValid, onInvalid) {
         return onValid(this.value);
     }
+    //endregion
+    //region Side-effects
     perform(sideEffect) {
         sideEffect();
         return this;
@@ -62,14 +77,18 @@ class Valid {
     performOnInvalid(sideEffect) {
         return this;
     }
-    toFuture() {
-        return __1.fulfill(this.value);
+    //endregion
+    //region Status
+    isInvalid() {
+        return false;
     }
-    toOption() {
-        return __1.some(this.value);
+    isValid() {
+        return true;
     }
-    toResult() {
-        return __1.success(this.value);
+    //endregion
+    //region Testing
+    equals(otherValidated) {
+        return otherValidated.fold(otherValue => this.value === otherValue, () => false);
     }
 }
 exports.Valid = Valid;
