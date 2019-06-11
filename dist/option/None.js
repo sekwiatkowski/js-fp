@@ -55,14 +55,14 @@ class None {
     //endregion
     //region Testing
     equals(other) {
-        return other.fold(otherValue => false, () => true);
+        return other.match(otherValue => false, () => true);
     }
     test(predicate) {
         return false;
     }
     //endregion
-    //region Reduction
-    fold(onSome, onNone) {
+    //region Matching
+    match(onSome, onNone) {
         return onNone();
     }
     //endregion

@@ -33,7 +33,7 @@ export class Invalid<T, E> implements Validated<T, E> {
 
     //region Concatenation
     concat(otherValidated: Validated<T, E>): Validated<T, E> {
-        return otherValidated.fold(
+        return otherValidated.match(
             () => this,
             otherList => new Invalid<T, E>(this.errors.concat(otherList)))
     }
@@ -63,8 +63,8 @@ export class Invalid<T, E> implements Validated<T, E> {
     }
     //endregion
 
-    //region Reduction
-    fold<U>(onValid: (value: T) => U, onInvalid: (list: E[]) => U): U{
+    //region Matching
+    match<U>(onValid: (value: T) => U, onInvalid: (list: E[]) => U): U{
         return onInvalid(this.errors)
     }
     //endregion
@@ -97,7 +97,7 @@ export class Invalid<T, E> implements Validated<T, E> {
 
     //region Testing
     equals(otherValidated: Validated<T, E>): boolean {
-        return otherValidated.fold(
+        return otherValidated.match(
             () => false,
             otherErrors => listFromArray(this.errors).equals(listFromArray(otherErrors))
         )

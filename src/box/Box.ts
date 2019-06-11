@@ -62,12 +62,6 @@ export class Box<A> {
     }
     //endregion
 
-    //region Reduction
-    fold<B>(f: (value: A) => B): B {
-        return f(this.value)
-    }
-    //endregion
-
     //region Side-effects
     perform(sideEffect: (value: A) => void): Box<A> {
         sideEffect(this.value)
@@ -81,7 +75,7 @@ export class Box<A> {
             return false
         }
         else {
-            return otherBox.fold(otherValue => this.value === otherValue)
+            return this.value === otherBox.value
         }
     }
 

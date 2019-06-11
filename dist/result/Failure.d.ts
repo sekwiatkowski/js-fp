@@ -17,7 +17,7 @@ export declare class Failure<T, E> implements Result<T, E> {
     orAttempt(alternative: (error: E) => Result<T, E>): Result<T, E>;
     map<U>(f: (value: T) => U): Result<U, E>;
     mapError<F>(f: (error: E) => F): Result<T, F>;
-    fold<X>(onSuccess: (value: T) => X, onFailure: (error: E) => X): X;
+    match<X>(onSuccess: (value: T) => X, onFailure: (error: E) => X): X;
     perform(sideEffect: () => void): Result<T, E>;
     performOnSuccess(sideEffect: (value: T) => void): Result<T, E>;
     performOnFailure(sideEffect: (error: E) => void): Result<T, E>;

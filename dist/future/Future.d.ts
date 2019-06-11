@@ -14,8 +14,8 @@ export declare class Future<T, E> {
     orPromise(alternative: Promise<T> | ((error: E) => Promise<T>)): Future<T, E>;
     run(whenFulfilled: (value: T) => void, whenRejected: (error: E) => void): void;
     map<U>(f: (value: T) => U): Future<U, E>;
+    match<X>(onFulfilled: (value: T) => X, onRejected: (error: E) => X): Promise<X>;
     mapError<F>(f: (error: E) => F): Future<T, F>;
-    fold<X>(onFulfilled: (value: T) => X, onRejected: (error: E) => X): Promise<X>;
     isFulfilled(): Promise<boolean>;
     isRejected(): Promise<boolean>;
     perform<U>(f: (() => Future<U, E>) | (() => Promise<U>)): Future<T, E>;

@@ -18,7 +18,7 @@ export declare class None<A> implements Option<A> {
     map<B>(f: (value: A) => B): Option<B>;
     equals(other: Option<A>): boolean;
     test(predicate: (value: A) => boolean): boolean;
-    fold<B>(onSome: (value: A) => B, onNone: () => B): B;
+    match<B>(onSome: (value: A) => B, onNone: () => B): B;
     perform(sideEffect: () => void): Option<A>;
     performOnSome(sideEffect: (value: A) => void): Option<A>;
     performOnNone(sideEffect: () => void): Option<A>;

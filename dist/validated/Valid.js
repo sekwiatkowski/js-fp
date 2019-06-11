@@ -60,8 +60,8 @@ class Valid {
         return this;
     }
     //endregion
-    //region Reduction
-    fold(onValid, onInvalid) {
+    //region Matching
+    match(onValid, onInvalid) {
         return onValid(this.value);
     }
     //endregion
@@ -88,7 +88,7 @@ class Valid {
     //endregion
     //region Testing
     equals(otherValidated) {
-        return otherValidated.fold(otherValue => this.value === otherValue, () => false);
+        return otherValidated.match(otherValue => this.value === otherValue, () => false);
     }
 }
 exports.Valid = Valid;

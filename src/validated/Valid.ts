@@ -82,8 +82,8 @@ export class Valid<T, E> implements Validated<T, E> {
     }
     //endregion
 
-    //region Reduction
-    fold<U>(onValid: (value: T) => U, onInvalid: (list: E[]) => U): U {
+    //region Matching
+    match<U>(onValid: (value: T) => U, onInvalid: (list: E[]) => U): U {
         return onValid(this.value)
     }
     //endregion
@@ -116,7 +116,7 @@ export class Valid<T, E> implements Validated<T, E> {
 
     //region Testing
     equals(otherValidated: Validated<T, E>): boolean {
-        return otherValidated.fold(
+        return otherValidated.match(
             otherValue => this.value === otherValue,
             () => false,
         )

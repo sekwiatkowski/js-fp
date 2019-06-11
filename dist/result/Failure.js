@@ -56,8 +56,8 @@ class Failure {
         return new Failure(f(this.error));
     }
     //endregion
-    //region Reduction
-    fold(onSuccess, onFailure) {
+    //region Matching
+    match(onSuccess, onFailure) {
         return onFailure(this.error);
     }
     //endregion
@@ -84,7 +84,7 @@ class Failure {
     //endregion
     //region Testing
     equals(otherResult) {
-        return otherResult.fold(() => false, otherError => this.error === otherError);
+        return otherResult.match(() => false, otherError => this.error === otherError);
     }
 }
 exports.Failure = Failure;

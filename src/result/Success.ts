@@ -92,8 +92,8 @@ export class Success<T, E> implements Result<T, E> {
     }
     //endregion
 
-    //region Reduction
-    fold<X>(onSuccess: (value: T) => X, onFailure: (error: E) => X) : X {
+    //region Matching
+    match<X>(onSuccess: (value: T) => X, onFailure: (error: E) => X) : X {
         return onSuccess(this.value)
     }
     //endregion
@@ -126,7 +126,7 @@ export class Success<T, E> implements Result<T, E> {
 
     //region Testing
     equals(otherResult: Result<T, E>): boolean {
-        return otherResult.fold(
+        return otherResult.match(
             otherValue => this.value == otherValue,
             () => false
         )

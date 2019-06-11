@@ -27,7 +27,7 @@ describe('Future', () => {
                 .assign('d',() => fulfill(4))
                 .assign('e', Promise.resolve(5))
                 .assign('f', () => Promise.resolve(6))
-                .fold(
+                .match(
                     scope => scope.a + scope.b + scope.c + scope.d + scope.e + scope.f,
                     () => { throw 'Unexpected rejection!' })
 
@@ -38,7 +38,7 @@ describe('Future', () => {
             const result = await fulfill({})
                 .assign('x', () => Promise.resolve(1))
                 .assign('y', Promise.resolve(2))
-                .fold(
+                .match(
                     scope => scope.x + scope.y,
                     () => { throw 'Unexpected rejection!' })
 
@@ -49,7 +49,7 @@ describe('Future', () => {
             const result = await fulfill({})
                 .assign('x', future<number, string>(() => Promise.resolve(1)))
                 .assign('y', () => future<number, string>(() => Promise.resolve(2)))
-                .fold(
+                .match(
                     scope => scope.x + scope.y,
                     () => { throw 'Unexpected rejection!' })
 
@@ -77,7 +77,7 @@ describe('Future', () => {
             const result = await fulfill({})
                 .assign('x', Promise.reject(1))
                 .assign('y', Promise.resolve(2))
-                .fold(
+                .match(
                     () => { throw 'Unexpected resolution!' },
                     () => 'rejected')
 
@@ -88,7 +88,7 @@ describe('Future', () => {
             const result = await fulfill({})
                 .assign('x', Promise.resolve(1))
                 .assign('y', Promise.reject(2))
-                .fold(
+                .match(
                     () => { throw 'Unexpected resolution!' },
                     () => 'rejected')
 
@@ -206,10 +206,10 @@ describe('Future', () => {
         })
     })
 
-    describe('should fold', () => {
+    describe('should match', () => {
         it('by mapping over the value of a resolved promise', async() => {
             const actualValue = await fulfill(value)
-                .fold(
+                .match(
                     map,
                     () => { throw 'Unexpected rejection!' })
 
@@ -219,7 +219,7 @@ describe('Future', () => {
 
         it('by mapping over the error associated with a rejected promise', async() => {
             const actualValue = await reject(error)
-                .fold(
+                .match(
                     () => { throw 'Unexpected resolution!' },
                     map)
 

@@ -120,9 +120,9 @@ describe('Success', () => {
         })
     })
 
-    it('should return the value when folded', () => {
+    it('should return the value when matched', () => {
         createSuccessOfString()
-            .fold(value => value, unsafeGet)
+            .match(value => value, unsafeGet)
             .should.equal(containedValue)
     })
 

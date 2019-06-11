@@ -25,7 +25,7 @@ class Invalid {
     //endregion
     //region Concatenation
     concat(otherValidated) {
-        return otherValidated.fold(() => this, otherList => new Invalid(this.errors.concat(otherList)));
+        return otherValidated.match(() => this, otherList => new Invalid(this.errors.concat(otherList)));
     }
     //endregion
     //region Conversion
@@ -47,8 +47,8 @@ class Invalid {
         return new Invalid(f(this.errors));
     }
     //endregion
-    //region Reduction
-    fold(onValid, onInvalid) {
+    //region Matching
+    match(onValid, onInvalid) {
         return onInvalid(this.errors);
     }
     //endregion
@@ -75,7 +75,7 @@ class Invalid {
     //endregion
     //region Testing
     equals(otherValidated) {
-        return otherValidated.fold(() => false, otherErrors => __1.listFromArray(this.errors).equals(__1.listFromArray(otherErrors)));
+        return otherValidated.match(() => false, otherErrors => __1.listFromArray(this.errors).equals(__1.listFromArray(otherErrors)));
     }
 }
 exports.Invalid = Invalid;

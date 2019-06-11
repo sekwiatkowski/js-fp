@@ -125,23 +125,23 @@ class Future {
         return new Future(() => new Promise(resolve => this.createPromise()
             .then(settled => resolve(settled.map(f)))));
     }
+    //region Matching
+    match(onFulfilled, onRejected) {
+        return this.createPromise()
+            .then(settled => settled.fold(onFulfilled, onRejected));
+    }
+    //endregion
     mapError(f) {
         return new Future(() => new Promise(resolve => this.createPromise()
             .then(settled => resolve(settled.mapError(f)))));
     }
     //endregion
-    //region Reduction
-    fold(onFulfilled, onRejected) {
-        return this.createPromise()
-            .then(settled => settled.fold(onFulfilled, onRejected));
-    }
-    //endregion
     //region Status
     isFulfilled() {
-        return this.fold(() => true, () => false);
+        return this.match(() => true, () => false);
     }
     isRejected() {
-        return this.fold(() => false, () => true);
+        return this.match(() => false, () => true);
     }
     //endregion
     //region Side-effects

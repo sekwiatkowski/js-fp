@@ -140,6 +140,23 @@ class List {
         }));
     }
     //endregion
+    //region Matching
+    match(onNonEmpty, onEmpty) {
+        return this.length == 0 ? onEmpty() : onNonEmpty(this.items);
+    }
+    //endregion
+    //region Folding
+    fold(f, initialValue) {
+        if (this.length == 0) {
+            return __1.none;
+        }
+        let accumulator = initialValue;
+        for (let i = 0; i < this.length; i++) {
+            accumulator = f(accumulator, this.items[i]);
+        }
+        return __1.some(accumulator);
+    }
+    //endregion
     //region Side-effects
     perform(sideEffect) {
         sideEffect(this);

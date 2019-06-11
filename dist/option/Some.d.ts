@@ -18,7 +18,7 @@ export declare class Some<A> implements Option<A> {
     map<B>(f: (value: A) => B): Option<B>;
     isSome(): boolean;
     isNone(): boolean;
-    fold<B>(onSome: (value: A) => B, onNone: () => B): B;
+    match<B>(onSome: (value: A) => B, onNone: () => B): B;
     perform(sideEffect: () => void): Option<A>;
     performOnSome(sideEffect: (value: A) => void): Option<A>;
     performOnNone(sideEffect: () => void): Option<A>;

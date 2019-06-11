@@ -20,6 +20,8 @@ export declare class List<T> {
     };
     map<U>(f: (item: T) => U): List<U>;
     parallelMap<U, E>(f: (item: T) => U): Future<U[], E>;
+    match<X>(onNonEmpty: (array: T[]) => X, onEmpty: () => X): X;
+    fold(f: (a: T, b: T) => T, initialValue: T): Option<T>;
     perform(sideEffect: (list: List<T>) => void): void;
     performOnEmpty(sideEffect: (list: List<T>) => void): void;
     performOnNonEmpty(sideEffect: (list: List<T>) => void): void;

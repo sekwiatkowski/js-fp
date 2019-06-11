@@ -34,8 +34,8 @@ export interface Validated<T, E> {
     mapErrors(f: (errors: E[]) => E[]) : Validated<T, E>
     //endregion
 
-    //region Reduction
-    fold<U>(onValid: (value: T) => U, onInvalid: (list: E[]) => U): U
+    //region Matching
+    match<U>(onValid: (value: T) => U, onInvalid: (list: E[]) => U): U
     //endregion
 
     //region Side-effects

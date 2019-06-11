@@ -13,7 +13,6 @@ export declare class Box<A> {
     toResult<E>(): Result<A, E>;
     toValidated<E>(): Validated<A, E>;
     map<B>(f: (value: A) => B): Box<B>;
-    fold<B>(f: (value: A) => B): B;
     perform(sideEffect: (value: A) => void): Box<A>;
     equals(otherBox: Box<A>): boolean;
     test(predicate: (value: A) => boolean): boolean;

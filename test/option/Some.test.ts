@@ -71,9 +71,9 @@ describe('Some', () => {
         createSomeOfString().isNone().should.be.false
     })
 
-    it('should return the value when folded', () => {
+    it('should return the value when matched', () => {
         createSomeOfString()
-            .fold(
+            .match(
                 value => value,
                 unsafeGet
             )

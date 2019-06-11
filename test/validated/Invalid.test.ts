@@ -95,11 +95,11 @@ describe('Invalid', () => {
         })
     })
 
-    it('should map over the errors when folded', () => {
+    it('should map over the errors when matched', () => {
         const f = error => `mapped ${error}`
         const mappedErrors = errors.map(f)
         createInvalidInstance()
-            .fold(
+            .match(
                 () => { throw 'Unexpected branch!' },
                 errors => errors.map(f))
             .should.eql(mappedErrors)

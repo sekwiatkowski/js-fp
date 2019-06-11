@@ -98,8 +98,8 @@ export class Some<A> implements Option<A> {
     }
     //endregion
 
-    //region Reduction
-    fold<B>(onSome: (value: A) => B, onNone: () => B) : B {
+    //region Matching
+    match<B>(onSome: (value: A) => B, onNone: () => B) : B {
         return onSome(this.value)
     }
     //endregion
@@ -122,7 +122,7 @@ export class Some<A> implements Option<A> {
 
     //region Testing
     equals(other: Option<A>): boolean {
-        return other.fold(
+        return other.match(
             otherValue => this.value == otherValue,
             () => false
         )

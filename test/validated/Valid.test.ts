@@ -96,9 +96,9 @@ describe('Valid', () => {
         })
     })
 
-    it('should return the contained value when folded', () => {
+    it('should return the contained value when matched', () => {
         createValidString()
-            .fold(
+            .match(
                 value => value,
                 () => { throw 'Unexpected access!' })
             .should.equal(containedString)

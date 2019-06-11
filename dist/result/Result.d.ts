@@ -14,7 +14,7 @@ export interface Result<T, E> {
     orElse(alternative: T | ((error: E) => T)): Result<T, E>;
     map<U>(f: (value: T) => U): Result<U, E>;
     mapError<F>(f: (error: E) => F): Result<T, F>;
-    fold<X>(onSuccess: (value: T) => X, onFailure: (error: E) => X): X;
+    match<X>(onSuccess: (value: T) => X, onFailure: (error: E) => X): X;
     perform(sideEffect: () => void): Result<T, E>;
     performOnSuccess(sideEffect: (value: T) => void): Result<T, E>;
     performOnFailure(sideEffect: (error: E) => void): Result<T, E>;

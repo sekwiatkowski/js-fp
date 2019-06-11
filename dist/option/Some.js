@@ -75,8 +75,8 @@ class Some {
         return false;
     }
     //endregion
-    //region Reduction
-    fold(onSome, onNone) {
+    //region Matching
+    match(onSome, onNone) {
         return onSome(this.value);
     }
     //endregion
@@ -95,7 +95,7 @@ class Some {
     //endregion
     //region Testing
     equals(other) {
-        return other.fold(otherValue => this.value == otherValue, () => false);
+        return other.match(otherValue => this.value == otherValue, () => false);
     }
     test(predicate) {
         return predicate(this.value);

@@ -400,4 +400,19 @@ describe('List<T>', () => {
             list(1).prepend(2).equals(list(2, 1)).should.be.true
         })
     })
+
+    describe('should fold', () => {
+        const unusedFunction = () => { throw 'Unexpected functional application' }
+        const max = (a, b) => Math.max(a, b)
+
+        it('an empty list to none', () => {
+            emptyList<number>().fold(unusedFunction, undefined).should.equal(none)
+        })
+
+        it('to the maximum value when the max(a, b) operation is specified', () => {
+            list(1).fold(max, -Infinity).equals(some(1))
+            list(1, 2).fold(max, -Infinity).equals(some(2))
+            list(2, 1).fold(max, -Infinity).equals(some(1))
+        })
+    })
 })

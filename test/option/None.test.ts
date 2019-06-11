@@ -38,9 +38,9 @@ describe('None', () => {
         none.isNone().should.be.true
     })
 
-    it('should return the alternative when folded', () => {
+    it('should return the alternative when matched', () => {
         const alternativeText = 'alternative'
-        none.fold(
+        none.match(
             value => value,
             () => alternativeText).should.equal(alternativeText)
     })

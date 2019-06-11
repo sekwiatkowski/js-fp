@@ -72,7 +72,7 @@ export class None<A> implements Option<A> {
 
     //region Testing
     equals(other: Option<A>) {
-        return other.fold(
+        return other.match(
             otherValue => false,
             () => true
         )
@@ -83,8 +83,8 @@ export class None<A> implements Option<A> {
     }
     //endregion
 
-    //region Reduction
-    fold<B>(onSome: (value: A) => B, onNone: () => B): B {
+    //region Matching
+    match<B>(onSome: (value: A) => B, onNone: () => B): B {
         return onNone()
     }
     //endregion

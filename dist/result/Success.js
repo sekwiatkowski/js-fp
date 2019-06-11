@@ -68,8 +68,8 @@ class Success {
         return new Success(this.value);
     }
     //endregion
-    //region Reduction
-    fold(onSuccess, onFailure) {
+    //region Matching
+    match(onSuccess, onFailure) {
         return onSuccess(this.value);
     }
     //endregion
@@ -96,7 +96,7 @@ class Success {
     //endregion
     //region Testing
     equals(otherResult) {
-        return otherResult.fold(otherValue => this.value == otherValue, () => false);
+        return otherResult.match(otherValue => this.value == otherValue, () => false);
     }
 }
 exports.Success = Success;

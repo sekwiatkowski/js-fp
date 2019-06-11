@@ -140,7 +140,7 @@ export class List<T> {
     //region Grouping
     groupBy(computeKey: (item: T) => string): { [id: string]: T[] } {
         let dictionary:{ [id: string]: T[] } = {}
-        for(let i = 0; i < this.length; i++){
+        for(let i = 0; i < this.length; i++) {
             const item = this.items[i]
             const key = computeKey(item)
             if (!(key in dictionary)) {
@@ -169,6 +169,29 @@ export class List<T> {
                 .then(items => resolve(fulfilled(items)))
                 .catch(error => resolve(rejected(error)))
         }))
+    }
+    //endregion
+
+    //region Matching
+    match<X>(
+        onNonEmpty: (array: T[]) => X,
+        onEmpty: () => X) : X {
+        return this.length == 0 ? onEmpty() : onNonEmpty(this.items)
+    }
+    //endregion
+
+    //region Folding
+    fold(f: (a: T, b: T) => T, initialValue: T): Option<T> {
+        if (this.length == 0) {
+            return none
+        }
+
+        let accumulator = initialValue
+        for(let i = 0; i < this.length; i++) {
+            accumulator = f(accumulator, this.items[i])
+        }
+
+        return some(accumulator)
     }
     //endregion
 
@@ -258,7 +281,6 @@ export class List<T> {
         }
 
         return true
-
     }
 
     all(predicate: (item: T) => boolean): boolean {

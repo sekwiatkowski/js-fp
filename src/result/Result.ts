@@ -39,8 +39,8 @@ export interface Result<T, E> {
     mapError<F>(f: (error: E) => F): Result<T, F>
     //endregion
 
-    //region Reduction
-    fold<X>(onSuccess: (value: T) => X, onFailure: (error: E) => X) : X
+    //region Matching
+    match<X>(onSuccess: (value: T) => X, onFailure: (error: E) => X) : X
     //endregion
 
     //region Side-effects

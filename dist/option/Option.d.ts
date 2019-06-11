@@ -13,7 +13,7 @@ export interface Option<A> {
     orAttempt(alternative: () => Option<A>): Option<A>;
     filter(predicate: (value: A) => boolean): Option<A>;
     map<B>(f: (value: A) => B): Option<B>;
-    fold<B>(onSome: (value: A) => B, onNone: () => B): B;
+    match<B>(onSome: (value: A) => B, onNone: () => B): B;
     perform(sideEffect: () => void): Option<A>;
     performOnSome(sideEffect: (value: A) => void): Option<A>;
     performOnNone(sideEffect: () => void): Option<A>;

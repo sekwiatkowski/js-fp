@@ -47,11 +47,6 @@ class Box {
         return new Box(f(this.value));
     }
     //endregion
-    //region Reduction
-    fold(f) {
-        return f(this.value);
-    }
-    //endregion
     //region Side-effects
     perform(sideEffect) {
         sideEffect(this.value);
@@ -64,7 +59,7 @@ class Box {
             return false;
         }
         else {
-            return otherBox.fold(otherValue => this.value === otherValue);
+            return this.value === otherBox.value;
         }
     }
     test(predicate) {

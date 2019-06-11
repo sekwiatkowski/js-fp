@@ -41,8 +41,8 @@ export interface Option<A> {
     map<B>(f: (value: A) => B): Option<B>
     //endregion
 
-    //region Reduction
-    fold<B>(onSome: (value: A) => B, onNone: () => B): B
+    //region Matching
+    match<B>(onSome: (value: A) => B, onNone: () => B): B
     //endregion
 
     //region Side-effects

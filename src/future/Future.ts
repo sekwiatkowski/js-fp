@@ -198,6 +198,15 @@ export class Future<T, E> {
         )
     }
 
+    //region Matching
+    match<X>(
+        onFulfilled: (value: T) => X,
+        onRejected: (error: E) => X) : Promise<X> {
+        return this.createPromise()
+            .then(settled => settled.fold(onFulfilled, onRejected))
+    }
+    //endregion
+
     mapError<F>(f : (error: E) => F): Future<T, F> {
         return new Future(() =>
             new Promise<Settled<T, F>>(resolve =>
@@ -208,24 +217,15 @@ export class Future<T, E> {
     }
     //endregion
 
-    //region Reduction
-    fold<X>(
-        onFulfilled: (value: T) => X,
-        onRejected: (error: E) => X) : Promise<X> {
-        return this.createPromise()
-            .then(settled => settled.fold(onFulfilled, onRejected))
-    }
-    //endregion
-
     //region Status
     isFulfilled() : Promise<boolean> {
-        return this.fold(
+        return this.match(
         () => true,
         () => false)
     }
 
     isRejected() : Promise<boolean> {
-        return this.fold(
+        return this.match(
         () => false,
         () => true)
     }
