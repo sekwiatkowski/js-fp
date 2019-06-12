@@ -68,7 +68,15 @@ function filterItems(items, predicate) {
 }
 exports.filterItems = filterItems;
 //endregion
-//region Folding
+//region Reduction
+function reduceItemsBy(items, by, operation) {
+    let accumulator = by(items[0]);
+    for (let i = 1; i < items.length; i++) {
+        accumulator = operation(accumulator)(by(items[i]));
+    }
+    return accumulator;
+}
+exports.reduceItemsBy = reduceItemsBy;
 function foldItemsBy(items, by, operation, initialValue) {
     let accumulator = initialValue;
     for (let i = 0; i < items.length; i++) {
@@ -178,9 +186,8 @@ function findItem(items, predicate) {
 }
 exports.findItem = findItem;
 function findLastItem(items, predicate) {
-    const lastIndex = items.length - 1;
-    for (let i = lastIndex; i >= 0; i--) {
-        const item = items[i];
+    for (let index = items.length - 1; index >= 0; index--) {
+        const item = items[index];
         if (predicate(item)) {
             return __1.some(item);
         }

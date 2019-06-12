@@ -1,5 +1,5 @@
-import { Future, List, Option } from '..';
-import { Monoid } from '../monoids/Monoids';
+import { Future, List, Option, Semigroup } from '..';
+import { Monoid } from '../combination/Monoid';
 export declare class NonEmptyList<T> {
     private readonly items;
     private readonly length;
@@ -16,11 +16,19 @@ export declare class NonEmptyList<T> {
     append(item: T): NonEmptyList<T>;
     prepend(item: T): NonEmptyList<T>;
     filter(predicate: (item: T) => boolean): List<T>;
+    reduceBy<U>(by: (item: T) => U, operation: (a: U) => (b: U) => U): Option<U>;
+    reduce(operation: (a: T) => (b: T) => T): Option<T>;
+    reduceByWithSemigroup<U>(by: (item: T) => U, semigroup: Semigroup<U>): Option<U>;
+    reduceWithSemigroup(semigroup: Semigroup<T>): Option<T>;
     foldBy<U>(by: (item: T) => U, operation: (a: U) => (b: U) => U, initialValue: U): U;
     fold(operation: (a: T) => (b: T) => T, initialValue: T): T;
     foldWithMonoid(monoid: Monoid<T>): T;
     foldByWithMonoid<U>(by: (item: T) => U, monoid: Monoid<U>): U;
     max(this: NonEmptyList<number>): number;
+    earliest(this: List<Date>): Option<Date>;
+    earliestBy<U>(this: List<T>, by: (item: T) => Date): Option<Date>;
+    latest(this: List<Date>): Option<Date>;
+    latestBy<U>(this: List<T>, by: (item: T) => Date): Option<Date>;
     maxBy(by: (item: T) => number): number;
     min(this: NonEmptyList<number>): number;
     minBy(by: (item: T) => number): number;

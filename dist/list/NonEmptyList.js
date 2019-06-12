@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const __1 = require("..");
-const Monoids_1 = require("../monoids/Monoids");
+const Monoid_1 = require("../combination/Monoid");
 const ArrayFunctions_1 = require("./ArrayFunctions");
 class NonEmptyList {
     constructor(items) {
@@ -43,7 +43,7 @@ class NonEmptyList {
     //endregion
     //region Combination
     concat(otherList) {
-        return new NonEmptyList(Monoids_1.ArrayConcatenation.combine(this.items)(otherList.items));
+        return new NonEmptyList(Monoid_1.ArrayConcatenation.combine(this.items)(otherList.items));
     }
     //endregion
     //region Expansion
@@ -60,6 +60,23 @@ class NonEmptyList {
     }
     //endregion
     //region Folding
+    reduceBy(by, operation) {
+        if (this.length < 2) {
+            return __1.none;
+        }
+        else {
+            return __1.some(ArrayFunctions_1.reduceItemsBy(this.items, by, operation));
+        }
+    }
+    reduce(operation) {
+        return this.reduceBy(x => x, operation);
+    }
+    reduceByWithSemigroup(by, semigroup) {
+        return this.reduceBy(by, semigroup.combine);
+    }
+    reduceWithSemigroup(semigroup) {
+        return this.reduce(semigroup.combine);
+    }
     foldBy(by, operation, initialValue) {
         return ArrayFunctions_1.foldItemsBy(this.items, by, operation, initialValue);
     }
@@ -73,28 +90,40 @@ class NonEmptyList {
         return this.foldBy(by, monoid.combine, monoid.identityElement);
     }
     max() {
-        return this.foldWithMonoid(Monoids_1.Max);
+        return this.foldWithMonoid(Monoid_1.Max);
+    }
+    earliest() {
+        return this.foldWithMonoid(__1.Earliest);
+    }
+    earliestBy(by) {
+        return this.foldByWithMonoid(by, __1.Earliest);
+    }
+    latest() {
+        return this.foldWithMonoid(__1.Latest);
+    }
+    latestBy(by) {
+        return this.foldByWithMonoid(by, __1.Latest);
     }
     maxBy(by) {
-        return this.foldByWithMonoid(by, Monoids_1.Max);
+        return this.foldByWithMonoid(by, Monoid_1.Max);
     }
     min() {
-        return this.foldWithMonoid(Monoids_1.Min);
+        return this.foldWithMonoid(Monoid_1.Min);
     }
     minBy(by) {
-        return this.foldByWithMonoid(by, Monoids_1.Min);
+        return this.foldByWithMonoid(by, Monoid_1.Min);
     }
     sum() {
-        return this.foldWithMonoid(Monoids_1.Sum);
+        return this.foldWithMonoid(Monoid_1.Sum);
     }
     sumBy(by) {
-        return this.foldByWithMonoid(by, Monoids_1.Sum);
+        return this.foldByWithMonoid(by, Monoid_1.Sum);
     }
     product() {
-        return this.foldWithMonoid(Monoids_1.Product);
+        return this.foldWithMonoid(Monoid_1.Product);
     }
     productBy(by) {
-        return this.foldByWithMonoid(by, Monoids_1.Product);
+        return this.foldByWithMonoid(by, Monoid_1.Product);
     }
     //endregion
     //region Grouping

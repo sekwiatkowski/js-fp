@@ -1,4 +1,4 @@
-import {Future, none, Option, some} from '..'
+import {Earliest, Future, Latest, none, Option, Semigroup, some} from '..'
 import {ArrayConcatenation, Max, Min, Monoid, Product, Sum} from '../combination/Monoid'
 import {
     allItems,
@@ -20,6 +20,7 @@ import {
     parallelMapItems,
     prependItem,
     rangeOfItems,
+    reduceItemsBy,
     repeatItems,
     someItem,
     sortItems,
@@ -94,9 +95,30 @@ export class List<T> {
     }
     //endregion
 
-    //region Folding
+    //region Reduction
+    reduceBy<U>(by: (item: T) => U, operation: (a: U) => (b: U) => U): Option<U> {
+        if (this.length < 2) {
+            return none
+        }
+        else {
+            return some(reduceItemsBy(this.items, by, operation))
+        }
+    }
+
+    reduce(operation: (a: T) => (b: T) => T): Option<T> {
+        return this.reduceBy(x => x, operation)
+    }
+
+    reduceByWithSemigroup<U>(by: (item: T) => U, semigroup: Semigroup<U>): Option<U> {
+        return this.reduceBy(by, semigroup.combine)
+    }
+
+    reduceWithSemigroup(semigroup: Semigroup<T>): Option<T> {
+        return this.reduce(semigroup.combine)
+    }
+
     foldBy<U>(by: (item: T) => U, operation: (a: U) => (b: U) => U, initialValue: U): Option<U> {
-        if (this.length == 0) {
+        if(this.length == 0) {
             return none
         }
         else {
@@ -108,14 +130,30 @@ export class List<T> {
         return this.foldBy(x => x, operation, initialValue)
     }
 
+    foldByWithMonoid<U>(by: (item: T) => U, monoid: Monoid<U>): Option<U> {
+        return this.foldBy(by, monoid.combine, monoid.identityElement)
+    }
+
     foldWithMonoid(monoid: Monoid<T>): Option<T> {
         return this.fold(monoid.combine, monoid.identityElement)
     }
 
-    foldByWithMonoid<U>(by: (item: T) => U, monoid: Monoid<U>): Option<U> {
-        return this.foldBy(by, monoid.combine, monoid.identityElement)
+    earliest(this: List<Date>): Option<Date> {
+        return this.foldWithMonoid(Earliest)
     }
-    
+
+    earliestBy<U>(this: List<T>, by: (item: T) => Date): Option<Date> {
+        return this.foldByWithMonoid(by, Earliest)
+    }
+
+    latest(this: List<Date>): Option<Date> {
+        return this.foldWithMonoid(Latest)
+    }
+
+    latestBy<U>(this: List<T>, by: (item: T) => Date): Option<Date> {
+        return this.foldByWithMonoid(by, Latest)
+    }
+
     max(this: List<number>): Option<number> {
         return this.foldWithMonoid(Max)
     }

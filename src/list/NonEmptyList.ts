@@ -1,4 +1,4 @@
-import {Future, List, Option} from '..'
+import {Earliest, Future, Latest, List, none, Option, Semigroup, some} from '..'
 import {ArrayConcatenation, Max, Min, Monoid, Product, Sum} from '../combination/Monoid'
 import {
     allItems,
@@ -19,6 +19,7 @@ import {
     parallelMapItems,
     prependItem,
     rangeOfItems,
+    reduceItemsBy,
     someItem,
     sortItems,
     sortItemsBy,
@@ -97,6 +98,27 @@ export class NonEmptyList<T> {
     //endregion
 
     //region Folding
+    reduceBy<U>(by: (item: T) => U, operation: (a: U) => (b: U) => U): Option<U> {
+        if (this.length < 2) {
+            return none
+        }
+        else {
+            return some(reduceItemsBy(this.items, by, operation))
+        }
+    }
+
+    reduce(operation: (a: T) => (b: T) => T): Option<T> {
+        return this.reduceBy(x => x, operation)
+    }
+
+    reduceByWithSemigroup<U>(by: (item: T) => U, semigroup: Semigroup<U>): Option<U> {
+        return this.reduceBy(by, semigroup.combine)
+    }
+
+    reduceWithSemigroup(semigroup: Semigroup<T>): Option<T> {
+        return this.reduce(semigroup.combine)
+    }
+
     foldBy<U>(by: (item: T) => U, operation: (a: U) => (b: U) => U, initialValue: U): U {
         return foldItemsBy(this.items, by, operation, initialValue)
     }
@@ -115,6 +137,22 @@ export class NonEmptyList<T> {
 
     max(this: NonEmptyList<number>): number {
         return this.foldWithMonoid(Max)
+    }
+
+    earliest(this: List<Date>): Option<Date> {
+        return this.foldWithMonoid(Earliest)
+    }
+
+    earliestBy<U>(this: List<T>, by: (item: T) => Date): Option<Date> {
+        return this.foldByWithMonoid(by, Earliest)
+    }
+
+    latest(this: List<Date>): Option<Date> {
+        return this.foldWithMonoid(Latest)
+    }
+
+    latestBy<U>(this: List<T>, by: (item: T) => Date): Option<Date> {
+        return this.foldByWithMonoid(by, Latest)
     }
 
     maxBy(by: (item: T) => number): number {

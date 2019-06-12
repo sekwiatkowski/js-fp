@@ -11,3 +11,6 @@ export { Invalid, invalid } from './validated/Invalid';
 export { Future, future, fulfill, reject, futureObject } from './future/Future';
 export { emptyList, list, List, listFromArray, range, repeat } from './list/List';
 export { inclusiveRange, nonEmptyList } from './list/NonEmptyList';
+export { Semigroup } from './combination/Semigroup';
+export { objectCombination } from './combination/ObjectCombination';
+export { Monoid, Any, All, Latest, Max, Earliest, Min, Sum, Product } from './combination/Monoid';

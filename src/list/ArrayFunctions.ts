@@ -71,7 +71,18 @@ export function filterItems<T>(items: T[], predicate: (item: T) => boolean) {
 }
 //endregion
 
-//region Folding
+//region Reduction
+export function reduceItemsBy<T, U>(
+    items: T[],
+    by: (item: T) => U,
+    operation: (a: U) => (b: U) => U) {
+    let accumulator = by(items[0])
+    for(let i = 1; i < items.length; i++) {
+        accumulator = operation(accumulator)(by(items[i]))
+    }
+    return accumulator
+}
+
 export function foldItemsBy<T, U>(
     items: T[],
     by: (item: T) => U,

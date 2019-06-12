@@ -7,6 +7,7 @@ export declare function flatten<U>(items: (NonEmptyList<U> | List<U> | U[])[]): 
 export declare function appendItem<T>(items: T[], item: T): T[];
 export declare function prependItem<T>(items: T[], item: T): T[];
 export declare function filterItems<T>(items: T[], predicate: (item: T) => boolean): T[];
+export declare function reduceItemsBy<T, U>(items: T[], by: (item: T) => U, operation: (a: U) => (b: U) => U): U;
 export declare function foldItemsBy<T, U>(items: T[], by: (item: T) => U, operation: (a: U) => (b: U) => U, initialValue: U): U;
 export declare function groupItemsBy<T>(items: T[], computeKey: (item: T) => string): {
     [id: string]: T[];

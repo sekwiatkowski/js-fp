@@ -387,26 +387,45 @@ describe('List<T>', () => {
         })
     })
 
-    describe('should fold', () => {
-        const unusedFunction = () => { throw 'Unexpected functional application' }
+    const unusedFunction = () => { throw 'Unexpected function application' }
+    function assertNone(actual: Option<number>) {
+        actual.should.equal(none)
+    }
 
-        function assertNone(actual: Option<number>) {
-            actual.should.equal(none)
-        }
+    function assertSome<T>(actual: Option<T>, expected: T) {
+        actual.equals(some(expected)).should.be.true
+    }
 
-        function assertSome(actual: Option<number>, expected: number) {
-            actual.equals(some(expected)).should.be.true
-        }
+    const one = {number:1}
+    const two = {number:2}
+    const three = {number:3}
+    const byNumber = x => x.number
 
-        it('an empty list to none', () => {
-            emptyList<number>().fold(unusedFunction, undefined).should.equal(none)
+    describe('should reduce', () => {
+        const addition = (a: number) => (b: number) => a+b
+
+        it('lists with less than two items to none', () => {
+            assertNone(emptyList<number>().reduce(unusedFunction))
+            assertNone(list(1).reduce(unusedFunction))
         })
 
-        describe('a list of objects', () => {
-            const one = {number:1}
-            const two = {number:2}
-            const byNumber = x => x.number
+        it('a list of numbers', () => {
+            assertSome(list(1, 2).reduce(addition), 3)
+            assertSome(list(1, 2, 3).reduce(addition), 6)
+        })
 
+        it('a list of objects with a numeric member', () => {
+            assertSome(list(one, two).reduceBy(byNumber, addition), 3)
+            assertSome(list(one, two, three).reduceBy(byNumber, addition), 6)
+        })
+    })
+
+    describe('should fold', () => {
+        it('an empty list to none', () => {
+            assertNone(emptyList<number>().fold(unusedFunction, undefined))
+        })
+
+        describe('a list of objects with a numeric member', () => {
             it('with the Max monoid by selecting a number', () => {
                 assertNone(emptyList().maxBy(byNumber))
                 assertSome(list(one).maxBy(byNumber), 1)
