@@ -1,149 +1,58 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const __1 = require("..");
-const Fulfilled_1 = require("../future/Fulfilled");
-const Rejected_1 = require("../future/Rejected");
-const Comparison_1 = require("./Comparison");
 const Monoids_1 = require("../monoids/Monoids");
+const ArrayFunctions_1 = require("./ArrayFunctions");
+const NonEmptyList_1 = require("./NonEmptyList");
 class List {
     constructor(items) {
         this.items = items;
         this.length = items.length;
     }
     //region Access
-    first(predicate) {
-        if (predicate == null) {
-            return this.get(0);
-        }
-        else {
-            for (let i = 0; i < this.length; i++) {
-                const item = this.items[i];
-                if (predicate(item)) {
-                    return __1.some(item);
-                }
-            }
-            return __1.none;
-        }
+    first() {
+        return ArrayFunctions_1.getItem(this.items, 0);
     }
     get(index) {
-        return __1.option(this.items[index]);
+        return ArrayFunctions_1.getItem(this.items, index);
     }
     getArray() {
         return this.items;
     }
     getOrElse(index, alternative) {
-        if (this.length > index) {
-            return this.items[index];
-        }
-        else {
-            return alternative instanceof Function ? alternative() : alternative;
-        }
+        return ArrayFunctions_1.getItemOrElse(this.items, index, alternative);
     }
-    last(predicate) {
-        const lastIndex = this.length - 1;
-        if (predicate == null) {
-            return this.get(lastIndex);
-        }
-        else {
-            for (let i = lastIndex; i >= 0; i--) {
-                const item = this.items[i];
-                if (predicate(item)) {
-                    return __1.some(item);
-                }
-            }
-            return __1.none;
-        }
+    last() {
+        return ArrayFunctions_1.getItem(this.items, this.length - 1);
     }
     take(n) {
-        if (n > 0) {
-            return new List(this.items.slice(0, n));
-        }
-        else {
-            const length = this.length;
-            const res = this.items.slice(length + n, length);
-            return new List(res);
-        }
+        return new List(ArrayFunctions_1.takeItems(this.items, n));
     }
     //endregion
     //region Chaining
     flatten() {
-        let size = 0;
-        const listOfArrays = this;
-        for (let i = 0; i < listOfArrays.length; i++) {
-            size += listOfArrays.items[i].length;
-        }
-        const flattened = new Array(size);
-        let flattenedIndex = 0;
-        for (let listIndex = 0; listIndex < this.length; listIndex++) {
-            this.items[listIndex].forEach(item => {
-                flattened[flattenedIndex++] = item;
-            });
-        }
-        return new List(flattened);
+        return new List(ArrayFunctions_1.flatten(this.items));
     }
     chain(f) {
         return this.map(f).flatten();
     }
     //endregion
-    //region Concatenation
+    //region Combination
     concat(otherList) {
-        const thisArray = this.items;
-        const otherArray = otherList.getArray();
-        const thisLength = thisArray.length;
-        const otherLength = otherArray.length;
-        const concatenation = Array(thisLength + otherLength);
-        for (let i = 0; i < thisLength; i++) {
-            concatenation[i] = thisArray[i];
-        }
-        for (let j = 0; j < otherLength; j++) {
-            concatenation[thisLength + j] = otherArray[j];
-        }
-        return new List(concatenation);
+        return new List(Monoids_1.ArrayConcatenation.combine(this.items)(otherList.items));
     }
     //endregion
     //region Expansion
     append(item) {
-        return new List([...this.items, item]);
+        return new NonEmptyList_1.NonEmptyList(ArrayFunctions_1.appendItem(this.items, item));
     }
     prepend(item) {
-        return new List([item, ...this.items]);
+        return new NonEmptyList_1.NonEmptyList(ArrayFunctions_1.prependItem(this.items, item));
     }
     //endregion
     //region Filtering
     filter(predicate) {
-        return new List(this.items.filter(predicate));
-    }
-    //endregion
-    //region Grouping
-    groupBy(computeKey) {
-        let dictionary = {};
-        for (let i = 0; i < this.length; i++) {
-            const item = this.items[i];
-            const key = computeKey(item);
-            if (!(key in dictionary)) {
-                dictionary[key] = [];
-            }
-            dictionary[key].push(item);
-        }
-        return dictionary;
-    }
-    //endregion
-    //region Mapping
-    map(f) {
-        return new List(this.items.map(f));
-    }
-    parallelMap(f) {
-        return new __1.Future(() => new Promise(resolve => {
-            const promises = this.items.map(x => new Promise(resolve => resolve(f(x))));
-            return Promise.all(promises)
-                .then(items => resolve(Fulfilled_1.fulfilled(items)))
-                .catch(error => resolve(Rejected_1.rejected(error)));
-        }));
-    }
-    //endregion
-    //region Matching
-    match(onNonEmpty, onEmpty) {
-        return this.length == 0 ? onEmpty() : onNonEmpty(this.items);
+        return new List(ArrayFunctions_1.filterItems(this.items, predicate));
     }
     //endregion
     //region Folding
@@ -151,20 +60,18 @@ class List {
         if (this.length == 0) {
             return __1.none;
         }
-        let accumulator = initialValue;
-        for (let i = 0; i < this.length; i++) {
-            accumulator = operation(accumulator)(by(this.items[i]));
+        else {
+            return __1.some(ArrayFunctions_1.foldItemsBy(this.items, by, operation, initialValue));
         }
-        return __1.some(accumulator);
     }
     fold(operation, initialValue) {
         return this.foldBy(x => x, operation, initialValue);
     }
     foldWithMonoid(monoid) {
-        return this.fold(monoid.operation, monoid.identityElement);
+        return this.fold(monoid.combine, monoid.identityElement);
     }
     foldByWithMonoid(by, monoid) {
-        return this.foldBy(by, monoid.operation, monoid.identityElement);
+        return this.foldBy(by, monoid.combine, monoid.identityElement);
     }
     max() {
         return this.foldWithMonoid(Monoids_1.Max);
@@ -191,6 +98,32 @@ class List {
         return this.foldByWithMonoid(by, Monoids_1.Product);
     }
     //endregion
+    //region Grouping
+    groupBy(computeKey) {
+        return ArrayFunctions_1.groupItemsBy(this.items, computeKey);
+    }
+    //endregion
+    //region Mapping
+    map(f) {
+        return new List(ArrayFunctions_1.mapItems(this.items, f));
+    }
+    parallelMap(f) {
+        return ArrayFunctions_1.parallelMapItems(this.items, f);
+    }
+    //endregion
+    //region Matching
+    match(onNonEmpty, onEmpty) {
+        return this.length == 0 ? onEmpty() : onNonEmpty(this.items);
+    }
+    //endregion
+    //region Search
+    find(predicate) {
+        return ArrayFunctions_1.findItem(this.items, predicate);
+    }
+    findLast(predicate) {
+        return ArrayFunctions_1.findLastItem(this.items, predicate);
+    }
+    //endregion
     //region Side-effects
     perform(sideEffect) {
         sideEffect(this);
@@ -207,8 +140,8 @@ class List {
         }
         sideEffect(this);
     }
-    forEach(sideEffects) {
-        this.items.forEach(sideEffects);
+    forEach(sideEffect) {
+        ArrayFunctions_1.forEachItem(this.items, sideEffect);
     }
     //endregion
     //region Status
@@ -224,82 +157,60 @@ class List {
     //endregion
     //region Sorting
     sort() {
-        return new List(this.items.sort(Comparison_1.compare));
+        return new List(ArrayFunctions_1.sortItems(this.items));
     }
-    sortBy(f) {
-        return new List(this.items.sort((a, b) => Comparison_1.compareBy(a, b, f)));
+    sortBy(by) {
+        return new List(ArrayFunctions_1.sortItemsBy(this.items, by));
     }
     sortDescendingly() {
-        return new List(this.items.sort(Comparison_1.negatedCompare));
+        return new List(ArrayFunctions_1.sortItemsDescendingly(this.items));
     }
-    sortDescendinglyBy(f) {
-        return new List(this.items.sort((a, b) => Comparison_1.negatedCompareBy(a, b, f)));
+    sortDescendinglyBy(by) {
+        return new List(ArrayFunctions_1.sortItemsDescendinglyBy(this.items, by));
     }
     //endregion
     //region Testing
     contains(item) {
-        for (let i = 0; i < this.length; i++) {
-            if (this.items[i] === item) {
-                return true;
-            }
-        }
-        return false;
+        return ArrayFunctions_1.containsItem(this.items, item);
     }
     equals(otherList) {
         if (otherList == null) {
             return false;
         }
-        const otherArray = otherList.getArray();
-        if (this.length !== otherArray.length) {
-            return false;
-        }
-        for (let i = 0; i < this.length; i++) {
-            if (this.items[i] !== otherArray[i]) {
-                return false;
-            }
-        }
-        return true;
+        return ArrayFunctions_1.equalItems(this.items, otherList.getArray());
     }
     all(predicate) {
-        for (let index = 0; index < this.length; index++) {
-            if (!predicate(this.items[index])) {
-                return false;
-            }
-        }
-        return true;
+        return ArrayFunctions_1.allItems(this.items, predicate);
     }
     some(predicate) {
-        for (let index = 0; index < this.length; index++) {
-            if (predicate(this.items[index])) {
-                return true;
-            }
-        }
-        return false;
+        return ArrayFunctions_1.someItem(this.items, predicate);
     }
     none(predicate) {
-        return !this.some(predicate);
+        return ArrayFunctions_1.noItems(this.items, predicate);
     }
     count(predicate) {
-        let count = 0;
-        for (let index = 0; index < this.length; index++) {
-            if (predicate(this.items[index])) {
-                count += 1;
-            }
-        }
-        return count;
+        return ArrayFunctions_1.countItems(this.items, predicate);
     }
 }
 exports.List = List;
-function list(...array) {
-    return new List(array);
+function list(...items) {
+    return new List(items);
 }
 exports.list = list;
 function emptyList() {
-    return new List([]);
+    return list();
 }
 exports.emptyList = emptyList;
 function listFromArray(array) {
-    return new List(array);
+    return list(...array);
 }
 exports.listFromArray = listFromArray;
+function range(start, end) {
+    return listFromArray(ArrayFunctions_1.rangeOfItems(start, end));
+}
+exports.range = range;
+function repeat(times, valueOrFunction) {
+    return listFromArray(ArrayFunctions_1.repeatItems(times, valueOrFunction));
+}
+exports.repeat = repeat;
 //# sourceMappingURL=List.js.map

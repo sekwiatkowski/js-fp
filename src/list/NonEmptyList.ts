@@ -1,4 +1,4 @@
-import {Future, none, Option, some} from '..'
+import {Future, List, Option} from '..'
 import {ArrayConcatenation, Max, Min, Monoid, Product, Sum} from '../monoids/Monoids'
 import {
     allItems,
@@ -13,14 +13,12 @@ import {
     foldItemsBy,
     forEachItem,
     getItem,
-    getItemOrElse,
     groupItemsBy,
     mapItems,
     noItems,
     parallelMapItems,
     prependItem,
     rangeOfItems,
-    repeatItems,
     someItem,
     sortItems,
     sortItemsBy,
@@ -28,17 +26,16 @@ import {
     sortItemsDescendinglyBy,
     takeItems
 } from './ArrayFunctions'
-import {NonEmptyList} from './NonEmptyList'
 
-export class List<T> {
+export class NonEmptyList<T> {
     private readonly length: number
     constructor(private readonly items: T[]) {
         this.length = items.length
     }
 
     //region Access
-    first(): Option<T> {
-        return getItem(this.items, 0)
+    first(): T {
+        return this.items[0]
     }
 
     get(index: number): Option<T> {
@@ -50,31 +47,36 @@ export class List<T> {
     }
 
     getOrElse(index: number, alternative: T|(() => T)): T {
-        return getItemOrElse(this.items, index, alternative)
+        if (this.length > index) {
+            return this.items[index]
+        }
+        else {
+            return alternative instanceof Function? alternative() : alternative
+        }
     }
 
-    last(): Option<T> {
-        return getItem(this.items, this.length - 1)
+    last(): T {
+        return this.items[this.length-1]
     }
 
-    take(n: number): List<T> {
-        return new List(takeItems(this.items, n))
+    take(n: number): NonEmptyList<T> {
+        return new NonEmptyList<T>(takeItems(this.items, n))
     }
     //endregion
 
     //region Chaining
-    flatten<U>(this: List<List<U>|U[]>): List<U> {
-        return new List(flatten(this.items))
+    flatten<U>(this: NonEmptyList<NonEmptyList<U>|U[]>): NonEmptyList<U> {
+        return new NonEmptyList(flatten(this.items))
     }
 
-    chain(f: (T) => List<T>): List<T> {
+    chain(f: (T) => NonEmptyList<T>): NonEmptyList<T> {
         return this.map(f).flatten()
     }
     //endregion
 
     //region Combination
-    concat(otherList: List<T>): List<T> {
-        return new List(ArrayConcatenation.combine(this.items)(otherList.items))
+    concat(otherList: NonEmptyList<T>): NonEmptyList<T> {
+        return new NonEmptyList(ArrayConcatenation.combine(this.items)(otherList.items))
     }
     //endregion
 
@@ -95,56 +97,51 @@ export class List<T> {
     //endregion
 
     //region Folding
-    foldBy<U>(by: (item: T) => U, operation: (a: U) => (b: U) => U, initialValue: U): Option<U> {
-        if (this.length == 0) {
-            return none
-        }
-        else {
-            return some(foldItemsBy(this.items, by, operation, initialValue))
-        }
+    foldBy<U>(by: (item: T) => U, operation: (a: U) => (b: U) => U, initialValue: U): U {
+        return foldItemsBy(this.items, by, operation, initialValue)
     }
 
-    fold(operation: (a: T) => (b: T) => T, initialValue: T): Option<T> {
+    fold(operation: (a: T) => (b: T) => T, initialValue: T): T {
         return this.foldBy(x => x, operation, initialValue)
     }
 
-    foldWithMonoid(monoid: Monoid<T>): Option<T> {
+    foldWithMonoid(monoid: Monoid<T>): T {
         return this.fold(monoid.combine, monoid.identityElement)
     }
 
-    foldByWithMonoid<U>(by: (item: T) => U, monoid: Monoid<U>): Option<U> {
+    foldByWithMonoid<U>(by: (item: T) => U, monoid: Monoid<U>): U {
         return this.foldBy(by, monoid.combine, monoid.identityElement)
     }
 
-    max(this: List<number>): Option<number> {
+    max(this: NonEmptyList<number>): number {
         return this.foldWithMonoid(Max)
     }
 
-    maxBy(by: (item: T) => number): Option<number> {
+    maxBy(by: (item: T) => number): number {
         return this.foldByWithMonoid(by, Max)
     }
 
-    min(this: List<number>): Option<number> {
+    min(this: NonEmptyList<number>): number {
         return this.foldWithMonoid(Min)
     }
 
-    minBy(by: (item: T) => number): Option<number> {
+    minBy(by: (item: T) => number): number {
         return this.foldByWithMonoid(by, Min)
     }
 
-    sum(this: List<number>): Option<number> {
+    sum(this: NonEmptyList<number>): number {
         return this.foldWithMonoid(Sum)
     }
 
-    sumBy(by: (item: T) => number): Option<number> {
+    sumBy(by: (item: T) => number): number {
         return this.foldByWithMonoid(by, Sum)
     }
 
-    product(this: List<number>): Option<number> {
+    product(this: NonEmptyList<number>): number {
         return this.foldWithMonoid(Product)
     }
 
-    productBy(by: (item: T) => number): Option<number> {
+    productBy(by: (item: T) => number): number {
         return this.foldByWithMonoid(by, Product)
     }
     //endregion
@@ -156,20 +153,12 @@ export class List<T> {
     //endregion
 
     //region Mapping
-    map<U>(f: (item: T) => U): List<U> {
-        return new List(mapItems(this.items, f))
+    map<U>(f: (item: T) => U): NonEmptyList<U> {
+        return new NonEmptyList(mapItems(this.items, f))
     }
 
     parallelMap<U, E>(f: (item: T) => U): Future<U[], E> {
         return parallelMapItems(this.items, f)
-    }
-    //endregion
-
-    //region Matching
-    match<X>(
-        onNonEmpty: (array: T[]) => X,
-        onEmpty: () => X) : X {
-        return this.length == 0 ? onEmpty() : onNonEmpty(this.items)
     }
     //endregion
 
@@ -184,23 +173,7 @@ export class List<T> {
     //endregion
 
     //region Side-effects
-    perform(sideEffect: (list: List<T>) => void) {
-        sideEffect(this)
-    }
-
-    performOnEmpty(sideEffect: (list: List<T>) => void) {
-        if (this.length > 0) {
-            return
-        }
-
-        sideEffect(this)
-    }
-
-    performOnNonEmpty(sideEffect: (list: List<T>) => void) {
-        if (this.length == 0) {
-            return
-        }
-
+    perform(sideEffect: (list: NonEmptyList<T>) => void) {
         sideEffect(this)
     }
 
@@ -213,31 +186,23 @@ export class List<T> {
     size(): number {
         return this.length
     }
-
-    isEmpty(): boolean {
-        return this.length === 0
-    }
-
-    isNotEmpty(): boolean {
-        return this.length > 0
-    }
     //endregion
 
     //region Sorting
-    sort(): List<T> {
-        return new List(sortItems(this.items))
+    sort(): NonEmptyList<T> {
+        return new NonEmptyList(sortItems(this.items))
     }
 
-    sortBy<U>(by: (item: T) => U): List<T> {
-        return new List(sortItemsBy(this.items, by))
+    sortBy<U>(by: (item: T) => U): NonEmptyList<T> {
+        return new NonEmptyList(sortItemsBy(this.items, by))
     }
 
-    sortDescendingly(): List<T> {
-        return new List(sortItemsDescendingly(this.items))
+    sortDescendingly(): NonEmptyList<T> {
+        return new NonEmptyList(sortItemsDescendingly(this.items))
     }
 
-    sortDescendinglyBy<U>(by: (item: T) => U): List<T> {
-        return new List(sortItemsDescendinglyBy(this.items, by))
+    sortDescendinglyBy<U>(by: (item: T) => U): NonEmptyList<T> {
+        return new NonEmptyList(sortItemsDescendinglyBy(this.items, by))
     }
     //endregion
 
@@ -246,7 +211,7 @@ export class List<T> {
         return containsItem(this.items, item)
     }
 
-    equals(otherList: List<T>): boolean {
+    equals(otherList: NonEmptyList<T>): boolean {
         if (otherList == null) {
             return false
         }
@@ -272,22 +237,31 @@ export class List<T> {
     //endregion
 }
 
-export function list<T>(...items: T[]): List<T> {
-    return new List(items)
+export function nonEmptyList<T>(head: T, ...tail: T[]): NonEmptyList<T> {
+    const array = new Array(tail.length+1)
+    array[0] = head
+    for (let i = 0; i < tail.length; i++) {
+        array[i+1] = tail[i]
+    }
+
+    return new NonEmptyList(array)
 }
 
-export function emptyList<T>(): List<T> {
-    return list()
-}
-
-export function listFromArray<T>(array: T[]): List<T> {
-    return list(...array)
-}
-
-export function range(start: number, end?: number): List<number> {
-    return listFromArray(rangeOfItems(start, end))
-}
-
-export function repeat<T>(times: number, valueOrFunction: T|((index?: number) => T)): List<T> {
-    return listFromArray(repeatItems(times, valueOrFunction))
+export function inclusiveRange(start: number, end?: number): NonEmptyList<number> {
+    if (end == null) {
+        if (start >= 0) {
+            return nonEmptyList(0, ...rangeOfItems(1, start+1))
+        }
+        else {
+            return nonEmptyList(0, ...rangeOfItems(-1, start-1))
+        }
+    }
+    else {
+        if (end >= start) {
+            return nonEmptyList(start, ...rangeOfItems(start+1, end+1))
+        }
+        else {
+            return nonEmptyList(start, ...rangeOfItems(start-1, end-1))
+        }
+    }
 }

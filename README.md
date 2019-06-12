@@ -4,7 +4,9 @@
 
 [**Box**](src/box/Box.ts): guaranteed computation with exactly one value
 
-[**List**](src/list/List.ts): computation with many values
+[**List**](src/list/List.ts): computation with zero, one or more values
+
+[**NonEmptyList**](src/list/NonEmptyList.ts): computation with one or more values
 
 [**Option**](src/option/Option.ts): computation with a value that may be present or absent
 

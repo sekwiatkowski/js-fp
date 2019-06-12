@@ -34,6 +34,6 @@ exports.compare = (a, b) => {
     }
 };
 exports.negatedCompare = (a, b) => -exports.compare(a, b);
-exports.compareBy = (a, b, f) => exports.compare(f(a), f(b));
-exports.negatedCompareBy = (a, b, f) => -exports.compareBy(a, b, f);
+exports.compareBy = (a, b, by) => exports.compare(by(a), by(b));
+exports.negatedCompareBy = (a, b, by) => -exports.compareBy(a, b, by);
 //# sourceMappingURL=Comparison.js.map

@@ -1,27 +1,22 @@
 import { Future, Option } from '..';
 import { Monoid } from '../monoids/Monoids';
+import { NonEmptyList } from './NonEmptyList';
 export declare class List<T> {
     private readonly items;
     private readonly length;
     constructor(items: T[]);
-    first(predicate?: (item: T) => boolean): Option<T>;
+    first(): Option<T>;
     get(index: number): Option<T>;
     getArray(): T[];
     getOrElse(index: number, alternative: T | (() => T)): T;
-    last(predicate?: (item: T) => boolean): Option<T>;
+    last(): Option<T>;
     take(n: number): List<T>;
     flatten<U>(this: List<List<U> | U[]>): List<U>;
     chain(f: (T: any) => List<T>): List<T>;
     concat(otherList: List<T>): List<T>;
-    append(item: T): List<T>;
-    prepend(item: T): List<T>;
+    append(item: T): NonEmptyList<T>;
+    prepend(item: T): NonEmptyList<T>;
     filter(predicate: (item: T) => boolean): List<T>;
-    groupBy(computeKey: (item: T) => string): {
-        [id: string]: T[];
-    };
-    map<U>(f: (item: T) => U): List<U>;
-    parallelMap<U, E>(f: (item: T) => U): Future<U[], E>;
-    match<X>(onNonEmpty: (array: T[]) => X, onEmpty: () => X): X;
     foldBy<U>(by: (item: T) => U, operation: (a: U) => (b: U) => U, initialValue: U): Option<U>;
     fold(operation: (a: T) => (b: T) => T, initialValue: T): Option<T>;
     foldWithMonoid(monoid: Monoid<T>): Option<T>;
@@ -34,17 +29,25 @@ export declare class List<T> {
     sumBy(by: (item: T) => number): Option<number>;
     product(this: List<number>): Option<number>;
     productBy(by: (item: T) => number): Option<number>;
+    groupBy(computeKey: (item: T) => string): {
+        [id: string]: T[];
+    };
+    map<U>(f: (item: T) => U): List<U>;
+    parallelMap<U, E>(f: (item: T) => U): Future<U[], E>;
+    match<X>(onNonEmpty: (array: T[]) => X, onEmpty: () => X): X;
+    find(predicate: (item: T) => boolean): Option<T>;
+    findLast(predicate?: (item: T) => boolean): Option<T>;
     perform(sideEffect: (list: List<T>) => void): void;
     performOnEmpty(sideEffect: (list: List<T>) => void): void;
     performOnNonEmpty(sideEffect: (list: List<T>) => void): void;
-    forEach(sideEffects: (item: T) => void): void;
+    forEach(sideEffect: (item: T) => void): void;
     size(): number;
     isEmpty(): boolean;
     isNotEmpty(): boolean;
     sort(): List<T>;
-    sortBy<U>(f: (item: T) => U): List<T>;
+    sortBy<U>(by: (item: T) => U): List<T>;
     sortDescendingly(): List<T>;
-    sortDescendinglyBy<U>(f: (item: T) => U): List<T>;
+    sortDescendinglyBy<U>(by: (item: T) => U): List<T>;
     contains(item: T): boolean;
     equals(otherList: List<T>): boolean;
     all(predicate: (item: T) => boolean): boolean;
@@ -52,6 +55,8 @@ export declare class List<T> {
     none(predicate: (item: T) => boolean): boolean;
     count(predicate: (item: T) => boolean): number;
 }
-export declare function list<T>(...array: T[]): List<T>;
+export declare function list<T>(...items: T[]): List<T>;
 export declare function emptyList<T>(): List<T>;
 export declare function listFromArray<T>(array: T[]): List<T>;
+export declare function range(start: number, end?: number): List<number>;
+export declare function repeat<T>(times: number, valueOrFunction: T | ((index?: number) => T)): List<T>;

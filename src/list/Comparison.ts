@@ -34,6 +34,6 @@ export const compare = (a: any, b: any) => {
 
 export const negatedCompare = (a, b) => -compare(a, b)
 
-export const compareBy = (a: any, b: any, f: (value: any) => any) => compare(f(a), f(b))
+export const compareBy = (a: any, b: any, by: (value: any) => any) => compare(by(a), by(b))
 
-export const negatedCompareBy = (a: any, b: any, f: (value: any) => any) => -compareBy(a, b, f)
+export const negatedCompareBy = (a: any, b: any, by: (value: any) => any) => -compareBy(a, b, by)

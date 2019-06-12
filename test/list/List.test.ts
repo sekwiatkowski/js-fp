@@ -1,4 +1,4 @@
-import {emptyList, list, none, None, range, some, Some} from '../../src'
+import {emptyList, list, none, None, nonEmptyList, Option, range, some, Some} from '../../src'
 
 const chai = require('chai')
 
@@ -66,18 +66,6 @@ describe('List<T>', () => {
                 .getArray()
 
             result.should.eql([3, 2, 1])
-        })
-    })
-
-    describe('should be to indicate', () => {
-        it('whether it is empty', () => {
-            emptyList().isNotEmpty().should.be.false
-            list(1).isNotEmpty().should.be.true
-        })
-
-        it('whether it is not empty', () => {
-            emptyList().isEmpty().should.be.true
-            emptyList().isNotEmpty().should.be.false
         })
     })
 
@@ -163,6 +151,18 @@ describe('List<T>', () => {
             const valueText = "value"
             list(valueText).getOrElse(0, defaultText).should.equal(valueText)
             list(valueText).getOrElse(0, () => defaultText).should.equal(valueText)
+        })
+    })
+
+    describe('should indicate', () => {
+        it('whether it is empty', () => {
+            emptyList().isEmpty().should.be.true
+            list(1).isEmpty().should.be.false
+        })
+
+        it('whether it is not empty', () => {
+            emptyList().isNotEmpty().should.be.false
+            list(1).isNotEmpty().should.be.true
         })
     })
 
@@ -299,14 +299,6 @@ describe('List<T>', () => {
         it('lists of different sizes', () => {
             list(list(1, 2), list(3, 4, 5)).flatten().equals(list(1, 2, 3, 4, 5))
         })
-
-        it('two empty arrays by returning an empty list', () => {
-            list([], []).equals(emptyList())
-        })
-
-        it('two empty lists by returning another empty list', () => {
-            list(emptyList(), emptyList()).equals(emptyList())
-        })
     })
 
     describe('should group', () => {
@@ -346,63 +338,65 @@ describe('List<T>', () => {
     })
 
     describe('should return the first item', () => {
-        describe('as none', () => {
-            it('if the list is empty', () => {
-                emptyList().first().should.equal(none)
-            })
-
-            it('if the predicate does not match any items', () => {
-                emptyList().first(isEven).equals(none).should.be.true
-                list(1).first(isEven).equals(none).should.be.true
-            })
+        it('as none if the list is empty', () => {
+            emptyList().first().equals(none).should.be.true
         })
 
-        describe('as an instance of Some', () => {
-            it('if the list is not empty', () => {
-                list(1, 2).first().equals(some(1)).should.be.true
-            })
-
-            it('if the predicate matches an item', () => {
-                list(1, 2, 3, 4).first(isEven).equals(some(2)).should.be.true
-            })
+        it('as an instance of Some if the list is not empty', () => {
+            list(1).first().equals(some(1)).should.be.true
         })
     })
 
     describe('should return the last item', () => {
-        describe('as none', () => {
-            it('if the list is empty', () => {
-                emptyList().last().should.equal(none)
-            })
-
-            it('if the predicate does not match any items', () => {
-                emptyList().last(isEven).equals(none).should.be.true
-                list(1).last(isEven).equals(none).should.be.true
-            })
+        it('as none if the list is empty', () => {
+            emptyList().last().equals(none).should.be.true
         })
 
-        describe('as an instance of Some', () => {
-            it('if the list is not empty', () => {
-                list(1, 2).last().equals(some(2)).should.be.true
-            })
+        it('as an instance of Some if the list is not empty', () => {
+            list(1).last().equals(some(1)).should.be.true
+        })
+    })
 
-            it('if the predicate matches an item', () => {
-                list(1, 2, 3, 4).last(isEven).equals(some(4)).should.be.true
-            })
+    describe('should search for the first item matching a predicate', () => {
+        it('and return none if there are no matches', () => {
+            list(1).find(isEven).equals(none).should.be.true
+        })
+
+        it('and return an instance of Some if there is a match', () => {
+            list(1, 2, 3, 4).find(isEven).equals(some(2)).should.be.true
+        })
+    })
+
+    describe('should search for the last item matching a predicate', () => {
+        it('and return none if there are no matches', () => {
+            list(1).findLast(isEven).equals(none).should.be.true
+        })
+
+        it('and return an instance of Some if there is a match', () => {
+            list(1, 2, 3, 4).findLast(isEven).equals(some(4)).should.be.true
         })
     })
 
     describe('should add an item', () => {
         it('to the end', () => {
-            list(1).append(2).equals(list(1, 2)).should.be.true
+            list(1).append(2).equals(nonEmptyList(1, 2)).should.be.true
         })
 
         it('to the start', () => {
-            list(1).prepend(2).equals(list(2, 1)).should.be.true
+            list(1).prepend(2).equals(nonEmptyList(2, 1)).should.be.true
         })
     })
 
     describe('should fold', () => {
         const unusedFunction = () => { throw 'Unexpected functional application' }
+
+        function assertNone(actual: Option<number>) {
+            actual.should.equal(none)
+        }
+
+        function assertSome(actual: Option<number>, expected: number) {
+            actual.equals(some(expected)).should.be.true
+        }
 
         it('an empty list to none', () => {
             emptyList<number>().fold(unusedFunction, undefined).should.equal(none)
@@ -414,57 +408,61 @@ describe('List<T>', () => {
             const byNumber = x => x.number
 
             it('with the Max monoid by selecting a number', () => {
-                list(one).maxBy(byNumber).equals(some(1))
-                list(one, two).maxBy(byNumber).equals(some(2))
-                list(two, one).maxBy(byNumber).equals(some(2))
+                assertNone(emptyList().maxBy(byNumber))
+                assertSome(list(one).maxBy(byNumber), 1)
+                assertSome(list(one, two).maxBy(byNumber), 2)
+                assertSome(list(two, one).maxBy(byNumber), 2)
             })
 
             it('with the Min monoid by selecting a number', () => {
-                list(one).minBy(byNumber).equals(some(1))
-                list(one, two).minBy(byNumber).equals(some(1))
-                list(two, one).minBy(byNumber).equals(some(1))
+                assertNone(emptyList().minBy(byNumber))
+                assertSome(list(one).minBy(byNumber), 1)
+                assertSome(list(one, two).minBy(byNumber), 1)
+                assertSome(list(two, one).minBy(byNumber), 1)
             })
 
             it('with the Sum monoid by selecting a number', () => {
-                list(one).sumBy(byNumber).equals(some(1))
-                list(one, two).sumBy(byNumber).equals(some(3))
-                list(two, one).sumBy(byNumber).equals(some(3))
+                assertNone(emptyList().sumBy(byNumber))
+                assertSome(list(one).sumBy(byNumber), 1)
+                assertSome(list(one, two).sumBy(byNumber), 3)
+                assertSome(list(two, one).sumBy(byNumber), 3)
             })
 
             it('with the Product monoid by selecting a number', () => {
-                list(one).sumBy(byNumber).equals(some(1))
-                list(one, two).productBy(byNumber).equals(some(2))
-                list(two, one).productBy(byNumber).equals(some(2))
+                assertNone(emptyList().productBy(byNumber))
+                assertSome(list(one).productBy(byNumber), 1)
+                assertSome(list(one, two).productBy(byNumber), 2)
+                assertSome(list(two, one).productBy(byNumber), 2)
             })
         })
 
         describe('a list of numbers', () => {
             it('with the Max monoid', () => {
-                emptyList<number>().max().should.equal(none)
-                list(1).max().equals(some(1)).should.be.true
-                list(1, 2).max().equals(some(2)).should.be.true
-                list(2, 1).max().equals(some(2)).should.be.true
+                assertNone(emptyList<number>().max())
+                assertSome(list(1).max(), 1)
+                assertSome(list(1, 2).max(), 2)
+                assertSome(list(2, 1).max(), 2)
             })
 
             it('with the Min monoid', () => {
-                emptyList<number>().min().should.equal(none)
-                list(1).min().equals(some(1)).should.be.true
-                list(1, 2).min().equals(some(1)).should.be.true
-                list(2, 1).min().equals(some(1)).should.be.true
+                assertNone(emptyList<number>().min())
+                assertSome(list(1).min(), 1)
+                assertSome(list(1, 2).min(), 1)
+                assertSome(list(2, 1).min(), 1)
             })
 
             it('with the Sum monoid', () => {
-                emptyList<number>().sum().should.equal(none)
-                list(1).sum().equals(some(1)).should.be.true
-                list(1, 2).sum().equals(some(3)).should.be.true
-                list(2, 1).sum().equals(some(3)).should.be.true
+                assertNone(emptyList<number>().sum())
+                assertSome(list(1).sum(), 1)
+                assertSome(list(1, 2).sum(), 3)
+                assertSome(list(2, 1).sum(), 3)
             })
 
             it('with the Product monoid', () => {
-                emptyList<number>().product().should.equal(none)
-                list(1).product().equals(some(1)).should.be.true
-                list(1, 2).product().equals(some(2)).should.be.true
-                list(2, 1).product().equals(some(2)).should.be.true
+                assertNone(emptyList<number>().product())
+                assertSome(list(1).product(), 1)
+                assertSome(list(1, 2).product(), 2)
+                assertSome(list(2, 1).product(), 2)
             })
         })
     })
