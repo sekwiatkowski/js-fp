@@ -1,5 +1,5 @@
 import {Future, List, Option} from '..'
-import {ArrayConcatenation, Max, Min, Monoid, Product, Sum} from '../monoids/Monoids'
+import {ArrayConcatenation, Max, Min, Monoid, Product, Sum} from '../combination/Monoid'
 import {
     allItems,
     appendItem,

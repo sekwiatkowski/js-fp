@@ -1,5 +1,5 @@
 import {Future, none, Option, some} from '..'
-import {ArrayConcatenation, Max, Min, Monoid, Product, Sum} from '../monoids/Monoids'
+import {ArrayConcatenation, Max, Min, Monoid, Product, Sum} from '../combination/Monoid'
 import {
     allItems,
     appendItem,
@@ -115,7 +115,7 @@ export class List<T> {
     foldByWithMonoid<U>(by: (item: T) => U, monoid: Monoid<U>): Option<U> {
         return this.foldBy(by, monoid.combine, monoid.identityElement)
     }
-
+    
     max(this: List<number>): Option<number> {
         return this.foldWithMonoid(Max)
     }

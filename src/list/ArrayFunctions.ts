@@ -197,9 +197,8 @@ export function findItem<T>(items: T[], predicate: (item: T) => boolean): Option
 }
 
 export function findLastItem<T>(items: T[], predicate: (item: T) => boolean): Option<T> {
-    const lastIndex = items.length - 1
-    for (let i = lastIndex; i >= 0; i--) {
-        const item = items[i]
+    for (let index = items.length - 1; index >= 0; index--) {
+        const item = items[index]
         if (predicate(item)) {
             return some(item)
         }
