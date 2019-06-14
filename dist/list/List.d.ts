@@ -1,5 +1,4 @@
-import { Future, Option, Semigroup } from '..';
-import { Monoid } from '../combination/Monoid';
+import { Future, Monoid, Option, Order, Semigroup } from '..';
 import { NonEmptyList } from './NonEmptyList';
 export declare class List<T> {
     private readonly items;
@@ -52,7 +51,7 @@ export declare class List<T> {
     size(): number;
     isEmpty(): boolean;
     isNotEmpty(): boolean;
-    sort(): List<T>;
+    sort(order?: Order<T>): List<T>;
     sortBy<U>(by: (item: T) => U): List<T>;
     sortDescendingly(): List<T>;
     sortDescendinglyBy<U>(by: (item: T) => U): List<T>;

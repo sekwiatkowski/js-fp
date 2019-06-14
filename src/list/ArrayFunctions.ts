@@ -3,7 +3,7 @@ import {NonEmptyList} from './NonEmptyList'
 import {fulfilled} from '../future/Fulfilled'
 import {rejected} from '../future/Rejected'
 import {Settled} from '../future/Settled'
-import {compare, compareBy, negatedCompare, negatedCompareBy} from './Comparison'
+import {Ordering} from '../order/Order'
 
 //region Access
 export function getItem<T>(items: T[], index: number): Option<T> {
@@ -226,20 +226,12 @@ export function forEachItem<T>(items: T[], sideEffect: (item: T) => void) {
 //endregion
 
 //region Sorting
-export function sortItems<T>(items: T[]): T[] {
+export function sortItems<T>(items: T[], compare: (x: T, y: T) => Ordering): T[] {
     return items.sort(compare)
 }
 
-export function sortItemsBy<T, U>(items: T[], by: (item: T) => U): T[] {
-    return items.sort((a, b) => compareBy(a, b, by))
-}
-
-export function sortItemsDescendingly<T>(items: T[]): T[] {
-    return items.sort(negatedCompare)
-}
-
-export function sortItemsDescendinglyBy<T, U>(items: T[], by: (item: T) => U): T[] {
-    return items.sort((a, b) => negatedCompareBy(a, b, by))
+export function sortItemsBy<T, U>(items: T[], by: (item: T) => U, compare: (x: U, y: U) => Ordering): T[] {
+    return items.sort((a, b) => compare(by(a), by(b)))
 }
 //endregion
 

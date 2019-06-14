@@ -19,7 +19,7 @@ export { inclusiveRange, list } from './list/NonEmptyList'
 
 export { Semigroup } from './combination/Semigroup'
 export { objectCombination } from './combination/ObjectCombination'
-export { Monoid, Any, All, Latest, Max, Earliest, Min, Sum, Product } from './combination/Monoid'
+export { Monoid, Any, All, Latest, Max, Earliest, Min, Sum, Product, ArrayConcatenation } from './combination/Monoid'
 
 export {Equivalence, equivalence} from './equivalence/Equivalence'
 export {
@@ -30,3 +30,7 @@ export {
     NullableStringArrayEquality, NullableNumberArrayEquality, NullableBooleanArrayEquality, NullableDateArrayEquality,
     StringArrayEquality, NumberArrayEquality, BooleanArrayEquality, DateArrayEquality
 } from './equivalence/ArrayEquality'
+
+export { Order, order, Ordering, AnyOrder, DescendingAnyOrder, orderBy, orderDescendinglyBy,
+    StringOrder, NumberOrder, BooleanOrder, DateOrder,
+    DescendingStringOrder, DescendingNumberOrder, DescendingBooleanOrder, DescendingDateOrder } from './order/Order'

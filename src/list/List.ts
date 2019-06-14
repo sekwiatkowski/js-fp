@@ -1,5 +1,23 @@
-import {Earliest, Future, Latest, none, Option, Semigroup, some} from '..'
-import {ArrayConcatenation, Max, Min, Monoid, Product, Sum} from '../combination/Monoid'
+import {
+    AnyOrder,
+    ArrayConcatenation,
+    DescendingAnyOrder,
+    Earliest,
+    Future,
+    Latest,
+    Max,
+    Min,
+    Monoid,
+    none,
+    Option,
+    Order,
+    orderBy,
+    orderDescendinglyBy,
+    Product,
+    Semigroup,
+    some,
+    Sum
+} from '..'
 import {
     allItems,
     appendItem,
@@ -24,9 +42,6 @@ import {
     repeatItems,
     someItem,
     sortItems,
-    sortItemsBy,
-    sortItemsDescendingly,
-    sortItemsDescendinglyBy,
     takeItems
 } from './ArrayFunctions'
 import {NonEmptyList} from './NonEmptyList'
@@ -262,20 +277,20 @@ export class List<T> {
     //endregion
 
     //region Sorting
-    sort(): List<T> {
-        return new List(sortItems(this.items))
+    sort(order: Order<T> = AnyOrder): List<T> {
+        return new List(sortItems(this.items, order.get()))
     }
 
     sortBy<U>(by: (item: T) => U): List<T> {
-        return new List(sortItemsBy(this.items, by))
+        return new List(sortItems(this.items, orderBy(by).get()))
     }
 
     sortDescendingly(): List<T> {
-        return new List(sortItemsDescendingly(this.items))
+        return new List(sortItems(this.items, DescendingAnyOrder.get()))
     }
 
     sortDescendinglyBy<U>(by: (item: T) => U): List<T> {
-        return new List(sortItemsDescendinglyBy(this.items, by))
+        return new List(sortItems(this.items, orderDescendinglyBy(by).get()))
     }
     //endregion
 

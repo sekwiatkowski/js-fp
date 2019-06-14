@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const __1 = require("..");
 const Fulfilled_1 = require("../future/Fulfilled");
 const Rejected_1 = require("../future/Rejected");
-const Comparison_1 = require("./Comparison");
 //region Access
 function getItem(items, index) {
     return __1.option(items[index]);
@@ -203,22 +202,14 @@ function forEachItem(items, sideEffect) {
 exports.forEachItem = forEachItem;
 //endregion
 //region Sorting
-function sortItems(items) {
-    return items.sort(Comparison_1.compare);
+function sortItems(items, compare) {
+    return items.sort(compare);
 }
 exports.sortItems = sortItems;
-function sortItemsBy(items, by) {
-    return items.sort((a, b) => Comparison_1.compareBy(a, b, by));
+function sortItemsBy(items, by, compare) {
+    return items.sort((a, b) => compare(by(a), by(b)));
 }
 exports.sortItemsBy = sortItemsBy;
-function sortItemsDescendingly(items) {
-    return items.sort(Comparison_1.negatedCompare);
-}
-exports.sortItemsDescendingly = sortItemsDescendingly;
-function sortItemsDescendinglyBy(items, by) {
-    return items.sort((a, b) => Comparison_1.negatedCompareBy(a, b, by));
-}
-exports.sortItemsDescendinglyBy = sortItemsDescendinglyBy;
 //endregion
 //region Testing
 function containsItem(items, item) {

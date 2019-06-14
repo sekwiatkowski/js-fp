@@ -1,5 +1,4 @@
-import { Future, List, Option, Semigroup } from '..';
-import { Monoid } from '../combination/Monoid';
+import { Future, List, Monoid, Option, Order, Semigroup } from '..';
 export declare class NonEmptyList<T> {
     private readonly items;
     private readonly length;
@@ -46,10 +45,10 @@ export declare class NonEmptyList<T> {
     perform(sideEffect: (list: NonEmptyList<T>) => void): void;
     forEach(sideEffect: (item: T) => void): void;
     size(): number;
-    sort(): NonEmptyList<T>;
-    sortBy<U>(by: (item: T) => U): NonEmptyList<T>;
-    sortDescendingly(): NonEmptyList<T>;
-    sortDescendinglyBy<U>(by: (item: T) => U): NonEmptyList<T>;
+    sort(order?: Order<T>): List<T>;
+    sortBy<U>(by: (item: T) => U): List<T>;
+    sortDescendingly(): List<T>;
+    sortDescendinglyBy<U>(by: (item: T) => U): List<T>;
     contains(item: T): boolean;
     equals(otherList: NonEmptyList<T>): boolean;
     all(predicate: (item: T) => boolean): boolean;

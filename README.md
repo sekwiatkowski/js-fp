@@ -94,10 +94,18 @@
 
 ##### Date
 
-[**DateEquality**](src/equivalence/Date.ts): neither Date instance is undefined or null and both dates have the same value
+[**DateEquality**](src/equivalence/Equality.ts): neither Date instance is undefined or null and both dates have the same value
 
 [**NullableDateEquality**](src/equivalence/Equality.ts): like DateEquality, but returns *true* when both instances are null
 
 [**DateArrayEquality**](src/equivalence/ArrayEquality.ts): neither array is undefined or null, both arrays have the same length and each pair of corresponding items satisfies DateEquality
 
 [**NullableDateArrayEquality**](src/equivalence/ArrayEquality.ts): like DateArrayEquality, but returns true when both arrays are null corresponding items have to satisfy NullableDateEquality
+
+### Order
+
+#### Number
+
+[**Order**](src/order/Order.ts): decision on the order of two values 
+
+[**Ordering**](src/order/Order.ts): a type alias for the three possible outcomes (-1, 0 and 1)

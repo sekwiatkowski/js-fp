@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const __1 = require("..");
-const Monoid_1 = require("../combination/Monoid");
 const ArrayFunctions_1 = require("./ArrayFunctions");
 class NonEmptyList {
     constructor(items) {
@@ -43,7 +42,7 @@ class NonEmptyList {
     //endregion
     //region Combination
     concat(otherList) {
-        return new NonEmptyList(Monoid_1.ArrayConcatenation.combine(this.items)(otherList.items));
+        return new NonEmptyList(__1.ArrayConcatenation.combine(this.items)(otherList.items));
     }
     //endregion
     //region Expansion
@@ -90,7 +89,7 @@ class NonEmptyList {
         return this.foldBy(by, monoid.combine, monoid.identityElement);
     }
     max() {
-        return this.foldWithMonoid(Monoid_1.Max);
+        return this.foldWithMonoid(__1.Max);
     }
     earliest() {
         return this.foldWithMonoid(__1.Earliest);
@@ -105,25 +104,25 @@ class NonEmptyList {
         return this.foldByWithMonoid(by, __1.Latest);
     }
     maxBy(by) {
-        return this.foldByWithMonoid(by, Monoid_1.Max);
+        return this.foldByWithMonoid(by, __1.Max);
     }
     min() {
-        return this.foldWithMonoid(Monoid_1.Min);
+        return this.foldWithMonoid(__1.Min);
     }
     minBy(by) {
-        return this.foldByWithMonoid(by, Monoid_1.Min);
+        return this.foldByWithMonoid(by, __1.Min);
     }
     sum() {
-        return this.foldWithMonoid(Monoid_1.Sum);
+        return this.foldWithMonoid(__1.Sum);
     }
     sumBy(by) {
-        return this.foldByWithMonoid(by, Monoid_1.Sum);
+        return this.foldByWithMonoid(by, __1.Sum);
     }
     product() {
-        return this.foldWithMonoid(Monoid_1.Product);
+        return this.foldWithMonoid(__1.Product);
     }
     productBy(by) {
-        return this.foldByWithMonoid(by, Monoid_1.Product);
+        return this.foldByWithMonoid(by, __1.Product);
     }
     //endregion
     //region Grouping
@@ -161,17 +160,17 @@ class NonEmptyList {
     }
     //endregion
     //region Sorting
-    sort() {
-        return new NonEmptyList(ArrayFunctions_1.sortItems(this.items));
+    sort(order = __1.AnyOrder) {
+        return new __1.List(ArrayFunctions_1.sortItems(this.items, order.get()));
     }
     sortBy(by) {
-        return new NonEmptyList(ArrayFunctions_1.sortItemsBy(this.items, by));
+        return new __1.List(ArrayFunctions_1.sortItems(this.items, __1.orderBy(by).get()));
     }
     sortDescendingly() {
-        return new NonEmptyList(ArrayFunctions_1.sortItemsDescendingly(this.items));
+        return new __1.List(ArrayFunctions_1.sortItems(this.items, __1.DescendingAnyOrder.get()));
     }
     sortDescendinglyBy(by) {
-        return new NonEmptyList(ArrayFunctions_1.sortItemsDescendinglyBy(this.items, by));
+        return new __1.List(ArrayFunctions_1.sortItems(this.items, __1.orderDescendinglyBy(by).get()));
     }
     //endregion
     //region Testing
