@@ -310,16 +310,12 @@ export class List<T> {
     //endregion
 }
 
-export function list<T>(...items: T[]): List<T> {
-    return new List(items)
-}
-
 export function emptyList<T>(): List<T> {
-    return list()
+    return new List([])
 }
 
 export function listFromArray<T>(array: T[]): List<T> {
-    return list(...array)
+    return new List(array)
 }
 
 export function range(start: number, end?: number): List<number> {

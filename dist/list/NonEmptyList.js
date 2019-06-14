@@ -198,7 +198,7 @@ class NonEmptyList {
     }
 }
 exports.NonEmptyList = NonEmptyList;
-function nonEmptyList(head, ...tail) {
+function list(head, ...tail) {
     const array = new Array(tail.length + 1);
     array[0] = head;
     for (let i = 0; i < tail.length; i++) {
@@ -206,22 +206,22 @@ function nonEmptyList(head, ...tail) {
     }
     return new NonEmptyList(array);
 }
-exports.nonEmptyList = nonEmptyList;
+exports.list = list;
 function inclusiveRange(start, end) {
     if (end == null) {
         if (start >= 0) {
-            return nonEmptyList(0, ...ArrayFunctions_1.rangeOfItems(1, start + 1));
+            return list(0, ...ArrayFunctions_1.rangeOfItems(1, start + 1));
         }
         else {
-            return nonEmptyList(0, ...ArrayFunctions_1.rangeOfItems(-1, start - 1));
+            return list(0, ...ArrayFunctions_1.rangeOfItems(-1, start - 1));
         }
     }
     else {
         if (end >= start) {
-            return nonEmptyList(start, ...ArrayFunctions_1.rangeOfItems(start + 1, end + 1));
+            return list(start, ...ArrayFunctions_1.rangeOfItems(start + 1, end + 1));
         }
         else {
-            return nonEmptyList(start, ...ArrayFunctions_1.rangeOfItems(start - 1, end - 1));
+            return list(start, ...ArrayFunctions_1.rangeOfItems(start - 1, end - 1));
         }
     }
 }

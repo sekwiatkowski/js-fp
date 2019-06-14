@@ -222,16 +222,12 @@ class List {
     }
 }
 exports.List = List;
-function list(...items) {
-    return new List(items);
-}
-exports.list = list;
 function emptyList() {
-    return list();
+    return new List([]);
 }
 exports.emptyList = emptyList;
 function listFromArray(array) {
-    return list(...array);
+    return new List(array);
 }
 exports.listFromArray = listFromArray;
 function range(start, end) {

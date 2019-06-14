@@ -1,3 +1,3 @@
 export interface Semigroup<T> {
-    combine: (a: T) => (b: T) => (T);
+    readonly combine: (a: T) => (b: T) => (T);
 }

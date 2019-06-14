@@ -2,45 +2,45 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 //region Boolean
 exports.Any = {
-    combine: (a) => (b) => a || b,
+    combine: (x) => (y) => x || y,
     identityElement: true
 };
 exports.All = {
-    combine: (a) => (b) => a && b,
+    combine: (x) => (y) => x && y,
     identityElement: false
 };
 //endregion
 //region Date
 exports.Earliest = {
-    combine: (a) => (b) => a < b ? a : b,
+    combine: (x) => (y) => x < y ? x : y,
     identityElement: new Date(+8640000000000000)
 };
 exports.Latest = {
-    combine: (a) => (b) => a > b ? a : b,
+    combine: (x) => (y) => x > y ? x : y,
     identityElement: new Date(-8640000000000000)
 };
 //endregion
 //region Number
 exports.Min = {
-    combine: (a) => (b) => Math.min(a, b),
+    combine: (x) => (y) => Math.min(x, y),
     identityElement: +Infinity
 };
 exports.Max = {
-    combine: (a) => (b) => Math.max(a, b),
+    combine: (x) => (y) => Math.max(x, y),
     identityElement: -Infinity
 };
 exports.Sum = {
-    combine: (a) => (b) => a + b,
+    combine: (x) => (y) => x + y,
     identityElement: 0
 };
 exports.Product = {
-    combine: (a) => (b) => a * b,
+    combine: (x) => (y) => x * y,
     identityElement: 1
 };
 //endregion Number
 //region Array
 exports.ArrayConcatenation = {
-    combine: (a) => (b) => a.concat(b),
+    combine: (xs) => (ys) => xs.concat(ys),
     identityElement: []
 };
 //endregion

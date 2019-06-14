@@ -275,7 +275,7 @@ export class NonEmptyList<T> {
     //endregion
 }
 
-export function nonEmptyList<T>(head: T, ...tail: T[]): NonEmptyList<T> {
+export function list<T>(head: T, ...tail: T[]): NonEmptyList<T> {
     const array = new Array(tail.length+1)
     array[0] = head
     for (let i = 0; i < tail.length; i++) {
@@ -288,18 +288,18 @@ export function nonEmptyList<T>(head: T, ...tail: T[]): NonEmptyList<T> {
 export function inclusiveRange(start: number, end?: number): NonEmptyList<number> {
     if (end == null) {
         if (start >= 0) {
-            return nonEmptyList(0, ...rangeOfItems(1, start+1))
+            return list(0, ...rangeOfItems(1, start+1))
         }
         else {
-            return nonEmptyList(0, ...rangeOfItems(-1, start-1))
+            return list(0, ...rangeOfItems(-1, start-1))
         }
     }
     else {
         if (end >= start) {
-            return nonEmptyList(start, ...rangeOfItems(start+1, end+1))
+            return list(start, ...rangeOfItems(start+1, end+1))
         }
         else {
-            return nonEmptyList(start, ...rangeOfItems(start-1, end-1))
+            return list(start, ...rangeOfItems(start-1, end-1))
         }
     }
 }

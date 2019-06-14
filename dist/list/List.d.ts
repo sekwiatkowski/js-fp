@@ -63,7 +63,6 @@ export declare class List<T> {
     none(predicate: (item: T) => boolean): boolean;
     count(predicate: (item: T) => boolean): number;
 }
-export declare function list<T>(...items: T[]): List<T>;
 export declare function emptyList<T>(): List<T>;
 export declare function listFromArray<T>(array: T[]): List<T>;
 export declare function range(start: number, end?: number): List<number>;

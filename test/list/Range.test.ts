@@ -1,4 +1,4 @@
-import {emptyList, inclusiveRange, List, list, nonEmptyList, range} from '../../src'
+import {emptyList, inclusiveRange, list, List, listFromArray, range} from '../../src'
 import {NonEmptyList} from '../../src/list/NonEmptyList'
 
 describe('range', () => {
@@ -8,8 +8,8 @@ describe('range', () => {
         }
 
         it('a list from 0 to n+1 if the start argument is negative', () => {
-            checkWithStartOnly(-1, list(0))
-            checkWithStartOnly(-2, list(0, -1))
+            checkWithStartOnly(-1, listFromArray([0]))
+            checkWithStartOnly(-2, listFromArray([0, -1]))
         })
 
         it('an empty list if the start argument is zero', () => {
@@ -17,8 +17,8 @@ describe('range', () => {
         })
 
         it('a list from 0 to n-1 if the start argument is positive', () => {
-            checkWithStartOnly(1, list(0))
-            checkWithStartOnly(2, list(0, 1))
+            checkWithStartOnly(1, listFromArray([0]))
+            checkWithStartOnly(2, listFromArray([0, 1]))
         })
     })
 
@@ -33,21 +33,21 @@ describe('range', () => {
         })
 
         it('a list from start to end+1 when the start argument is greater than the end argument', () => {
-            check(-1, -2, list(-1))
-            check(-1, -3, list(-1, -2))
-            check(0, -1, list(0))
-            check(0, -2, list(0, -1))
-            check(1, 0, list(1))
-            check(1, -1, list(1, 0))
+            check(-1, -2, listFromArray([-1]))
+            check(-1, -3, listFromArray([-1, -2]))
+            check(0, -1, listFromArray([0]))
+            check(0, -2, listFromArray([0, -1]))
+            check(1, 0, listFromArray([1]))
+            check(1, -1, listFromArray([1, 0]))
         })
 
         it('a list from start to end-1 when the start argument is smaller than the end argument', () => {
-            check(-1, 0, list(-1))
-            check(-1, 1, list(-1, 0))
-            check(0, 1, list(0))
-            check(0, 2, list(0, 1))
-            check(1, 2, list(1))
-            check(1, 3, list(1, 2))
+            check(-1, 0, listFromArray([-1]))
+            check(-1, 1, listFromArray([-1, 0]))
+            check(0, 1, listFromArray([0]))
+            check(0, 2, listFromArray([0, 1]))
+            check(1, 2, listFromArray([1]))
+            check(1, 3, listFromArray([1, 2]))
         })
     })
 })
@@ -58,11 +58,11 @@ describe('inclusiveRange', () => {
             inclusiveRange(n).equals(expected).should.be.true
         }
 
-        check(-1, nonEmptyList(0, -1))
-        check(-2, nonEmptyList(0, -1, -2))
-        check(0, nonEmptyList(0))
-        check(1, nonEmptyList(0,1))
-        check(2, nonEmptyList(0,1, 2))
+        check(-1, list(0, -1))
+        check(-2, list(0, -1, -2))
+        check(0, list(0))
+        check(1, list(0,1))
+        check(2, list(0,1, 2))
     })
 
     it('with a defined end argument should returna list from start to end', () => {
@@ -70,23 +70,23 @@ describe('inclusiveRange', () => {
             inclusiveRange(start, end).equals(expected).should.be.true
         }
 
-        check(-1, -2, nonEmptyList(-1, -2))
-        check(-1, -1, nonEmptyList(-1))
-        check(-1, 0, nonEmptyList(-1, 0))
-        check(-1, 1, nonEmptyList(-1, 0, 1))
-        check(-1, 2, nonEmptyList(-1, 0, 1, 2))
+        check(-1, -2, list(-1, -2))
+        check(-1, -1, list(-1))
+        check(-1, 0, list(-1, 0))
+        check(-1, 1, list(-1, 0, 1))
+        check(-1, 2, list(-1, 0, 1, 2))
 
-        check(0, -2, nonEmptyList(0, -1, -2))
-        check(0, -1, nonEmptyList(0, -1))
-        check(0, 0, nonEmptyList(0))
-        check(0, 1, nonEmptyList(0, 1))
-        check(0, 2, nonEmptyList(0, 1, 2))
+        check(0, -2, list(0, -1, -2))
+        check(0, -1, list(0, -1))
+        check(0, 0, list(0))
+        check(0, 1, list(0, 1))
+        check(0, 2, list(0, 1, 2))
 
-        check(1, -2, nonEmptyList(1, 0, -1, -2))
-        check(1, -1, nonEmptyList(1, 0, -1))
-        check(1, 0, nonEmptyList(1, 0))
-        check(1, 1, nonEmptyList(1))
-        check(1, 2, nonEmptyList(1, 2))
+        check(1, -2, list(1, 0, -1, -2))
+        check(1, -1, list(1, 0, -1))
+        check(1, 0, list(1, 0))
+        check(1, 1, list(1))
+        check(1, 2, list(1, 2))
 
     })
 })

@@ -57,5 +57,5 @@ export declare class NonEmptyList<T> {
     none(predicate: (item: T) => boolean): boolean;
     count(predicate: (item: T) => boolean): number;
 }
-export declare function nonEmptyList<T>(head: T, ...tail: T[]): NonEmptyList<T>;
+export declare function list<T>(head: T, ...tail: T[]): NonEmptyList<T>;
 export declare function inclusiveRange(start: number, end?: number): NonEmptyList<number>;

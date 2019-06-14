@@ -1,6 +1,6 @@
 import { Semigroup } from './Semigroup';
 export interface Monoid<T> extends Semigroup<T> {
-    identityElement: T;
+    readonly identityElement: T;
 }
 export declare const Any: Monoid<boolean>;
 export declare const All: Monoid<boolean>;
