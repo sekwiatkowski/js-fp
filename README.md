@@ -4,6 +4,8 @@
 
 ### Computation with monad(-like) containers
 
+[**Arrow**](src/arrow/Arrow.ts): wrapper around a function that enables composition and adaptation of the input  
+
 [**Box**](src/box/Box.ts): guaranteed computation with exactly one value
 
 [**List**](src/list/List.ts): computation with zero, one or more values
@@ -103,8 +105,6 @@
 [**NullableDateArrayEquality**](src/equivalence/ArrayEquality.ts): like DateArrayEquality, but returns true when both arrays are null corresponding items have to satisfy NullableDateEquality
 
 ### Order
-
-#### Number
 
 [**Order**](src/order/Order.ts): decision on the order of two values 
 
