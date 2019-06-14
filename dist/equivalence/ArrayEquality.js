@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const Equality_1 = require("./Equality");
 const Equivalence_1 = require("./Equivalence");
-const sameLength = Equality_1.NumberEquality.mapParameters((array) => array.length);
+const sameLength = Equality_1.NumberEquality.adapt((array) => array.length);
 function createSameItemsEquality(itemEquality) {
     return Equivalence_1.equivalence((xs, ys) => xs.every((x, i) => itemEquality.test(x, ys[i])));
 }

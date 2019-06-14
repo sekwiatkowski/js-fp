@@ -9,7 +9,7 @@ export class Equivalence<T> {
         return this.f
     }
 
-    mapParameters<U>(f: (parameter: U) => T): Equivalence<U> {
+    adapt<U>(f: (parameter: U) => T): Equivalence<U> {
         return new Equivalence<U>((x: U, y: U) => this.test(f(x), f(y)))
     }
 

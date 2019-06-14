@@ -4,7 +4,7 @@ export declare class Order<T> {
     constructor(f: (x: T, y: T) => Ordering);
     get(): (x: T, y: T) => Ordering;
     compare(x: T, y: T): Ordering;
-    mapParameter<U>(f: (value: U) => T): Order<U>;
+    adapt<U>(f: (value: U) => T): Order<U>;
     invert(): Order<T>;
     min(): (x: T, y: T) => T;
     max(): (x: T, y: T) => T;

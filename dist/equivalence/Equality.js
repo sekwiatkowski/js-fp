@@ -12,7 +12,7 @@ exports.StringEquality = strictEquality;
 exports.NumberEquality = strictEquality;
 exports.BooleanEquality = strictEquality;
 exports.DateEquality = exports.noItemIsUndefinedOrNull
-    .and(basicStrictEquality.mapParameters(date => date.valueOf()));
+    .and(basicStrictEquality.adapt(date => date.valueOf()));
 exports.bothAreNull = Equivalence_1.equivalence((x, y) => isNull(x) && isNull(y));
 const nullableStrictEquality = exports.bothAreNull.or(strictEquality);
 exports.NullableStringEquality = nullableStrictEquality;

@@ -1,5 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var Arrow_1 = require("./arrow/Arrow");
+exports.Arrow = Arrow_1.Arrow;
+exports.arrow = Arrow_1.arrow;
 var Box_1 = require("./box/Box");
 exports.Box = Box_1.Box;
 exports.box = Box_1.box;

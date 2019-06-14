@@ -10,7 +10,7 @@ export class Arrow<A, B> {
         }
     }
 
-    adaptInput<C>(map: (input: C) => A): Arrow<C, B> {
+    adapt<C>(map: (input: C) => A): Arrow<C, B> {
         return new Arrow((input: C) => this.f(map(input)))
     }
 

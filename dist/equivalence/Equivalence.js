@@ -10,7 +10,7 @@ class Equivalence {
     get() {
         return this.f;
     }
-    mapParameters(f) {
+    adapt(f) {
         return new Equivalence((x, y) => this.test(f(x), f(y)));
     }
     and(other) {

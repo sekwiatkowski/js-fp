@@ -10,7 +10,7 @@ class Order {
     compare(x, y) {
         return this.f(x, y);
     }
-    mapParameter(f) {
+    adapt(f) {
         return new Order((x, y) => this.compare(f(x), f(y)));
     }
     invert() {
@@ -56,7 +56,7 @@ exports.orderDescendinglyBy = orderDescendinglyBy;
 exports.NumberOrder = exports.AnyOrder;
 exports.StringOrder = exports.AnyOrder;
 exports.BooleanOrder = exports.AnyOrder;
-exports.DateOrder = exports.AnyOrder.mapParameter(date => date.valueOf());
+exports.DateOrder = exports.AnyOrder.adapt(date => date.valueOf());
 exports.DescendingNumberOrder = exports.DescendingAnyOrder;
 exports.DescendingStringOrder = exports.DescendingAnyOrder;
 exports.DescendingBooleanOrder = exports.DescendingAnyOrder;

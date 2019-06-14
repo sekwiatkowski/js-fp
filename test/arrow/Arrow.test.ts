@@ -9,14 +9,14 @@ describe('Arrow', () => {
         name: string
     }
 
-    it('should return the result of applying a value to the function', () => {
+    it('should return the result of applying the function to a value', () => {
         arrow((x: string) => x.toUpperCase())
             .apply('test').should.equal('TEST')
     })
 
     it('should map the input', () => {
         arrow((x: string) => x.toUpperCase())
-            .adaptInput<Product>(p => p.name)
+            .adapt<Product>(p => p.name)
             .apply({ name: 'test'}).should.equal('TEST')
     })
 
@@ -41,7 +41,7 @@ describe('Arrow', () => {
         let count = 0
 
         const composition = arrow((x: string) => { count++; return x.toUpperCase() })
-            .adaptInput<Product>((p) => { count++; return p.name })
+            .adapt<Product>((p) => { count++; return p.name })
             .compose(arrow(x => { count++; return x.length }))
             .compose(x => { count++; return x-1})
 

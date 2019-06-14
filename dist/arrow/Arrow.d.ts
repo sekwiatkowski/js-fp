@@ -1,9 +1,8 @@
 export declare class Arrow<A, B> {
     private f;
     constructor(f: (input: A) => B);
-    compose<C>(other: Arrow<B, C>): Arrow<A, C>;
-    map<C>(g: (input: B) => C): Arrow<A, C>;
-    mapInput<C>(map: (input: C) => A): Arrow<C, B>;
+    compose<C>(arrowOrFunction: Arrow<B, C> | ((input: B) => C)): Arrow<A, C>;
+    adapt<C>(map: (input: C) => A): Arrow<C, B>;
     apply(input: A): B;
     get(): (input: A) => B;
 }

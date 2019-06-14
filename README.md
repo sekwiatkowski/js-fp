@@ -109,3 +109,7 @@
 [**Order**](src/order/Order.ts): decision on the order of two values 
 
 [**Ordering**](src/order/Order.ts): a type alias for the three possible outcomes (-1, 0 and 1)
+
+### Predicate
+
+[**Predicate**](src/predicate/Predicate.ts): wrapper around predicate functions

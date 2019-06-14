@@ -4,13 +4,15 @@ class Arrow {
     constructor(f) {
         this.f = f;
     }
-    compose(other) {
-        return new Arrow((input) => other.apply((this.f(input))));
+    compose(arrowOrFunction) {
+        if (arrowOrFunction instanceof Function) {
+            return new Arrow((input) => arrowOrFunction(this.f(input)));
+        }
+        else {
+            return new Arrow((input) => arrowOrFunction.apply((this.f(input))));
+        }
     }
-    map(g) {
-        return new Arrow((input) => g(this.f(input)));
-    }
-    mapInput(map) {
+    adapt(map) {
         return new Arrow((input) => this.f(map(input)));
     }
     apply(input) {

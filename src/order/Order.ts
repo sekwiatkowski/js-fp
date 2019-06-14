@@ -11,7 +11,7 @@ export class Order<T> {
         return this.f(x, y)
     }
 
-    mapParameter<U>(f: (value: U) => T): Order<U> {
+    adapt<U>(f: (value: U) => T): Order<U> {
         return new Order<U>((x: U, y: U) => this.compare(f(x), f(y)))
     }
 
@@ -67,7 +67,7 @@ export function orderDescendinglyBy <T, U>(by: (x: T) => U, byOrder?: Order<U>):
 export const NumberOrder: Order<number> = AnyOrder
 export const StringOrder: Order<string> = AnyOrder
 export const BooleanOrder: Order<boolean> = AnyOrder
-export const DateOrder = AnyOrder.mapParameter(date => date.valueOf())
+export const DateOrder = AnyOrder.adapt(date => date.valueOf())
 
 export const DescendingNumberOrder: Order<number> = DescendingAnyOrder
 export const DescendingStringOrder: Order<string> = DescendingAnyOrder
