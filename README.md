@@ -1,8 +1,8 @@
 # FlowScript
 
-## A TypeScript/JavaScript library designed to implement workflows as computational graphs
+A TypeScript/JavaScript library designed to implement workflows as computational graphs
 
-### Computation with monad(-like) containers
+## Computation with monad(-like) containers
 
 [**Arrow**](src/arrow/Arrow.ts): wrapper around a function that enables composition and adaptation of the input  
 
@@ -19,6 +19,8 @@
 [**Validated**](src/validated/Validated.ts): like *Result*, but accumulates errors instead of short-circuiting
 
 [**Future**](src/future/Future.ts): asynchronous computation that may succeed or fail (a monadic alternative to Promises)
+
+## Combination
 
 ### Combination with semigroups
 
@@ -56,15 +58,15 @@
 
 [**ArrayConcatenation**](src/combination/Monoid.ts): combines two arrays using concatenation
 
+## Testing
+
 ### Equivalence with setoids
 
 [**Equivalence**](src/equivalence/Equivalence.ts): testing of equivalence between two values of the same type
 
 [**objectEquivalence**](src/combination/ObjectEquivalence.ts): a function to create equivalence schemes for objects based on member equivalences
 
-#### Equality
-
-##### String
+#### String
 
 [**StringEquality**](src/equivalence/Equality.ts): neither string is undefined or null and both strings have the same value  
 
@@ -74,7 +76,7 @@
 
 [**NullableStringArrayEquality**](src/equivalence/ArrayEquality.ts): like StringArrayEquality, but returns true when both arrays are null corresponding items have to satisfy NullableStringEquality 
 
-##### Number
+#### Number
 
 [**NumberEquality**](src/equivalence/Equality.ts): neither number is undefined or null and both numbers have the same value  
 
@@ -84,7 +86,7 @@
 
 [**NullableNumberArrayEquality**](src/equivalence/ArrayEquality.ts): like NumberArrayEquality, but returns true when both arrays are null corresponding items have to satisfy NullableNumberEquality
 
-##### Boolean
+#### Boolean
 
 [**BooleanEquality**](src/equivalence/Equality.ts): neither boolean is undefined or null and both booleans have the same value
 
@@ -94,7 +96,7 @@
 
 [**NullableBooleanArrayEquality**](src/equivalence/ArrayEquality.ts): like BooleanArrayEquality, but returns true when both arrays are null corresponding items have to satisfy NullableBooleanEquality
 
-##### Date
+#### Date
 
 [**DateEquality**](src/equivalence/Equality.ts): neither Date instance is undefined or null and both dates have the same value
 
