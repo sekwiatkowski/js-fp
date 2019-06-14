@@ -5,8 +5,7 @@ class Equivalence {
         this.f = f;
     }
     test(x, y) {
-        const result = this.f(x, y);
-        return result;
+        return this.f(x, y);
     }
     get() {
         return this.f;

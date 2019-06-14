@@ -16,15 +16,13 @@
 
 [**Validated**](src/validated/Validated.ts): like *Result*, but accumulates errors instead of short-circuiting
 
-[**Equivalence**](src/equivalence/Equivalence.ts): testing of equivalence between two values of the same type
-
 [**Future**](src/future/Future.ts): asynchronous computation that may succeed or fail (a monadic alternative to Promises)
 
 ### Combination with semigroups
 
 [**Semigroup**](src/combination/Semigroup.ts): a type that supports an associative binary operation
 
-[**objectCombination**](src/combination/ObjectCombination.ts): a function to create a combination scheme for objects based on semigroups
+[**objectCombination**](src/combination/ObjectCombination.ts): a function to create combination schemes for objects based on semigroups
 
 ### Combination with monoids
 
@@ -56,9 +54,15 @@
 
 [**ArrayConcatenation**](src/combination/Monoid.ts): combines two arrays using concatenation
 
-### Equality (with setoids)
+### Equivalence with setoids
 
-#### String
+[**Equivalence**](src/equivalence/Equivalence.ts): testing of equivalence between two values of the same type
+
+[**objectEquivalence**](src/combination/ObjectEquivalence.ts): a function to create equivalence schemes for objects based on member equivalences
+
+#### Equality
+
+##### String
 
 [**StringEquality**](src/equivalence/Equality.ts): neither string is undefined or null and both strings have the same value  
 
@@ -68,7 +72,7 @@
 
 [**NullableStringArrayEquality**](src/equivalence/ArrayEquality.ts): like StringArrayEquality, but returns true when both arrays are null corresponding items have to satisfy NullableStringEquality 
 
-#### Number
+##### Number
 
 [**NumberEquality**](src/equivalence/Equality.ts): neither number is undefined or null and both numbers have the same value  
 
@@ -78,7 +82,7 @@
 
 [**NullableNumberArrayEquality**](src/equivalence/ArrayEquality.ts): like NumberArrayEquality, but returns true when both arrays are null corresponding items have to satisfy NullableNumberEquality
 
-#### Boolean
+##### Boolean
 
 [**BooleanEquality**](src/equivalence/Equality.ts): neither boolean is undefined or null and both booleans have the same value
 
@@ -88,7 +92,7 @@
 
 [**NullableBooleanArrayEquality**](src/equivalence/ArrayEquality.ts): like BooleanArrayEquality, but returns true when both arrays are null corresponding items have to satisfy NullableBooleanEquality
 
-#### Date
+##### Date
 
 [**DateEquality**](src/equivalence/Date.ts): neither Date instance is undefined or null and both dates have the same value
 

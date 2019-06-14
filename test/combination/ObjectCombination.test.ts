@@ -2,10 +2,9 @@ import {All, Any, Earliest, Latest, objectCombination, Sum} from '../../src'
 import {ArrayConcatenation} from '../../src/combination/Monoid'
 
 const chai = require('chai')
-
 chai.should()
 
-describe('createObjectSemigroup', () => {
+describe('objectCombination', () => {
 
     interface OrderHistory {
         hasOrdered: boolean

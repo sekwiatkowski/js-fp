@@ -2,8 +2,7 @@ export class Equivalence<T> {
     constructor(private f: (x: T, y: T) => boolean) {}
 
     test(x: T, y: T): boolean {
-        const result = this.f(x, y)
-        return result
+        return this.f(x, y)
     }
 
     get(): (x: T, y: T) => boolean {
