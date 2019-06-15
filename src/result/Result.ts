@@ -56,7 +56,7 @@ export interface Result<T, E> {
     //endregion
 
     //region Testing
-    equals(otherResult: Result<T, E>): boolean
+    equals(otherResult: Result<T, E>, equality?: Equivalence<Result<T, E>>): boolean
 
     test(predicate: (value: T) => boolean): boolean
     test(predicate: Predicate<T>): boolean

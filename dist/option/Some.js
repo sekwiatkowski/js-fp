@@ -95,8 +95,8 @@ class Some {
     }
     //endregion
     //region Testing
-    equals(other) {
-        return anyOptionEquality.test(this, other);
+    equals(other, equality) {
+        return (equality || anyOptionEquality).test(this, other);
     }
     test(predicate) {
         if (predicate instanceof Function) {

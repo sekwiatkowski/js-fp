@@ -1,5 +1,5 @@
 import { Settled } from './Settled';
-import { Predicate } from '..';
+import { Equivalence, Predicate } from '..';
 export declare class Future<T, E> {
     private readonly createPromise;
     constructor(createPromise: () => Promise<Settled<T, E>>);
@@ -26,9 +26,9 @@ export declare class Future<T, E> {
     performSync(sideEffect: () => void): Future<T, E>;
     performSyncOnFulfilled(sideEffect: (value: T) => void): Future<T, E>;
     performSyncOnRejected(sideEffect: (error: E) => void): Future<T, E>;
-    equals(otherFutureOrPromise: Future<T, E> | Promise<T>): Promise<boolean>;
-    test(predicate: (value: T) => boolean): boolean;
-    test(predicate: Predicate<T>): boolean;
+    equals(otherFutureOrPromise: Future<T, E> | Promise<T>, equality?: Equivalence<Settled<T, E>>): Promise<boolean>;
+    test(predicate: (value: T) => boolean): Promise<boolean>;
+    test(predicate: Predicate<T>): Promise<boolean>;
 }
 export declare function fulfill<T, E>(value: T): Future<T, E>;
 export declare function reject<T, E>(error: E): Future<T, E>;

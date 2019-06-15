@@ -314,8 +314,8 @@ export class List<T> {
         return containsItem(this.items, item, ensureEquivalenceFunction(itemEquality))
     }
 
-    equals(otherList: List<T>): boolean {
-        return anyListEquality.test(this, otherList)
+    equals(otherList: List<T>, equality?: Equivalence<List<T>>): boolean {
+        return (equality || anyListEquality).test(this, otherList)
     }
 
     all(predicate: ((item: T) => boolean)|Predicate<T>): boolean {

@@ -52,7 +52,7 @@ export declare class NonEmptyList<T> {
     sortDescendingly(): List<T>;
     sortDescendinglyBy<U>(by: (item: T) => U): List<T>;
     contains(item: T, itemEquality?: (((x: T, y: T) => boolean) | Equivalence<T>)): boolean;
-    equals(otherList: NonEmptyList<T>): boolean;
+    equals(otherList: NonEmptyList<T>, equality?: Equivalence<NonEmptyList<T>>): boolean;
     all(predicate: ((item: T) => boolean) | Predicate<T>): boolean;
     some(predicate: ((item: T) => boolean) | Predicate<T>): boolean;
     none(predicate: ((item: T) => boolean) | Predicate<T>): boolean;

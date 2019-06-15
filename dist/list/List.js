@@ -206,8 +206,8 @@ class List {
     contains(item, itemEquality = __1.guardedStrictEquality) {
         return ArrayFunctions_1.containsItem(this.items, item, __1.ensureEquivalenceFunction(itemEquality));
     }
-    equals(otherList) {
-        return exports.anyListEquality.test(this, otherList);
+    equals(otherList, equality) {
+        return (equality || exports.anyListEquality).test(this, otherList);
     }
     all(predicate) {
         return ArrayFunctions_1.allItems(this.items, __1.ensurePredicateFunction(predicate));

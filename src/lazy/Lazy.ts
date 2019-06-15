@@ -1,5 +1,5 @@
 import {neitherIsUndefinedOrNull, strictEquality} from '../equivalence/Equality'
-import {Predicate} from '..'
+import {Equivalence, Predicate} from '..'
 
 export class Lazy<A> {
     constructor(private readonly lazyValue: () => A) {}
@@ -71,8 +71,8 @@ export class Lazy<A> {
     //endregion
 
     //region Testing
-    equals(otherLazy: Lazy<A>): boolean {
-        return LazyEquality.test(this, otherLazy)
+    equals(otherLazy: Lazy<A>, equality?: Equivalence<Lazy<A>>): boolean {
+        return (equality || LazyEquality).test(this, otherLazy)
     }
 
     test(predicate: (value: A) => boolean): boolean

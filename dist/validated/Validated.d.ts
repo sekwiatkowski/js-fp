@@ -18,7 +18,7 @@ export interface Validated<T, E> {
     performOnInvalid(sideEffect: (errors: E[]) => void): Validated<T, E>;
     isValid(): boolean;
     isInvalid(): boolean;
-    equals(otherValidated: Validated<T, E>): boolean;
+    equals(otherValidated: Validated<T, E>, equality?: Equivalence<Validated<T, E>>): boolean;
     test(predicate: (value: T) => boolean): boolean;
     test(predicate: Predicate<T>): boolean;
     test(predicate: ((value: T) => boolean) | Predicate<T>): boolean;

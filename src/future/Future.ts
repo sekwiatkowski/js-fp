@@ -372,9 +372,9 @@ export class Future<T, E> {
     //endregion
 
     //region Testing
-    equals(otherFutureOrPromise: Future<T, E>|Promise<T>): Promise<boolean> {
+    equals(otherFutureOrPromise: Future<T, E>|Promise<T>, equality?: Equivalence<Settled<T, E>>): Promise<boolean> {
         return this.both(otherFutureOrPromise)
-            .then(settled => anySettledEquality.test(settled[0], settled[1]))
+            .then(settled => (equality || anySettledEquality).test(settled[0], settled[1]))
     }
 
     test(predicate: (value: T) => boolean): Promise<boolean>

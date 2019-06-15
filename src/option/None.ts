@@ -1,6 +1,6 @@
 import {Option} from './Option'
 import {some} from './Some'
-import {failure, Future, invalid, Predicate, reject, Result, Validated} from '..'
+import {Equivalence, failure, Future, invalid, Predicate, reject, Result, Validated} from '..'
 
 export class None<A> implements Option<A> {
     static value: Option<never> = new None()
@@ -71,7 +71,7 @@ export class None<A> implements Option<A> {
     //endregion
 
     //region Testing
-    equals(other: Option<A>): boolean {
+    equals(other: Option<A>, equality?: Equivalence<Option<A>>): boolean {
         return false
     }
 

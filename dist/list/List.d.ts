@@ -57,7 +57,7 @@ export declare class List<T> {
     sortDescendingly(): List<T>;
     sortDescendinglyBy<U>(by: (item: T) => U): List<T>;
     contains(item: T, itemEquality?: (((x: T, y: T) => boolean) | Equivalence<T>)): boolean;
-    equals(otherList: List<T>): boolean;
+    equals(otherList: List<T>, equality?: Equivalence<List<T>>): boolean;
     all(predicate: ((item: T) => boolean) | Predicate<T>): boolean;
     some(predicate: ((item: T) => boolean) | Predicate<T>): boolean;
     none(predicate: ((item: T) => boolean) | Predicate<T>): boolean;

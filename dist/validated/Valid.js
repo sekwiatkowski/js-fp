@@ -88,8 +88,8 @@ class Valid {
     }
     //endregion
     //region Testing
-    equals(otherValidated) {
-        return Validated_1.anyValidatedEquality.test(this, otherValidated);
+    equals(otherValidated, equality) {
+        return (equality || Validated_1.anyValidatedEquality).test(this, otherValidated);
     }
     test(predicate) {
         if (predicate instanceof Function) {

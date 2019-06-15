@@ -75,8 +75,8 @@ class Invalid {
     }
     //endregion
     //region Testing
-    equals(otherValidated) {
-        return Validated_1.anyValidatedEquality.test(this, otherValidated);
+    equals(otherValidated, equality) {
+        return (equality || Validated_1.anyValidatedEquality).test(this, otherValidated);
     }
     test(predicate) {
         return false;

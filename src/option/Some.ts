@@ -133,8 +133,8 @@ export class Some<A> implements Option<A> {
     //endregion
 
     //region Testing
-    equals(other: Option<A>): boolean {
-        return anyOptionEquality.test(this, other)
+    equals(other: Option<A>, equality?: Equivalence<Option<A>>): boolean {
+        return (equality || anyOptionEquality).test(this, other)
     }
 
     test(predicate: (value: A) => boolean): boolean

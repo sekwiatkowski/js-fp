@@ -280,8 +280,8 @@ export class NonEmptyList<T> {
         return containsItem(this.items, item, ensureEquivalenceFunction(itemEquality))
     }
 
-    equals(otherList: NonEmptyList<T>): boolean {
-        return anyNonEmptyListEquality.test(this, otherList)
+    equals(otherList: NonEmptyList<T>, equality?: Equivalence<NonEmptyList<T>> ): boolean {
+        return (equality || anyNonEmptyListEquality).test(this, otherList)
     }
 
     all(predicate: ((item: T) => boolean)|Predicate<T>): boolean {

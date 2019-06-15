@@ -1,5 +1,5 @@
 import {anyValidatedEquality, Validated} from './Validated'
-import {failure, Future, none, Option, Predicate, reject, Result} from '..'
+import {Equivalence, failure, Future, none, Option, Predicate, reject, Result} from '..'
 
 export class Invalid<T, E> implements Validated<T, E> {
     constructor(private readonly errors: E[]) {}
@@ -96,8 +96,8 @@ export class Invalid<T, E> implements Validated<T, E> {
     //endregion
 
     //region Testing
-    equals(otherValidated: Validated<T, E>): boolean {
-        return anyValidatedEquality.test(this, otherValidated)
+    equals(otherValidated: Validated<T, E>, equality?: Equivalence<Validated<T, E>>): boolean {
+        return (equality || anyValidatedEquality).test(this, otherValidated)
     }
 
     test(predicate: (value: T) => boolean): boolean

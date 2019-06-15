@@ -1,4 +1,16 @@
-import {fulfill, Future, neitherIsUndefinedOrNull, Option, Predicate, Result, some, success, valid, Validated} from '..'
+import {
+    Equivalence,
+    fulfill,
+    Future,
+    neitherIsUndefinedOrNull,
+    Option,
+    Predicate,
+    Result,
+    some,
+    success,
+    valid,
+    Validated
+} from '..'
 import {strictEquality} from '../equivalence/Equality'
 
 export class Box<A> {
@@ -71,8 +83,8 @@ export class Box<A> {
     //endregion
 
     //region Testing
-    equals(otherBox: Box<A>): boolean {
-        return BoxEquality.test(this, otherBox)
+    equals(otherBox: Box<A>, equality?: Equivalence<Box<A>>): boolean {
+        return (equality || BoxEquality).test(this, otherBox)
     }
 
     test(predicate: (value: A) => boolean): boolean

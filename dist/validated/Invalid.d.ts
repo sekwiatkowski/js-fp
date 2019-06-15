@@ -1,5 +1,5 @@
 import { Validated } from './Validated';
-import { Future, Option, Predicate, Result } from '..';
+import { Equivalence, Future, Option, Predicate, Result } from '..';
 export declare class Invalid<T, E> implements Validated<T, E> {
     private readonly errors;
     constructor(errors: E[]);
@@ -21,7 +21,7 @@ export declare class Invalid<T, E> implements Validated<T, E> {
     performOnInvalid(sideEffect: (errors: E[]) => void): Validated<T, E>;
     isInvalid(): boolean;
     isValid(): boolean;
-    equals(otherValidated: Validated<T, E>): boolean;
+    equals(otherValidated: Validated<T, E>, equality?: Equivalence<Validated<T, E>>): boolean;
     test(predicate: (value: T) => boolean): boolean;
     test(predicate: Predicate<T>): boolean;
 }

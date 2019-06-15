@@ -54,7 +54,7 @@ class None {
     }
     //endregion
     //region Testing
-    equals(other) {
+    equals(other, equality) {
         return false;
     }
     test(predicate) {

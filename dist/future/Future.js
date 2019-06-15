@@ -239,11 +239,12 @@ class Future {
     }
     //endregion
     //region Testing
-    equals(otherFutureOrPromise) {
+    equals(otherFutureOrPromise, equality) {
         return this.both(otherFutureOrPromise)
-            .then(settled => anySettledEquality.test(settled[0], settled[1]));
+            .then(settled => (equality || anySettledEquality).test(settled[0], settled[1]));
     }
     test(predicate) {
+        return this.match(value => predicate instanceof Function ? predicate(value) : predicate.test(value), error => false);
     }
 }
 exports.Future = Future;

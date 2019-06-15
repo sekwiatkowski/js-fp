@@ -53,8 +53,8 @@ class Lazy {
     }
     //endregion
     //region Testing
-    equals(otherLazy) {
-        return LazyEquality.test(this, otherLazy);
+    equals(otherLazy, equality) {
+        return (equality || LazyEquality).test(this, otherLazy);
     }
     test(predicate) {
         if (predicate instanceof Function) {

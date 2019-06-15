@@ -60,7 +60,7 @@ export interface Validated<T, E> {
     //endregion
 
     //region Testing
-    equals(otherValidated: Validated<T, E>): boolean
+    equals(otherValidated: Validated<T, E>, equality?: Equivalence<Validated<T, E>>): boolean
 
     test(predicate: (value: T) => boolean): boolean
     test(predicate: Predicate<T>): boolean

@@ -96,8 +96,8 @@ class Success {
     }
     //endregion
     //region Testing
-    equals(otherResult) {
-        return Result_1.anyResultEquality.test(this, otherResult);
+    equals(otherResult, equality) {
+        return (equality || Result_1.anyResultEquality).test(this, otherResult);
     }
     test(predicate) {
         if (predicate instanceof Function) {
