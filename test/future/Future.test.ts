@@ -507,4 +507,51 @@ describe('Future', () => {
         })
     })
 
+    describe('should test for equality', () => {
+
+        describe('with another future by', () => {
+            it('returning true when two fulfilled futures with the same value are tested', async () =>
+                (await fulfill(1).equals(fulfill(1))).should.be.true)
+
+            it('returning false when two fulfilled futures with different values are tested', async () => {
+                const oneAndTwoResult = await fulfill(1).equals(fulfill(2))
+                oneAndTwoResult.should.be.false
+
+                const twoAndOneResult = await fulfill(2).equals(fulfill(1))
+                twoAndOneResult.should.be.false
+            })
+
+            it('returning true when two rejected futures with the same error are tested', async () => {
+                (await reject('error').equals(reject('error'))).should.be.true
+            })
+
+            it('returning false when two rejected futures with different errors are tested', async () => {
+                const oneAndTwoResult = await reject(1).equals(reject(2))
+                oneAndTwoResult.should.be.false
+
+                const twoAndOneResult = await reject(2).equals(reject(1))
+                twoAndOneResult.should.be.false
+            })
+        })
+
+        describe('with a promise by', () => {
+            it('returning true when a fulfilled future is compared with a fulfilled promise of the same value', async () => {
+                (await fulfill(1).equals(Promise.resolve(1))).should.be.true
+            })
+
+            it('returning false when a fulfilled future is compared with a fulfilled promise of a different value', async () => {
+                (await fulfill(1).equals(Promise.resolve(2))).should.be.false
+            })
+
+            it('returning true when a rejected future is compared with a rejected promise with the same error', async () => {
+                (await reject(1).equals(Promise.reject(1))).should.be.true
+            })
+
+            it('returning false when a rejected future is compared with a rejected promise with a different error', async () => {
+                (await reject(1).equals(Promise.reject(2))).should.be.false
+            })
+        })
+
+    })
+
 })

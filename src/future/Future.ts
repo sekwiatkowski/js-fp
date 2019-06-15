@@ -1,6 +1,8 @@
 import {Settled} from './Settled'
 import {fulfilled} from './Fulfilled'
 import {rejected} from './Rejected'
+import {neitherIsUndefinedOrNull, strictEquality} from '../equivalence/Equality'
+import {equivalence, Equivalence} from '..'
 
 export class Future<T, E> {
     constructor(private readonly createPromise: () => Promise<Settled<T, E>>) {}
@@ -33,8 +35,8 @@ export class Future<T, E> {
                                 secondError => resolve(rejected(secondError)))
                         }
                         else if (argumentOrFutureOrPromise instanceof Promise) {
-                            argumentOrFutureOrPromise.then(
-                                parameter => { resolve(fulfilled(f(parameter))) })
+                            argumentOrFutureOrPromise
+                                .then(parameter => { resolve(fulfilled(f(parameter))) })
                                 .catch(secondError => resolve(rejected(secondError)))
                         }
                         else {
@@ -198,6 +200,16 @@ export class Future<T, E> {
         )
     }
 
+    mapError<F>(f : (error: E) => F): Future<T, F> {
+        return new Future(() =>
+            new Promise<Settled<T, F>>(resolve =>
+                this.createPromise()
+                    .then(settled => resolve(settled.mapError(f)))
+            )
+        )
+    }
+    //endregion
+
     //region Matching
     match<X>(
         onFulfilled: (value: T) => X,
@@ -207,13 +219,17 @@ export class Future<T, E> {
     }
     //endregion
 
-    mapError<F>(f : (error: E) => F): Future<T, F> {
-        return new Future(() =>
-            new Promise<Settled<T, F>>(resolve =>
-                this.createPromise()
-                    .then(settled => resolve(settled.mapError(f)))
-            )
-        )
+    //region Parallel computation
+    both(otherFutureOrPromise: Future<T, E>|Promise<T>): Promise<[Settled<T, E>, Settled<T, E>]> {
+        const otherPromise = otherFutureOrPromise instanceof Future ?
+            otherFutureOrPromise.createPromise() :
+            new Promise<Settled<T, E>>(resolve => {
+                otherFutureOrPromise
+                    .then(value => { resolve(fulfilled(value)) })
+                    .catch(error => resolve(rejected(error)))
+            })
+
+        return Promise.all([this.createPromise(), otherPromise])
     }
     //endregion
 
@@ -354,6 +370,13 @@ export class Future<T, E> {
         )
     }
     //endregion
+
+    //region Testing
+    equals(otherFutureOrPromise: Future<T, E>|Promise<T>): Promise<boolean> {
+        return this.both(otherFutureOrPromise)
+            .then(settled => anySettledEquality.test(settled[0], settled[1]))
+    }
+    //endregion
 }
 
 export function fulfill<T, E>(value: T): Future<T, E> {
@@ -376,3 +399,15 @@ export function future<T, E>(createPromise: () => Promise<T>): Future<T, E> {
 export function futureObject<E>() : Future<{}, E> {
     return fulfill({})
 }
+
+const anySettledEquality = (neitherIsUndefinedOrNull as Equivalence<Settled<any, any>>)
+    .and(equivalence<Settled<any, any>>((thisSettled, otherSettled) => thisSettled.match(
+        thisValue => otherSettled.match(
+            otherValue => strictEquality.test(thisValue, otherValue),
+            () => false
+        ),
+        thisError => otherSettled.match(
+            () => false,
+            otherError => strictEquality.test(thisError, otherError)
+        )
+    )))
