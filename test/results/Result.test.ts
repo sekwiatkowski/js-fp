@@ -1,5 +1,4 @@
-import {failure} from '../../src'
-import {success} from '../../dist'
+import {failure, success} from '../../src'
 
 const chai = require('chai')
 

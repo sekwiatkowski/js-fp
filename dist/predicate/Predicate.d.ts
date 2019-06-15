@@ -9,3 +9,4 @@ export declare class Predicate<T> {
     not(): Predicate<T>;
 }
 export declare const predicate: <T>(test: (x: T) => boolean) => Predicate<T>;
+export declare const ensurePredicateFunction: <T>(predicate: Predicate<T> | ((item: T) => boolean)) => (item: T) => boolean;

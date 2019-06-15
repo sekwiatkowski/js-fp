@@ -3,6 +3,7 @@ import {
     DateEquality,
     Equivalence,
     list,
+    NonEmptyList,
     NullableBooleanEquality,
     NullableDateEquality,
     NullableNumberEquality,
@@ -10,7 +11,6 @@ import {
     NumberEquality,
     StringEquality
 } from '../../src'
-import {NonEmptyList} from '../../src/list/NonEmptyList'
 
 const chai = require('chai')
 chai.should()

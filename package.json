@@ -1,6 +1,6 @@
 {
   "name": "flowscript",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "description": "A TypeScript/JavaScript library designed to implement workflows as computational graphs",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -32,11 +32,18 @@
     "functor",
     "applicative",
     "monad",
-    "monoid",
     "option",
     "result",
     "validation",
-    "future"
+    "future",
+    "list",
+    "combination",
+    "semigroup",
+    "monoid",
+    "predicate",
+    "equivalence",
+    "equality",
+    "order"
   ],
   "scripts": {
     "clean": "rimraf dist/*",
@@ -59,7 +66,8 @@
       "test/**/*.ts"
     ],
     "reporter": [
-      "html", "text-summary"
+      "html",
+      "text-summary"
     ],
     "temp-dir": "coverage/.nyc_output"
   }

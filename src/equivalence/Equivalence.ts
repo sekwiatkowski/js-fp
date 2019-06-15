@@ -27,3 +27,8 @@ export class Equivalence<T> {
 }
 
 export const equivalence = <T>(test: (x: T, y: T) => boolean) => new Equivalence(test)
+
+export function ensureEquivalenceFunction<T>(
+    equivalence: ((x: T, y: T) => boolean)|Equivalence<T>): (x: T, y: T) => boolean {
+    return equivalence instanceof Function ? equivalence : equivalence.get()
+}

@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const __1 = require("..");
 const ArrayFunctions_1 = require("./ArrayFunctions");
-const NonEmptyList_1 = require("./NonEmptyList");
+const ListEquality_1 = require("./ListEquality");
 class List {
     constructor(items) {
         this.items = items;
@@ -37,21 +37,42 @@ class List {
     }
     //endregion
     //region Combination
-    concat(otherList) {
-        return new List(__1.ArrayConcatenation.combine(this.items)(otherList.items));
+    concat(other) {
+        return new List(__1.ArrayConcatenation.combine(this.items)(other instanceof Array ? other : other.items));
+    }
+    combine(other, semigroup) {
+        if (other instanceof Array) {
+            return new List(semigroup.combine(this.items)(other));
+        }
+        else {
+            return semigroup.combine(this)(other);
+        }
     }
     //endregion
     //region Expansion
     append(item) {
-        return new NonEmptyList_1.NonEmptyList(ArrayFunctions_1.appendItem(this.items, item));
+        return new __1.NonEmptyList(ArrayFunctions_1.appendItem(this.items, item));
     }
     prepend(item) {
-        return new NonEmptyList_1.NonEmptyList(ArrayFunctions_1.prependItem(this.items, item));
+        return new __1.NonEmptyList(ArrayFunctions_1.prependItem(this.items, item));
     }
     //endregion
-    //region Filtering
-    filter(predicate) {
-        return new List(ArrayFunctions_1.filterItems(this.items, predicate));
+    //region Grouping
+    groupBy(computeKey) {
+        return ArrayFunctions_1.groupItemsBy(this.items, computeKey);
+    }
+    //endregion
+    //region Mapping
+    map(f) {
+        return new List(ArrayFunctions_1.mapItems(this.items, f));
+    }
+    parallelMap(f) {
+        return ArrayFunctions_1.parallelMapItems(this.items, f);
+    }
+    //endregion
+    //region Matching
+    match(onNonEmpty, onEmpty) {
+        return this.length == 0 ? onEmpty() : onNonEmpty(this.items);
     }
     //endregion
     //region Reduction
@@ -126,30 +147,15 @@ class List {
         return this.foldByWithMonoid(by, __1.Product);
     }
     //endregion
-    //region Grouping
-    groupBy(computeKey) {
-        return ArrayFunctions_1.groupItemsBy(this.items, computeKey);
-    }
-    //endregion
-    //region Mapping
-    map(f) {
-        return new List(ArrayFunctions_1.mapItems(this.items, f));
-    }
-    parallelMap(f) {
-        return ArrayFunctions_1.parallelMapItems(this.items, f);
-    }
-    //endregion
-    //region Matching
-    match(onNonEmpty, onEmpty) {
-        return this.length == 0 ? onEmpty() : onNonEmpty(this.items);
-    }
-    //endregion
     //region Search
+    filter(predicate) {
+        return new List(ArrayFunctions_1.filterItems(this.items, __1.ensurePredicateFunction(predicate)));
+    }
     find(predicate) {
-        return ArrayFunctions_1.findItem(this.items, predicate);
+        return ArrayFunctions_1.findItem(this.items, __1.ensurePredicateFunction(predicate));
     }
     findLast(predicate) {
-        return ArrayFunctions_1.findLastItem(this.items, predicate);
+        return ArrayFunctions_1.findLastItem(this.items, __1.ensurePredicateFunction(predicate));
     }
     //endregion
     //region Side-effects
@@ -198,26 +204,23 @@ class List {
     }
     //endregion
     //region Testing
-    contains(item) {
-        return ArrayFunctions_1.containsItem(this.items, item);
+    contains(item, itemEquality = __1.strictEquality) {
+        return ArrayFunctions_1.containsItem(this.items, item, __1.ensureEquivalenceFunction(itemEquality));
     }
-    equals(otherList) {
-        if (otherList == null) {
-            return false;
-        }
-        return ArrayFunctions_1.equalItems(this.items, otherList.getArray());
+    equals(otherList, listEquality = ListEquality_1.strictListEquality) {
+        return __1.ensureEquivalenceFunction(listEquality)(this, otherList);
     }
     all(predicate) {
-        return ArrayFunctions_1.allItems(this.items, predicate);
+        return ArrayFunctions_1.allItems(this.items, __1.ensurePredicateFunction(predicate));
     }
     some(predicate) {
-        return ArrayFunctions_1.someItem(this.items, predicate);
+        return ArrayFunctions_1.someItem(this.items, __1.ensurePredicateFunction(predicate));
     }
     none(predicate) {
-        return ArrayFunctions_1.noItems(this.items, predicate);
+        return ArrayFunctions_1.noItems(this.items, __1.ensurePredicateFunction(predicate));
     }
     count(predicate) {
-        return ArrayFunctions_1.countItems(this.items, predicate);
+        return ArrayFunctions_1.countItems(this.items, __1.ensurePredicateFunction(predicate));
     }
 }
 exports.List = List;

@@ -1,3 +1,38 @@
+//region Testing
+export { ensureEquivalenceFunction, Equivalence, equivalence } from './equivalence/Equivalence'
+export { objectEquivalence } from './equivalence/ObjectEquivalence'
+
+export {
+    neitherIsUndefinedOrNull, strictEquality, bothAreNull, nullableStrictEquality,
+    NullableStringEquality, NullableNumberEquality, NullableBooleanEquality, NullableDateEquality,
+    StringEquality, NumberEquality, BooleanEquality, DateEquality
+} from './equivalence/Equality'
+
+export {
+    createArrayEquality,
+    NullableStringArrayEquality, NullableNumberArrayEquality, NullableBooleanArrayEquality, NullableDateArrayEquality,
+    StringArrayEquality, NumberArrayEquality, BooleanArrayEquality, DateArrayEquality
+} from './list/ArrayEquality'
+export { createListEquality,  strictListEquality} from './list/ListEquality'
+
+export {
+    Order, order, Ordering,
+    orderBy, orderDescendinglyBy,
+    AnyOrder, DescendingAnyOrder,
+    StringOrder, NumberOrder, BooleanOrder, DateOrder,
+    DescendingStringOrder, DescendingNumberOrder, DescendingBooleanOrder, DescendingDateOrder } from './order/Order'
+
+export { ensurePredicateFunction, Predicate, predicate } from './predicate/Predicate'
+//endregion
+
+//region Combination
+export { Semigroup } from './combination/Semigroup'
+export { objectCombination } from './combination/ObjectCombination'
+
+export { Monoid, Any, All, Latest, Max, Earliest, Min, Sum, Product, ArrayConcatenation } from './combination/Monoid'
+//endregion
+
+//region Computation
 export { Arrow, arrow } from './arrow/Arrow'
 
 export { Box, box, boxObject } from './box/Box'
@@ -17,22 +52,5 @@ export { Invalid, invalid } from './validated/Invalid'
 export { Future, future, fulfill, reject, futureObject } from './future/Future'
 
 export { emptyList, List, listFromArray, range, repeat } from './list/List'
-export { inclusiveRange, list } from './list/NonEmptyList'
-
-export { Semigroup } from './combination/Semigroup'
-export { objectCombination } from './combination/ObjectCombination'
-export { Monoid, Any, All, Latest, Max, Earliest, Min, Sum, Product, ArrayConcatenation } from './combination/Monoid'
-
-export {Equivalence, equivalence} from './equivalence/Equivalence'
-export {
-    NullableStringEquality, NullableNumberEquality, NullableBooleanEquality, NullableDateEquality,
-    StringEquality, NumberEquality, BooleanEquality, DateEquality
-} from './equivalence/Equality'
-export {
-    NullableStringArrayEquality, NullableNumberArrayEquality, NullableBooleanArrayEquality, NullableDateArrayEquality,
-    StringArrayEquality, NumberArrayEquality, BooleanArrayEquality, DateArrayEquality
-} from './equivalence/ArrayEquality'
-
-export { Order, order, Ordering, AnyOrder, DescendingAnyOrder, orderBy, orderDescendinglyBy,
-    StringOrder, NumberOrder, BooleanOrder, DateOrder,
-    DescendingStringOrder, DescendingNumberOrder, DescendingBooleanOrder, DescendingDateOrder } from './order/Order'
+export { inclusiveRange, list, NonEmptyList } from './list/NonEmptyList'
+//endregion

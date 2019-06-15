@@ -212,28 +212,15 @@ function sortItemsBy(items, by, compare) {
 exports.sortItemsBy = sortItemsBy;
 //endregion
 //region Testing
-function containsItem(items, item) {
+function containsItem(items, item, equality) {
     for (let i = 0; i < items.length; i++) {
-        if (items[i] === item) {
+        if (equality(items[i], item)) {
             return true;
         }
     }
     return false;
 }
 exports.containsItem = containsItem;
-function equalItems(thisArray, thatArray) {
-    const thisLength = thisArray.length;
-    if (thisLength !== thatArray.length) {
-        return false;
-    }
-    for (let i = 0; i < thisLength; i++) {
-        if (thisArray[i] !== thatArray[i]) {
-            return false;
-        }
-    }
-    return true;
-}
-exports.equalItems = equalItems;
 function allItems(items, predicate) {
     for (let index = 0; index < items.length; index++) {
         if (!predicate(items[index])) {

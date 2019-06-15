@@ -1,9 +1,7 @@
-import {Future, List, none, option, Option, some} from '..'
-import {NonEmptyList} from './NonEmptyList'
+import {Future, List, none, NonEmptyList, option, Option, Ordering, some} from '..'
 import {fulfilled} from '../future/Fulfilled'
 import {rejected} from '../future/Rejected'
 import {Settled} from '../future/Settled'
-import {Ordering} from '../order/Order'
 
 //region Access
 export function getItem<T>(items: T[], index: number): Option<T> {
@@ -236,29 +234,13 @@ export function sortItemsBy<T, U>(items: T[], by: (item: T) => U, compare: (x: U
 //endregion
 
 //region Testing
-export function containsItem<T>(items: T[], item: T) {
+export function containsItem<T>(items: T[], item: T, equality: ((x: T, y: T) => boolean)) {
     for (let i = 0; i < items.length; i++) {
-        if (items[i] === item) {
+        if (equality(items[i], item)) {
             return true
         }
     }
     return false
-}
-
-export function equalItems<T>(thisArray: T[], thatArray: T[]) {
-    const thisLength = thisArray.length
-
-    if (thisLength !== thatArray.length) {
-        return false
-    }
-
-    for (let i = 0; i < thisLength; i++) {
-        if (thisArray[i] !== thatArray[i]) {
-            return false
-        }
-    }
-
-    return true
 }
 
 export function allItems<T>(items: T[], predicate: (item: T) => boolean): boolean {

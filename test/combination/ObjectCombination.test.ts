@@ -1,5 +1,4 @@
-import {All, Any, Earliest, Latest, objectCombination, Sum} from '../../src'
-import {ArrayConcatenation} from '../../src/combination/Monoid'
+import {All, Any, ArrayConcatenation, Earliest, Latest, objectCombination, Sum} from '../../src'
 
 const chai = require('chai')
 chai.should()

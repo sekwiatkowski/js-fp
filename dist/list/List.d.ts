@@ -1,5 +1,4 @@
-import { Future, Monoid, Option, Order, Semigroup } from '..';
-import { NonEmptyList } from './NonEmptyList';
+import { Equivalence, Future, Monoid, NonEmptyList, Option, Order, Predicate, Semigroup } from '..';
 export declare class List<T> {
     private readonly items;
     private readonly length;
@@ -12,10 +11,17 @@ export declare class List<T> {
     take(n: number): List<T>;
     flatten<U>(this: List<List<U> | U[]>): List<U>;
     chain(f: (T: any) => List<T>): List<T>;
-    concat(otherList: List<T>): List<T>;
+    concat(other: T[] | List<T>): List<T>;
+    combine(other: T[], semigroup: Semigroup<T[]>): any;
+    combine(other: List<T>, semigroup: Semigroup<List<T>>): List<T>;
     append(item: T): NonEmptyList<T>;
     prepend(item: T): NonEmptyList<T>;
-    filter(predicate: (item: T) => boolean): List<T>;
+    groupBy(computeKey: (item: T) => string): {
+        [id: string]: T[];
+    };
+    map<U>(f: (item: T) => U): List<U>;
+    parallelMap<U, E>(f: (item: T) => U): Future<U[], E>;
+    match<X>(onNonEmpty: (array: T[]) => X, onEmpty: () => X): X;
     reduceBy<U>(by: (item: T) => U, operation: (a: U) => (b: U) => U): Option<U>;
     reduce(operation: (a: T) => (b: T) => T): Option<T>;
     reduceByWithSemigroup<U>(by: (item: T) => U, semigroup: Semigroup<U>): Option<U>;
@@ -36,14 +42,9 @@ export declare class List<T> {
     sumBy(by: (item: T) => number): Option<number>;
     product(this: List<number>): Option<number>;
     productBy(by: (item: T) => number): Option<number>;
-    groupBy(computeKey: (item: T) => string): {
-        [id: string]: T[];
-    };
-    map<U>(f: (item: T) => U): List<U>;
-    parallelMap<U, E>(f: (item: T) => U): Future<U[], E>;
-    match<X>(onNonEmpty: (array: T[]) => X, onEmpty: () => X): X;
-    find(predicate: (item: T) => boolean): Option<T>;
-    findLast(predicate?: (item: T) => boolean): Option<T>;
+    filter(predicate: ((item: T) => boolean) | Predicate<T>): List<T>;
+    find(predicate: ((item: T) => boolean) | Predicate<T>): Option<T>;
+    findLast(predicate: ((item: T) => boolean) | Predicate<T>): Option<T>;
     perform(sideEffect: (list: List<T>) => void): void;
     performOnEmpty(sideEffect: (list: List<T>) => void): void;
     performOnNonEmpty(sideEffect: (list: List<T>) => void): void;
@@ -55,12 +56,12 @@ export declare class List<T> {
     sortBy<U>(by: (item: T) => U): List<T>;
     sortDescendingly(): List<T>;
     sortDescendinglyBy<U>(by: (item: T) => U): List<T>;
-    contains(item: T): boolean;
-    equals(otherList: List<T>): boolean;
-    all(predicate: (item: T) => boolean): boolean;
-    some(predicate: (item: T) => boolean): boolean;
-    none(predicate: (item: T) => boolean): boolean;
-    count(predicate: (item: T) => boolean): number;
+    contains(item: T, itemEquality?: (((x: T, y: T) => boolean) | Equivalence<T>)): boolean;
+    equals(otherList: List<T>, listEquality?: (((x: List<T>, y: List<T>) => boolean) | Equivalence<List<T>>)): boolean;
+    all(predicate: ((item: T) => boolean) | Predicate<T>): boolean;
+    some(predicate: ((item: T) => boolean) | Predicate<T>): boolean;
+    none(predicate: ((item: T) => boolean) | Predicate<T>): boolean;
+    count(predicate: ((item: T) => boolean) | Predicate<T>): number;
 }
 export declare function emptyList<T>(): List<T>;
 export declare function listFromArray<T>(array: T[]): List<T>;

@@ -10,7 +10,7 @@ import {
     NumberArrayEquality,
     StringArrayEquality
 } from '../../src'
-import {expectFromTests} from './Equality.test'
+import {expectFromTests} from '../equivalence/Equality.test'
 
 const chai = require('chai')
 

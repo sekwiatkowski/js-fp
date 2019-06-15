@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const __1 = require("..");
 const ArrayFunctions_1 = require("./ArrayFunctions");
+const ListEquality_1 = require("./ListEquality");
 class NonEmptyList {
     constructor(items) {
         this.items = items;
@@ -44,6 +45,14 @@ class NonEmptyList {
     concat(otherList) {
         return new NonEmptyList(__1.ArrayConcatenation.combine(this.items)(otherList.items));
     }
+    combine(other, semigroup) {
+        if (other instanceof Array) {
+            return new NonEmptyList(semigroup.combine(this.items)(other));
+        }
+        else {
+            return semigroup.combine(this)(other);
+        }
+    }
     //endregion
     //region Expansion
     append(item) {
@@ -51,11 +60,6 @@ class NonEmptyList {
     }
     prepend(item) {
         return new NonEmptyList(ArrayFunctions_1.prependItem(this.items, item));
-    }
-    //endregion
-    //region Filtering
-    filter(predicate) {
-        return new __1.List(ArrayFunctions_1.filterItems(this.items, predicate));
     }
     //endregion
     //region Folding
@@ -139,11 +143,14 @@ class NonEmptyList {
     }
     //endregion
     //region Search
+    filter(predicate) {
+        return new __1.List(ArrayFunctions_1.filterItems(this.items, __1.ensurePredicateFunction(predicate)));
+    }
     find(predicate) {
-        return ArrayFunctions_1.findItem(this.items, predicate);
+        return ArrayFunctions_1.findItem(this.items, __1.ensurePredicateFunction(predicate));
     }
     findLast(predicate) {
-        return ArrayFunctions_1.findLastItem(this.items, predicate);
+        return ArrayFunctions_1.findLastItem(this.items, __1.ensurePredicateFunction(predicate));
     }
     //endregion
     //region Side-effects
@@ -174,26 +181,23 @@ class NonEmptyList {
     }
     //endregion
     //region Testing
-    contains(item) {
-        return ArrayFunctions_1.containsItem(this.items, item);
+    contains(item, itemEquality = __1.strictEquality) {
+        return ArrayFunctions_1.containsItem(this.items, item, __1.ensureEquivalenceFunction(itemEquality));
     }
-    equals(otherList) {
-        if (otherList == null) {
-            return false;
-        }
-        return ArrayFunctions_1.equalItems(this.items, otherList.getArray());
+    equals(otherList, listEquality = ListEquality_1.strictNonEmptyListEquality) {
+        return __1.ensureEquivalenceFunction(listEquality)(this, otherList);
     }
     all(predicate) {
-        return ArrayFunctions_1.allItems(this.items, predicate);
+        return ArrayFunctions_1.allItems(this.items, __1.ensurePredicateFunction(predicate));
     }
     some(predicate) {
-        return ArrayFunctions_1.someItem(this.items, predicate);
+        return ArrayFunctions_1.someItem(this.items, __1.ensurePredicateFunction(predicate));
     }
     none(predicate) {
-        return ArrayFunctions_1.noItems(this.items, predicate);
+        return ArrayFunctions_1.noItems(this.items, __1.ensurePredicateFunction(predicate));
     }
     count(predicate) {
-        return ArrayFunctions_1.countItems(this.items, predicate);
+        return ArrayFunctions_1.countItems(this.items, __1.ensurePredicateFunction(predicate));
     }
 }
 exports.NonEmptyList = NonEmptyList;

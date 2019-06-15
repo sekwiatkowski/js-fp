@@ -25,4 +25,8 @@ class Equivalence {
 }
 exports.Equivalence = Equivalence;
 exports.equivalence = (test) => new Equivalence(test);
+function ensureEquivalenceFunction(equivalence) {
+    return equivalence instanceof Function ? equivalence : equivalence.get();
+}
+exports.ensureEquivalenceFunction = ensureEquivalenceFunction;
 //# sourceMappingURL=Equivalence.js.map

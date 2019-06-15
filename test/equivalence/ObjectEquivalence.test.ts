@@ -1,5 +1,4 @@
-import {objectEquivalence} from '../../src/equivalence/ObjectEquivalence'
-import {DateEquality, NumberArrayEquality, NumberEquality, StringEquality} from '../../src'
+import {DateEquality, NumberArrayEquality, NumberEquality, objectEquivalence, StringEquality} from '../../src'
 
 const chai = require('chai')
 chai.should()

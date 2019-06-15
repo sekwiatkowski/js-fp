@@ -27,3 +27,6 @@ export class Predicate<T> {
 }
 
 export const predicate = <T>(test: (x: T) => boolean) => new Predicate(test)
+
+export const ensurePredicateFunction = <T>(predicate: ((item: T) => boolean)|Predicate<T>) =>
+    predicate instanceof Function ? predicate : predicate.get()

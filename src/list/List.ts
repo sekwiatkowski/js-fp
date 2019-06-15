@@ -3,19 +3,25 @@ import {
     ArrayConcatenation,
     DescendingAnyOrder,
     Earliest,
+    ensureEquivalenceFunction,
+    ensurePredicateFunction,
+    Equivalence,
     Future,
     Latest,
     Max,
     Min,
     Monoid,
     none,
+    NonEmptyList,
     Option,
     Order,
     orderBy,
     orderDescendinglyBy,
+    Predicate,
     Product,
     Semigroup,
     some,
+    strictEquality,
     Sum
 } from '..'
 import {
@@ -23,7 +29,6 @@ import {
     appendItem,
     containsItem,
     countItems,
-    equalItems,
     filterItems,
     findItem,
     findLastItem,
@@ -44,7 +49,7 @@ import {
     sortItems,
     takeItems
 } from './ArrayFunctions'
-import {NonEmptyList} from './NonEmptyList'
+import {strictListEquality} from './ListEquality'
 
 export class List<T> {
     private readonly length: number
@@ -89,8 +94,19 @@ export class List<T> {
     //endregion
 
     //region Combination
-    concat(otherList: List<T>): List<T> {
-        return new List(ArrayConcatenation.combine(this.items)(otherList.items))
+    concat(other: T[]|List<T>): List<T> {
+        return new List(ArrayConcatenation.combine(this.items)(other instanceof Array ? other : other.items))
+    }
+
+    combine(other: T[], semigroup: Semigroup<T[]>);
+    combine(other: List<T>, semigroup: Semigroup<List<T>>): List<T>;
+    combine(other: T[]|List<T>, semigroup: Semigroup<T[]>|Semigroup<List<T>>): List<T> {
+        if (other instanceof Array) {
+            return new List((semigroup as Semigroup<T[]>).combine(this.items)(other))
+        }
+        else {
+            return (semigroup as Semigroup<List<T>>).combine(this)(other)
+        }
     }
     //endregion
 
@@ -104,9 +120,27 @@ export class List<T> {
     }
     //endregion
 
-    //region Filtering
-    filter(predicate: (item: T) => boolean): List<T> {
-        return new List(filterItems(this.items, predicate))
+    //region Grouping
+    groupBy(computeKey: (item: T) => string): { [id: string]: T[] } {
+        return groupItemsBy(this.items, computeKey)
+    }
+    //endregion
+
+    //region Mapping
+    map<U>(f: (item: T) => U): List<U> {
+        return new List(mapItems(this.items, f))
+    }
+
+    parallelMap<U, E>(f: (item: T) => U): Future<U[], E> {
+        return parallelMapItems(this.items, f)
+    }
+    //endregion
+
+    //region Matching
+    match<X>(
+        onNonEmpty: (array: T[]) => X,
+        onEmpty: () => X) : X {
+        return this.length == 0 ? onEmpty() : onNonEmpty(this.items)
     }
     //endregion
 
@@ -202,37 +236,17 @@ export class List<T> {
     }
     //endregion
 
-    //region Grouping
-    groupBy(computeKey: (item: T) => string): { [id: string]: T[] } {
-        return groupItemsBy(this.items, computeKey)
-    }
-    //endregion
-
-    //region Mapping
-    map<U>(f: (item: T) => U): List<U> {
-        return new List(mapItems(this.items, f))
-    }
-
-    parallelMap<U, E>(f: (item: T) => U): Future<U[], E> {
-        return parallelMapItems(this.items, f)
-    }
-    //endregion
-
-    //region Matching
-    match<X>(
-        onNonEmpty: (array: T[]) => X,
-        onEmpty: () => X) : X {
-        return this.length == 0 ? onEmpty() : onNonEmpty(this.items)
-    }
-    //endregion
-
     //region Search
-    find(predicate: (item: T) => boolean): Option<T>{
-        return findItem(this.items, predicate)
+    filter(predicate: ((item: T) => boolean)|Predicate<T>): List<T> {
+        return new List(filterItems(this.items, ensurePredicateFunction(predicate)))
     }
 
-    findLast(predicate?: (item: T) => boolean): Option<T> {
-        return findLastItem(this.items, predicate)
+    find(predicate: ((item: T) => boolean)|Predicate<T>): Option<T>{
+        return findItem(this.items, ensurePredicateFunction(predicate))
+    }
+
+    findLast(predicate: ((item: T) => boolean)|Predicate<T>): Option<T> {
+        return findLastItem(this.items, ensurePredicateFunction(predicate))
     }
     //endregion
 
@@ -295,32 +309,28 @@ export class List<T> {
     //endregion
 
     //region Testing
-    contains(item: T): boolean {
-        return containsItem(this.items, item)
+    contains(item: T, itemEquality: (((x: T, y: T) => boolean)|Equivalence<T>) = strictEquality): boolean {
+        return containsItem(this.items, item, ensureEquivalenceFunction(itemEquality))
     }
 
-    equals(otherList: List<T>): boolean {
-        if (otherList == null) {
-            return false
-        }
-
-        return equalItems(this.items, otherList.getArray())
+    equals(otherList: List<T>, listEquality: (((x: List<T>, y: List<T>) => boolean)|Equivalence<List<T>>) = strictListEquality): boolean {
+        return ensureEquivalenceFunction(listEquality)(this, otherList)
     }
 
-    all(predicate: (item: T) => boolean): boolean {
-        return allItems(this.items, predicate)
+    all(predicate: ((item: T) => boolean)|Predicate<T>): boolean {
+        return allItems(this.items, ensurePredicateFunction(predicate))
     }
 
-    some(predicate: (item: T) => boolean): boolean {
-        return someItem(this.items, predicate)
+    some(predicate: ((item: T) => boolean)|Predicate<T>): boolean {
+        return someItem(this.items, ensurePredicateFunction(predicate))
     }
 
-    none(predicate: (item: T) => boolean): boolean {
-        return noItems(this.items, predicate)
+    none(predicate: ((item: T) => boolean)|Predicate<T>): boolean {
+        return noItems(this.items, ensurePredicateFunction(predicate))
     }
 
-    count(predicate: (item: T) => boolean): number {
-        return countItems(this.items, predicate)
+    count(predicate: ((item: T) => boolean)|Predicate<T>): number {
+        return countItems(this.items, ensurePredicateFunction(predicate))
     }
     //endregion
 }

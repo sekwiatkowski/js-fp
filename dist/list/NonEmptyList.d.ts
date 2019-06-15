@@ -1,4 +1,4 @@
-import { Future, List, Monoid, Option, Order, Semigroup } from '..';
+import { Equivalence, Future, List, Monoid, Option, Order, Predicate, Semigroup } from '..';
 export declare class NonEmptyList<T> {
     private readonly items;
     private readonly length;
@@ -12,9 +12,10 @@ export declare class NonEmptyList<T> {
     flatten<U>(this: NonEmptyList<NonEmptyList<U> | U[]>): NonEmptyList<U>;
     chain(f: (T: any) => NonEmptyList<T>): NonEmptyList<T>;
     concat(otherList: NonEmptyList<T>): NonEmptyList<T>;
+    combine(other: T[], semigroup: Semigroup<T[]>): any;
+    combine(other: NonEmptyList<T>, semigroup: Semigroup<NonEmptyList<T>>): NonEmptyList<T>;
     append(item: T): NonEmptyList<T>;
     prepend(item: T): NonEmptyList<T>;
-    filter(predicate: (item: T) => boolean): List<T>;
     reduceBy<U>(by: (item: T) => U, operation: (a: U) => (b: U) => U): Option<U>;
     reduce(operation: (a: T) => (b: T) => T): Option<T>;
     reduceByWithSemigroup<U>(by: (item: T) => U, semigroup: Semigroup<U>): Option<U>;
@@ -40,8 +41,9 @@ export declare class NonEmptyList<T> {
     };
     map<U>(f: (item: T) => U): NonEmptyList<U>;
     parallelMap<U, E>(f: (item: T) => U): Future<U[], E>;
-    find(predicate: (item: T) => boolean): Option<T>;
-    findLast(predicate?: (item: T) => boolean): Option<T>;
+    filter(predicate: ((item: T) => boolean) | Predicate<T>): List<T>;
+    find(predicate: ((item: T) => boolean) | Predicate<T>): Option<T>;
+    findLast(predicate: ((item: T) => boolean) | Predicate<T>): Option<T>;
     perform(sideEffect: (list: NonEmptyList<T>) => void): void;
     forEach(sideEffect: (item: T) => void): void;
     size(): number;
@@ -49,12 +51,12 @@ export declare class NonEmptyList<T> {
     sortBy<U>(by: (item: T) => U): List<T>;
     sortDescendingly(): List<T>;
     sortDescendinglyBy<U>(by: (item: T) => U): List<T>;
-    contains(item: T): boolean;
-    equals(otherList: NonEmptyList<T>): boolean;
-    all(predicate: (item: T) => boolean): boolean;
-    some(predicate: (item: T) => boolean): boolean;
-    none(predicate: (item: T) => boolean): boolean;
-    count(predicate: (item: T) => boolean): number;
+    contains(item: T, itemEquality?: (((x: T, y: T) => boolean) | Equivalence<T>)): boolean;
+    equals(otherList: NonEmptyList<T>, listEquality?: (((x: NonEmptyList<T>, y: NonEmptyList<T>) => boolean) | Equivalence<NonEmptyList<T>>)): boolean;
+    all(predicate: ((item: T) => boolean) | Predicate<T>): boolean;
+    some(predicate: ((item: T) => boolean) | Predicate<T>): boolean;
+    none(predicate: ((item: T) => boolean) | Predicate<T>): boolean;
+    count(predicate: ((item: T) => boolean) | Predicate<T>): number;
 }
 export declare function list<T>(head: T, ...tail: T[]): NonEmptyList<T>;
 export declare function inclusiveRange(start: number, end?: number): NonEmptyList<number>;

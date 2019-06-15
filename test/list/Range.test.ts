@@ -1,5 +1,4 @@
-import {emptyList, inclusiveRange, list, List, listFromArray, range} from '../../src'
-import {NonEmptyList} from '../../src/list/NonEmptyList'
+import {emptyList, inclusiveRange, list, List, listFromArray, NonEmptyList, range} from '../../src'
 
 describe('range', () => {
     describe('without an end argument should return', () => {

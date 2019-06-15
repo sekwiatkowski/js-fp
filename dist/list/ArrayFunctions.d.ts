@@ -1,6 +1,4 @@
-import { Future, List, Option } from '..';
-import { NonEmptyList } from './NonEmptyList';
-import { Ordering } from '../order/Order';
+import { Future, List, NonEmptyList, Option, Ordering } from '..';
 export declare function getItem<T>(items: T[], index: number): Option<T>;
 export declare function getItemOrElse<T>(items: T[], index: number, alternative: T | (() => T)): T;
 export declare function takeItems<T>(items: T[], n: number): T[];
@@ -22,8 +20,7 @@ export declare function findLastItem<T>(items: T[], predicate: (item: T) => bool
 export declare function forEachItem<T>(items: T[], sideEffect: (item: T) => void): void;
 export declare function sortItems<T>(items: T[], compare: (x: T, y: T) => Ordering): T[];
 export declare function sortItemsBy<T, U>(items: T[], by: (item: T) => U, compare: (x: U, y: U) => Ordering): T[];
-export declare function containsItem<T>(items: T[], item: T): boolean;
-export declare function equalItems<T>(thisArray: T[], thatArray: T[]): boolean;
+export declare function containsItem<T>(items: T[], item: T, equality: ((x: T, y: T) => boolean)): boolean;
 export declare function allItems<T>(items: T[], predicate: (item: T) => boolean): boolean;
 export declare function someItem<T>(items: T[], predicate: (item: T) => boolean): boolean;
 export declare function noItems<T>(items: T[], predicate: (item: T) => boolean): boolean;

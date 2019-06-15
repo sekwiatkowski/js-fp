@@ -25,4 +25,5 @@ class Predicate {
 }
 exports.Predicate = Predicate;
 exports.predicate = (test) => new Predicate(test);
+exports.ensurePredicateFunction = (predicate) => predicate instanceof Function ? predicate : predicate.get();
 //# sourceMappingURL=Predicate.js.map

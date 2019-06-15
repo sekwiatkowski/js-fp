@@ -9,3 +9,4 @@ export declare class Equivalence<T> {
     not(): Equivalence<T>;
 }
 export declare const equivalence: <T>(test: (x: T, y: T) => boolean) => Equivalence<T>;
+export declare function ensureEquivalenceFunction<T>(equivalence: ((x: T, y: T) => boolean) | Equivalence<T>): (x: T, y: T) => boolean;
