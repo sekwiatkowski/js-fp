@@ -1,4 +1,5 @@
 import { Settled } from './Settled';
+import { Predicate } from '..';
 export declare class Future<T, E> {
     private readonly createPromise;
     constructor(createPromise: () => Promise<Settled<T, E>>);
@@ -14,8 +15,9 @@ export declare class Future<T, E> {
     orPromise(alternative: Promise<T> | ((error: E) => Promise<T>)): Future<T, E>;
     run(whenFulfilled: (value: T) => void, whenRejected: (error: E) => void): void;
     map<U>(f: (value: T) => U): Future<U, E>;
-    match<X>(onFulfilled: (value: T) => X, onRejected: (error: E) => X): Promise<X>;
     mapError<F>(f: (error: E) => F): Future<T, F>;
+    match<X>(onFulfilled: (value: T) => X, onRejected: (error: E) => X): Promise<X>;
+    both(otherFutureOrPromise: Future<T, E> | Promise<T>): Promise<[Settled<T, E>, Settled<T, E>]>;
     isFulfilled(): Promise<boolean>;
     isRejected(): Promise<boolean>;
     perform<U>(f: (() => Future<U, E>) | (() => Promise<U>)): Future<T, E>;
@@ -24,6 +26,9 @@ export declare class Future<T, E> {
     performSync(sideEffect: () => void): Future<T, E>;
     performSyncOnFulfilled(sideEffect: (value: T) => void): Future<T, E>;
     performSyncOnRejected(sideEffect: (error: E) => void): Future<T, E>;
+    equals(otherFutureOrPromise: Future<T, E> | Promise<T>): Promise<boolean>;
+    test(predicate: (value: T) => boolean): boolean;
+    test(predicate: Predicate<T>): boolean;
 }
 export declare function fulfill<T, E>(value: T): Future<T, E>;
 export declare function reject<T, E>(error: E): Future<T, E>;

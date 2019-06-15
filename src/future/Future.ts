@@ -2,7 +2,7 @@ import {Settled} from './Settled'
 import {fulfilled} from './Fulfilled'
 import {rejected} from './Rejected'
 import {neitherIsUndefinedOrNull, strictEquality} from '../equivalence/Equality'
-import {equivalence, Equivalence} from '..'
+import {equivalence, Equivalence, Predicate} from '..'
 
 export class Future<T, E> {
     constructor(private readonly createPromise: () => Promise<Settled<T, E>>) {}
@@ -375,6 +375,15 @@ export class Future<T, E> {
     equals(otherFutureOrPromise: Future<T, E>|Promise<T>): Promise<boolean> {
         return this.both(otherFutureOrPromise)
             .then(settled => anySettledEquality.test(settled[0], settled[1]))
+    }
+
+    test(predicate: (value: T) => boolean): Promise<boolean>
+    test(predicate: Predicate<T>): Promise<boolean>
+    test(predicate: ((value: T) => boolean)|Predicate<T>): Promise<boolean> {
+        return this.match(
+            value => predicate instanceof Function ? predicate(value) : predicate.test(value),
+            error => false
+        )
     }
     //endregion
 }

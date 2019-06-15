@@ -1,4 +1,4 @@
-import { Equivalence, Future, Option, Predicate, Result, Validated } from '..';
+import { Future, Option, Predicate, Result, Validated } from '..';
 export declare class Box<A> {
     private readonly value;
     constructor(value: A);
@@ -20,4 +20,4 @@ export declare class Box<A> {
 }
 export declare function box<A>(value: A): Box<A>;
 export declare function boxObject(): Box<{}>;
-export declare const BoxEquality: Equivalence<{}>;
+export declare const BoxEquality: import("..").Equivalence<{}>;

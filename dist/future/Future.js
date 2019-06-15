@@ -2,6 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const Fulfilled_1 = require("./Fulfilled");
 const Rejected_1 = require("./Rejected");
+const Equality_1 = require("../equivalence/Equality");
+const __1 = require("..");
 class Future {
     constructor(createPromise) {
         this.createPromise = createPromise;
@@ -25,7 +27,8 @@ class Future {
                     argumentOrFutureOrPromise.run(parameter => resolve(Fulfilled_1.fulfilled(f(parameter))), secondError => resolve(Rejected_1.rejected(secondError)));
                 }
                 else if (argumentOrFutureOrPromise instanceof Promise) {
-                    argumentOrFutureOrPromise.then(parameter => { resolve(Fulfilled_1.fulfilled(f(parameter))); })
+                    argumentOrFutureOrPromise
+                        .then(parameter => { resolve(Fulfilled_1.fulfilled(f(parameter))); })
                         .catch(secondError => resolve(Rejected_1.rejected(secondError)));
                 }
                 else {
@@ -125,15 +128,27 @@ class Future {
         return new Future(() => new Promise(resolve => this.createPromise()
             .then(settled => resolve(settled.map(f)))));
     }
+    mapError(f) {
+        return new Future(() => new Promise(resolve => this.createPromise()
+            .then(settled => resolve(settled.mapError(f)))));
+    }
+    //endregion
     //region Matching
     match(onFulfilled, onRejected) {
         return this.createPromise()
             .then(settled => settled.match(onFulfilled, onRejected));
     }
     //endregion
-    mapError(f) {
-        return new Future(() => new Promise(resolve => this.createPromise()
-            .then(settled => resolve(settled.mapError(f)))));
+    //region Parallel computation
+    both(otherFutureOrPromise) {
+        const otherPromise = otherFutureOrPromise instanceof Future ?
+            otherFutureOrPromise.createPromise() :
+            new Promise(resolve => {
+                otherFutureOrPromise
+                    .then(value => { resolve(Fulfilled_1.fulfilled(value)); })
+                    .catch(error => resolve(Rejected_1.rejected(error)));
+            });
+        return Promise.all([this.createPromise(), otherPromise]);
     }
     //endregion
     //region Status
@@ -222,6 +237,14 @@ class Future {
             resolve(settled);
         })));
     }
+    //endregion
+    //region Testing
+    equals(otherFutureOrPromise) {
+        return this.both(otherFutureOrPromise)
+            .then(settled => anySettledEquality.test(settled[0], settled[1]));
+    }
+    test(predicate) {
+    }
 }
 exports.Future = Future;
 function fulfill(value) {
@@ -244,4 +267,6 @@ function futureObject() {
     return fulfill({});
 }
 exports.futureObject = futureObject;
+const anySettledEquality = Equality_1.neitherIsUndefinedOrNull
+    .and(__1.equivalence((thisSettled, otherSettled) => thisSettled.match(thisValue => otherSettled.match(otherValue => Equality_1.strictEquality.test(thisValue, otherValue), () => false), thisError => otherSettled.match(() => false, otherError => Equality_1.strictEquality.test(thisError, otherError)))));
 //# sourceMappingURL=Future.js.map
