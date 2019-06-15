@@ -19,7 +19,7 @@ class Fulfilled<T, E> implements Settled<T, E> {
         return new Fulfilled(this.value)
     }
 
-    fold<X>(onFulfilled: (value: T) => X, onRejected: (error: E) => X): X {
+    match<X>(onFulfilled: (value: T) => X, onRejected: (error: E) => X): X {
         return onFulfilled(this.value)
     }
 

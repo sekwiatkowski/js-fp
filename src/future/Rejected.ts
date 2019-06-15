@@ -11,7 +11,7 @@ class Rejected<T, E> implements Settled<T, E> {
         return alternative instanceof Function ? alternative(this.error) : alternative
     }
 
-    fold<X>(onFulfilled: (value: T) => X, onRejected: (error: E) => X): X {
+    match<X>(onFulfilled: (value: T) => X, onRejected: (error: E) => X): X {
         return onRejected(this.error)
     }
 

@@ -1,11 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const __1 = require("..");
+const Equality_1 = require("../equivalence/Equality");
 const sameLength = __1.NumberEquality.adapt((array) => array.length);
-function createSameItemsEquality(itemEquality) {
+function createSameItemsEquality(itemEquality = Equality_1.strictEquality) {
     return __1.equivalence((xs, ys) => xs.every((x, i) => itemEquality.test(x, ys[i])));
 }
-function createArrayEquality(itemEquality) {
+function createArrayEquality(itemEquality = Equality_1.strictEquality) {
     return __1.neitherIsUndefinedOrNull.and(sameLength.and(createSameItemsEquality(itemEquality)));
 }
 exports.createArrayEquality = createArrayEquality;
@@ -13,7 +14,7 @@ exports.StringArrayEquality = createArrayEquality(__1.StringEquality);
 exports.NumberArrayEquality = createArrayEquality(__1.NumberEquality);
 exports.BooleanArrayEquality = createArrayEquality(__1.BooleanEquality);
 exports.DateArrayEquality = createArrayEquality(__1.DateEquality);
-function createNullableArrayEquality(itemEquality) {
+function createNullableArrayEquality(itemEquality = Equality_1.strictEquality) {
     return __1.bothAreNull.or(createArrayEquality(itemEquality));
 }
 exports.createNullableArrayEquality = createNullableArrayEquality;

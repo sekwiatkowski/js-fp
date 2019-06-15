@@ -1,6 +1,7 @@
 import {
     AnyOrder,
     ArrayConcatenation,
+    createArrayEquality,
     DescendingAnyOrder,
     Earliest,
     ensureEquivalenceFunction,
@@ -12,6 +13,7 @@ import {
     Max,
     Min,
     Monoid,
+    neitherIsUndefinedOrNull,
     none,
     NonEmptyList,
     Option,
@@ -49,7 +51,6 @@ import {
     sortItems,
     takeItems
 } from './ArrayFunctions'
-import {strictListEquality} from './ListEquality'
 
 export class List<T> {
     private readonly length: number
@@ -313,8 +314,8 @@ export class List<T> {
         return containsItem(this.items, item, ensureEquivalenceFunction(itemEquality))
     }
 
-    equals(otherList: List<T>, listEquality: (((x: List<T>, y: List<T>) => boolean)|Equivalence<List<T>>) = strictListEquality): boolean {
-        return ensureEquivalenceFunction(listEquality)(this, otherList)
+    equals(otherList: List<T>): boolean {
+        return anyListEquality.test(this, otherList)
     }
 
     all(predicate: ((item: T) => boolean)|Predicate<T>): boolean {
@@ -331,6 +332,17 @@ export class List<T> {
 
     count(predicate: ((item: T) => boolean)|Predicate<T>): number {
         return countItems(this.items, ensurePredicateFunction(predicate))
+    }
+
+    test(predicate: (items: T[]) => boolean): boolean
+    test(predicate: Predicate<T[]>): boolean
+    test(predicate: ((items: T[]) => boolean)|Predicate<T[]>): boolean {
+        if (predicate instanceof Function) {
+            return predicate(this.items)
+        }
+        else {
+            return predicate.test(this.items)
+        }
     }
     //endregion
 }
@@ -350,3 +362,5 @@ export function range(start: number, end?: number): List<number> {
 export function repeat<T>(times: number, valueOrFunction: T|((index?: number) => T)): List<T> {
     return listFromArray(repeatItems(times, valueOrFunction))
 }
+
+export const anyListEquality = (neitherIsUndefinedOrNull as Equivalence<List<any>>).and(createArrayEquality().adapt<List<any>>(l => l.getArray()))

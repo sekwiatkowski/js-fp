@@ -1,5 +1,5 @@
-import {Validated} from './Validated'
-import {failure, Future, listFromArray, none, Option, reject, Result} from '..'
+import {anyValidatedEquality, Validated} from './Validated'
+import {failure, Future, none, Option, Predicate, reject, Result} from '..'
 
 export class Invalid<T, E> implements Validated<T, E> {
     constructor(private readonly errors: E[]) {}
@@ -97,10 +97,13 @@ export class Invalid<T, E> implements Validated<T, E> {
 
     //region Testing
     equals(otherValidated: Validated<T, E>): boolean {
-        return otherValidated.match(
-            () => false,
-            otherErrors => listFromArray(this.errors).equals(listFromArray(otherErrors))
-        )
+        return anyValidatedEquality.test(this, otherValidated)
+    }
+
+    test(predicate: (value: T) => boolean): boolean
+    test(predicate: Predicate<T>): boolean
+    test(predicate: ((value: T) => boolean)|Predicate<T>): boolean {
+        return false
     }
     //endregion
 }

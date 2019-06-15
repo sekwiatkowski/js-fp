@@ -1,6 +1,18 @@
 import {None, none} from './None'
 import {Option} from './Option'
-import {fulfill, Future, Result, success, valid, Validated} from '..'
+import {
+    Equivalence,
+    equivalence,
+    fulfill,
+    Future,
+    neitherIsUndefinedOrNull,
+    Predicate,
+    Result,
+    success,
+    valid,
+    Validated
+} from '..'
+import {strictEquality} from '../equivalence/Equality'
 
 export class Some<A> implements Option<A> {
     constructor(private readonly value: A) {}
@@ -122,14 +134,18 @@ export class Some<A> implements Option<A> {
 
     //region Testing
     equals(other: Option<A>): boolean {
-        return other.match(
-            otherValue => this.value == otherValue,
-            () => false
-        )
+        return anyOptionEquality.test(this, other)
     }
 
-    test(predicate: (value: A) => boolean): boolean {
-        return predicate(this.value)
+    test(predicate: (value: A) => boolean): boolean
+    test(predicate: Predicate<A>): boolean
+    test(predicate: ((value: A) => boolean)|Predicate<A>): boolean {
+        if (predicate instanceof Function) {
+            return predicate(this.value)
+        }
+        else {
+            return predicate.test(this.value)
+        }
     }
     //endregion
 }
@@ -142,3 +158,11 @@ export function some<A>(value: A): Some<A> {
 export function optionObject() : Option<{}> {
     return some({})
 }
+
+const anyOptionEquality = (neitherIsUndefinedOrNull as Equivalence<Option<any>>).and(equivalence((optionX: Option<any>, optionY: Option<any>) => (
+    optionX.match(
+        x => optionY.match(
+            y => strictEquality.test(x, y),
+            () => false),
+        () => false)
+)))

@@ -10,7 +10,7 @@ class Rejected {
     getOrElse(alternative) {
         return alternative instanceof Function ? alternative(this.error) : alternative;
     }
-    fold(onFulfilled, onRejected) {
+    match(onFulfilled, onRejected) {
         return onRejected(this.error);
     }
     map(f) {

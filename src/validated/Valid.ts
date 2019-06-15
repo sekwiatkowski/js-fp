@@ -1,6 +1,6 @@
-import {Validated} from './Validated'
+import {anyValidatedEquality, Validated} from './Validated'
 import {Invalid} from './Invalid'
-import {fulfill, Future, Option, Result, some, success} from '..'
+import {fulfill, Future, Option, Predicate, Result, some, success} from '..'
 
 export class Valid<T, E> implements Validated<T, E> {
     constructor(private readonly value: T) {}
@@ -116,10 +116,18 @@ export class Valid<T, E> implements Validated<T, E> {
 
     //region Testing
     equals(otherValidated: Validated<T, E>): boolean {
-        return otherValidated.match(
-            otherValue => this.value === otherValue,
-            () => false,
-        )
+        return anyValidatedEquality.test(this, otherValidated)
+    }
+
+    test(predicate: (value: T) => boolean): boolean
+    test(predicate: Predicate<T>): boolean
+    test(predicate: ((value: T) => boolean)|Predicate<T>): boolean {
+        if (predicate instanceof Function) {
+            return predicate(this.value)
+        }
+        else {
+            return predicate.test(this.value)
+        }
     }
     //endregion
 }

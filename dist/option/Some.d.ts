@@ -1,5 +1,5 @@
 import { Option } from './Option';
-import { Future, Result, Validated } from '..';
+import { Future, Predicate, Result, Validated } from '..';
 export declare class Some<A> implements Option<A> {
     private readonly value;
     constructor(value: A);
@@ -24,6 +24,7 @@ export declare class Some<A> implements Option<A> {
     performOnNone(sideEffect: () => void): Option<A>;
     equals(other: Option<A>): boolean;
     test(predicate: (value: A) => boolean): boolean;
+    test(predicate: Predicate<A>): boolean;
 }
 export declare function some<A>(value: A): Some<A>;
 export declare function optionObject(): Option<{}>;

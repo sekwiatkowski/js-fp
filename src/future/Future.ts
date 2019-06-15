@@ -201,9 +201,9 @@ export class Future<T, E> {
     //region Matching
     match<X>(
         onFulfilled: (value: T) => X,
-        onRejected: (error: E) => X) : Promise<X> {
+        onRejected: (error: E) => X): Promise<X> {
         return this.createPromise()
-            .then(settled => settled.fold(onFulfilled, onRejected))
+            .then(settled => settled.match(onFulfilled, onRejected))
     }
     //endregion
 

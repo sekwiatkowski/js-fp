@@ -1,6 +1,7 @@
 import {
     AnyOrder,
     ArrayConcatenation,
+    createArrayEquality,
     DescendingAnyOrder,
     Earliest,
     ensureEquivalenceFunction,
@@ -13,6 +14,7 @@ import {
     Max,
     Min,
     Monoid,
+    neitherIsUndefinedOrNull,
     none,
     Option,
     Order,
@@ -47,7 +49,6 @@ import {
     sortItems,
     takeItems
 } from './ArrayFunctions'
-import {strictNonEmptyListEquality} from './ListEquality'
 
 export class NonEmptyList<T> {
     private readonly length: number
@@ -279,8 +280,8 @@ export class NonEmptyList<T> {
         return containsItem(this.items, item, ensureEquivalenceFunction(itemEquality))
     }
 
-    equals(otherList: NonEmptyList<T>, listEquality: (((x: NonEmptyList<T>, y: NonEmptyList<T>) => boolean)|Equivalence<NonEmptyList<T>>) = strictNonEmptyListEquality): boolean {
-        return ensureEquivalenceFunction(listEquality)(this, otherList)
+    equals(otherList: NonEmptyList<T>): boolean {
+        return anyNonEmptyListEquality.test(this, otherList)
     }
 
     all(predicate: ((item: T) => boolean)|Predicate<T>): boolean {
@@ -297,6 +298,17 @@ export class NonEmptyList<T> {
 
     count(predicate: ((item: T) => boolean)|Predicate<T>): number {
         return countItems(this.items, ensurePredicateFunction(predicate))
+    }
+
+    test(predicate: (items: T[]) => boolean): boolean
+    test(predicate: Predicate<T[]>): boolean
+    test(predicate: ((items: T[]) => boolean)|Predicate<T[]>): boolean {
+        if (predicate instanceof Function) {
+            return predicate(this.items)
+        }
+        else {
+            return predicate.test(this.items)
+        }
     }
     //endregion
 }
@@ -329,3 +341,6 @@ export function inclusiveRange(start: number, end?: number): NonEmptyList<number
         }
     }
 }
+
+export const anyNonEmptyListEquality = (neitherIsUndefinedOrNull as Equivalence<NonEmptyList<any>>)
+    .and(createArrayEquality().adapt<NonEmptyList<any>>(l => l.getArray()))

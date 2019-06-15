@@ -16,7 +16,7 @@ class Fulfilled {
     mapError(f) {
         return new Fulfilled(this.value);
     }
-    fold(onFulfilled, onRejected) {
+    match(onFulfilled, onRejected) {
         return onFulfilled(this.value);
     }
     orAttempt(alternative) {

@@ -52,11 +52,14 @@ export declare class NonEmptyList<T> {
     sortDescendingly(): List<T>;
     sortDescendinglyBy<U>(by: (item: T) => U): List<T>;
     contains(item: T, itemEquality?: (((x: T, y: T) => boolean) | Equivalence<T>)): boolean;
-    equals(otherList: NonEmptyList<T>, listEquality?: (((x: NonEmptyList<T>, y: NonEmptyList<T>) => boolean) | Equivalence<NonEmptyList<T>>)): boolean;
+    equals(otherList: NonEmptyList<T>): boolean;
     all(predicate: ((item: T) => boolean) | Predicate<T>): boolean;
     some(predicate: ((item: T) => boolean) | Predicate<T>): boolean;
     none(predicate: ((item: T) => boolean) | Predicate<T>): boolean;
     count(predicate: ((item: T) => boolean) | Predicate<T>): number;
+    test(predicate: (items: T[]) => boolean): boolean;
+    test(predicate: Predicate<T[]>): boolean;
 }
 export declare function list<T>(head: T, ...tail: T[]): NonEmptyList<T>;
 export declare function inclusiveRange(start: number, end?: number): NonEmptyList<number>;
+export declare const anyNonEmptyListEquality: Equivalence<NonEmptyList<any>>;

@@ -1,6 +1,6 @@
-import {Result} from './Result'
+import {anyResultEquality, Result} from './Result'
 import {success} from './Success'
-import {Future, invalid, none, Option, reject, Validated} from '..'
+import {Future, invalid, none, Option, Predicate, reject, Validated} from '..'
 
 export class Failure<T, E> implements Result<T, E> {
     constructor(private readonly error: E) {}
@@ -106,14 +106,16 @@ export class Failure<T, E> implements Result<T, E> {
 
     //region Testing
     equals(otherResult: Result<T, E>): boolean {
-        return otherResult.match(
-            () => false,
-            otherError => this.error === otherError
-        )
+        return anyResultEquality.test(this, otherResult)
+    }
+
+    test(predicate: (value: T) => boolean): boolean
+    test(predicate: Predicate<T>): boolean
+    test(predicate: ((value: T) => boolean)|Predicate<T>): boolean {
+        return false
     }
     //endregion
 }
-
 
 export function failure<T, E>(error: E) : Failure<T, E> {
     return new Failure(error)

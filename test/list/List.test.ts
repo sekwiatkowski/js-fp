@@ -325,29 +325,29 @@ describe('List<T>', () => {
         })
     })
 
-    describe('should return the first item', () => {
-        it('as none if the list is empty', () => {
-            emptyList().first().equals(none).should.be.true
+    describe('should return as the first item', () => {
+        it('none if the list is empty', () => {
+            emptyList().first().should.equal(none)
         })
 
-        it('as an instance of Some if the list is not empty', () => {
+        it('an instance of Some if the list is not empty', () => {
             listFromArray([1]).first().equals(some(1)).should.be.true
         })
     })
 
-    describe('should return the last item', () => {
-        it('as none if the list is empty', () => {
-            emptyList().last().equals(none).should.be.true
+    describe('should return as the last item', () => {
+        it('none if the list is empty', () => {
+            emptyList().last().should.equal(none)
         })
 
-        it('as an instance of Some if the list is not empty', () => {
+        it('an instance of Some if the list is not empty', () => {
             listFromArray([1]).last().equals(some(1)).should.be.true
         })
     })
 
     describe('should search for the first item matching a predicate', () => {
         it('and return none if there are no matches', () => {
-            listFromArray([1]).find(isEven).equals(none).should.be.true
+            listFromArray([1]).find(isEven).should.equal(none)
         })
 
         it('and return an instance of Some if there is a match', () => {
@@ -357,7 +357,7 @@ describe('List<T>', () => {
 
     describe('should search for the last item matching a predicate', () => {
         it('and return none if there are no matches', () => {
-            listFromArray([1]).findLast(isEven).equals(none).should.be.true
+            listFromArray([1]).findLast(isEven).should.equal(none)
         })
 
         it('and return an instance of Some if there is a match', () => {

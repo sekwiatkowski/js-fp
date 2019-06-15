@@ -1,4 +1,4 @@
-import { Future, Result, Validated } from '..';
+import { Future, Predicate, Result, Validated } from '..';
 export interface Option<A> {
     getOrElse(alternative: A | (() => A)): A;
     apply<B, C>(this: Option<(parameter: B) => C>, argumentOrOptionOrFunction: B | (() => B) | Option<B> | (() => Option<B>)): Option<C>;
@@ -21,5 +21,7 @@ export interface Option<A> {
     isNone(): boolean;
     equals(other: Option<A>): boolean;
     test(predicate: (value: A) => boolean): boolean;
+    test(predicate: Predicate<A>): boolean;
+    test(predicate: ((value: A) => boolean) | Predicate<A>): boolean;
 }
 export declare function option<T>(valueOrFunction: undefined | null | T | (() => T)): Option<T>;

@@ -128,7 +128,7 @@ class Future {
     //region Matching
     match(onFulfilled, onRejected) {
         return this.createPromise()
-            .then(settled => settled.fold(onFulfilled, onRejected));
+            .then(settled => settled.match(onFulfilled, onRejected));
     }
     //endregion
     mapError(f) {

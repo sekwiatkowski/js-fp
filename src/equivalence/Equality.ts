@@ -2,7 +2,6 @@ import {Equivalence, equivalence} from './Equivalence'
 
 const isUndefined = x => typeof x === 'undefined'
 const isNull = x => x === null
-
 const eitherIsUndefined = equivalence((x, y) => isUndefined(x) || isUndefined(y))
 const eitherIsNull = equivalence((x, y) => isNull(x) || isNull(y))
 export const neitherIsUndefinedOrNull = eitherIsUndefined.or(eitherIsNull).not()

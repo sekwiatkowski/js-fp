@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const Validated_1 = require("./Validated");
 const Invalid_1 = require("./Invalid");
 const __1 = require("..");
 class Valid {
@@ -88,7 +89,15 @@ class Valid {
     //endregion
     //region Testing
     equals(otherValidated) {
-        return otherValidated.match(otherValue => this.value === otherValue, () => false);
+        return Validated_1.anyValidatedEquality.test(this, otherValidated);
+    }
+    test(predicate) {
+        if (predicate instanceof Function) {
+            return predicate(this.value);
+        }
+        else {
+            return predicate.test(this.value);
+        }
     }
 }
 exports.Valid = Valid;

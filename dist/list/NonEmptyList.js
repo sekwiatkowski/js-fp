@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const __1 = require("..");
 const ArrayFunctions_1 = require("./ArrayFunctions");
-const ListEquality_1 = require("./ListEquality");
 class NonEmptyList {
     constructor(items) {
         this.items = items;
@@ -184,8 +183,8 @@ class NonEmptyList {
     contains(item, itemEquality = __1.guardedStrictEquality) {
         return ArrayFunctions_1.containsItem(this.items, item, __1.ensureEquivalenceFunction(itemEquality));
     }
-    equals(otherList, listEquality = ListEquality_1.strictNonEmptyListEquality) {
-        return __1.ensureEquivalenceFunction(listEquality)(this, otherList);
+    equals(otherList) {
+        return exports.anyNonEmptyListEquality.test(this, otherList);
     }
     all(predicate) {
         return ArrayFunctions_1.allItems(this.items, __1.ensurePredicateFunction(predicate));
@@ -198,6 +197,14 @@ class NonEmptyList {
     }
     count(predicate) {
         return ArrayFunctions_1.countItems(this.items, __1.ensurePredicateFunction(predicate));
+    }
+    test(predicate) {
+        if (predicate instanceof Function) {
+            return predicate(this.items);
+        }
+        else {
+            return predicate.test(this.items);
+        }
     }
 }
 exports.NonEmptyList = NonEmptyList;
@@ -229,4 +236,6 @@ function inclusiveRange(start, end) {
     }
 }
 exports.inclusiveRange = inclusiveRange;
+exports.anyNonEmptyListEquality = __1.neitherIsUndefinedOrNull
+    .and(__1.createArrayEquality().adapt(l => l.getArray()));
 //# sourceMappingURL=NonEmptyList.js.map

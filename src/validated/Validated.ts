@@ -1,4 +1,14 @@
-import {Future, Option, Result} from '..'
+import {
+    createArrayEquality,
+    equivalence,
+    Equivalence,
+    Future,
+    neitherIsUndefinedOrNull,
+    Option,
+    Predicate,
+    Result
+} from '..'
+import {strictEquality} from '../equivalence/Equality'
 
 export interface Validated<T, E> {
     //region Access
@@ -51,5 +61,19 @@ export interface Validated<T, E> {
 
     //region Testing
     equals(otherValidated: Validated<T, E>): boolean
+
+    test(predicate: (value: T) => boolean): boolean
+    test(predicate: Predicate<T>): boolean
+    test(predicate: ((value: T) => boolean)|Predicate<T>): boolean
     //endregion
 }
+
+export const anyValidatedEquality = (neitherIsUndefinedOrNull as Equivalence<Validated<any, any>>).and(equivalence((validatedX: Validated<any, any>, validatedY: Validated<any, any>) => (
+    validatedX.match(
+        valueX => validatedY.match(
+            successY => strictEquality.test(valueX, successY),
+            _ => false),
+        errorsX => validatedY.match(
+            _ => false,
+            errorsY => createArrayEquality<any>().test(errorsX, errorsY)))
+)))

@@ -1,5 +1,5 @@
 import { Result } from './Result';
-import { Future, Option, Validated } from '..';
+import { Future, Option, Predicate, Validated } from '..';
 export declare class Success<T, E> implements Result<T, E> {
     private readonly value;
     constructor(value: T);
@@ -24,6 +24,8 @@ export declare class Success<T, E> implements Result<T, E> {
     isFailure(): boolean;
     isSuccess(): boolean;
     equals(otherResult: Result<T, E>): boolean;
+    test(predicate: (value: T) => boolean): boolean;
+    test(predicate: Predicate<T>): boolean;
 }
 export declare function success<T, E>(value: T): Success<T, E>;
 export declare function resultObject<E>(): Result<{}, E>;

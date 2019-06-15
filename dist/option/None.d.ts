@@ -1,5 +1,5 @@
 import { Option } from './Option';
-import { Future, Result, Validated } from '..';
+import { Future, Predicate, Result, Validated } from '..';
 export declare class None<A> implements Option<A> {
     static value: Option<never>;
     private constructor();
@@ -18,6 +18,7 @@ export declare class None<A> implements Option<A> {
     map<B>(f: (value: A) => B): Option<B>;
     equals(other: Option<A>): boolean;
     test(predicate: (value: A) => boolean): boolean;
+    test(predicate: Predicate<A>): boolean;
     match<B>(onSome: (value: A) => B, onNone: () => B): B;
     perform(sideEffect: () => void): Option<A>;
     performOnSome(sideEffect: (value: A) => void): Option<A>;

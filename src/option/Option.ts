@@ -1,6 +1,6 @@
 import {some} from './Some'
 import {none} from './None'
-import {Future, Result, Validated} from '..'
+import {Future, Predicate, Result, Validated} from '..'
 
 export interface Option<A> {
     //region Access
@@ -58,7 +58,10 @@ export interface Option<A> {
 
     //region Testing
     equals(other: Option<A>): boolean
+
     test(predicate: (value: A) => boolean): boolean
+    test(predicate: Predicate<A>): boolean
+    test(predicate: ((value: A) => boolean)|Predicate<A>): boolean
     //endregion
 }
 

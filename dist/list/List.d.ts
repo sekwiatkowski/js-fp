@@ -57,13 +57,16 @@ export declare class List<T> {
     sortDescendingly(): List<T>;
     sortDescendinglyBy<U>(by: (item: T) => U): List<T>;
     contains(item: T, itemEquality?: (((x: T, y: T) => boolean) | Equivalence<T>)): boolean;
-    equals(otherList: List<T>, listEquality?: (((x: List<T>, y: List<T>) => boolean) | Equivalence<List<T>>)): boolean;
+    equals(otherList: List<T>): boolean;
     all(predicate: ((item: T) => boolean) | Predicate<T>): boolean;
     some(predicate: ((item: T) => boolean) | Predicate<T>): boolean;
     none(predicate: ((item: T) => boolean) | Predicate<T>): boolean;
     count(predicate: ((item: T) => boolean) | Predicate<T>): number;
+    test(predicate: (items: T[]) => boolean): boolean;
+    test(predicate: Predicate<T[]>): boolean;
 }
 export declare function emptyList<T>(): List<T>;
 export declare function listFromArray<T>(array: T[]): List<T>;
 export declare function range(start: number, end?: number): List<number>;
 export declare function repeat<T>(times: number, valueOrFunction: T | ((index?: number) => T)): List<T>;
+export declare const anyListEquality: Equivalence<List<any>>;

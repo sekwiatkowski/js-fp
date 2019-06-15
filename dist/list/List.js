@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const __1 = require("..");
 const ArrayFunctions_1 = require("./ArrayFunctions");
-const ListEquality_1 = require("./ListEquality");
 class List {
     constructor(items) {
         this.items = items;
@@ -207,8 +206,8 @@ class List {
     contains(item, itemEquality = __1.guardedStrictEquality) {
         return ArrayFunctions_1.containsItem(this.items, item, __1.ensureEquivalenceFunction(itemEquality));
     }
-    equals(otherList, listEquality = ListEquality_1.strictListEquality) {
-        return __1.ensureEquivalenceFunction(listEquality)(this, otherList);
+    equals(otherList) {
+        return exports.anyListEquality.test(this, otherList);
     }
     all(predicate) {
         return ArrayFunctions_1.allItems(this.items, __1.ensurePredicateFunction(predicate));
@@ -221,6 +220,14 @@ class List {
     }
     count(predicate) {
         return ArrayFunctions_1.countItems(this.items, __1.ensurePredicateFunction(predicate));
+    }
+    test(predicate) {
+        if (predicate instanceof Function) {
+            return predicate(this.items);
+        }
+        else {
+            return predicate.test(this.items);
+        }
     }
 }
 exports.List = List;
@@ -240,4 +247,5 @@ function repeat(times, valueOrFunction) {
     return listFromArray(ArrayFunctions_1.repeatItems(times, valueOrFunction));
 }
 exports.repeat = repeat;
+exports.anyListEquality = __1.neitherIsUndefinedOrNull.and(__1.createArrayEquality().adapt(l => l.getArray()));
 //# sourceMappingURL=List.js.map

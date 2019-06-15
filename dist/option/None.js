@@ -55,7 +55,7 @@ class None {
     //endregion
     //region Testing
     equals(other) {
-        return other.match(otherValue => false, () => true);
+        return false;
     }
     test(predicate) {
         return false;

@@ -1,4 +1,4 @@
-import { Future, Option, Validated } from '..';
+import { Equivalence, Future, Option, Predicate, Validated } from '..';
 export interface Result<T, E> {
     getErrorOrElse(alternative: E | ((value: T) => E)): E;
     getOrElse(alternative: T | ((error: E) => T)): T;
@@ -21,4 +21,8 @@ export interface Result<T, E> {
     isFailure(): boolean;
     isSuccess(): boolean;
     equals(otherResult: Result<T, E>): boolean;
+    test(predicate: (value: T) => boolean): boolean;
+    test(predicate: Predicate<T>): boolean;
+    test(predicate: ((value: T) => boolean) | Predicate<T>): boolean;
 }
+export declare const anyResultEquality: Equivalence<Result<any, any>>;

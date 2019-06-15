@@ -53,8 +53,8 @@ class Lazy {
     }
     //endregion
     //region Testing
-    equals(otherLazy, equality = exports.LazyEquality) {
-        return equality.test(this, otherLazy);
+    equals(otherLazy) {
+        return LazyEquality.test(this, otherLazy);
     }
     test(predicate) {
         if (predicate instanceof Function) {
@@ -74,44 +74,5 @@ function lazyObject() {
     return new Lazy(() => ({}));
 }
 exports.lazyObject = lazyObject;
-exports.LazyEquality = Equality_1.neitherIsUndefinedOrNull.and(Equality_1.strictEquality.adapt(lazy => lazy.get()));
-/* interface User {
-    id: number
-    username: string,
-    supervisorId: number,
-}
-
-const users = [{id: 1, username: 'Sebi', supervisorId: 1}, {id: 2, username: 'Sebastian', supervisorId: 1}]
-
-class UserRepository {
-    get(id: number): User {
-        return users.find(u => u.id == id)
-    }
-
-    find(username: string): User {
-        return users.find(u => u.username == username)
-    }
-}
-
-function getUser(id: number): Reader<UserRepository, User> {
-    return reader((userRepository: UserRepository) => userRepository.get(id))
-}
-
-function findUser(username: string): Reader<UserRepository, User> {
-    return reader((userRepository: UserRepository) => userRepository.find(username))
-} */
-/*
-    for {
-      user <- findUser(username) // Reader<UserRepository, User>
-      boss <- getUser(user.supervisorId) // Reader<UserRepository, User>
-    } yield Map(
-      "fullName" -> s"${user.firstName} ${user.lastName}",
-      "email" -> s"${user.email}",
-      "boss" -> s"${boss.firstName} ${boss.lastName}"
-    )
- */
-/* new ReaderObject<UserRepository, {}>({})
-    .assign('user', () => findUser("sebastian"))
-    .assign('boss', scope => getUser(scope.user))
-    .runWith(new UserRepository()) */ 
+const LazyEquality = Equality_1.neitherIsUndefinedOrNull.and(Equality_1.strictEquality.adapt(lazy => lazy.get()));
 //# sourceMappingURL=Lazy.js.map

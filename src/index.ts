@@ -13,7 +13,6 @@ export {
     NullableStringArrayEquality, NullableNumberArrayEquality, NullableBooleanArrayEquality, NullableDateArrayEquality,
     StringArrayEquality, NumberArrayEquality, BooleanArrayEquality, DateArrayEquality
 } from './list/ArrayEquality'
-export { createListEquality,  strictListEquality} from './list/ListEquality'
 
 export {
     Order, order, Ordering,

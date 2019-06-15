@@ -1,5 +1,5 @@
 import { Validated } from './Validated';
-import { Future, Option, Result } from '..';
+import { Future, Option, Predicate, Result } from '..';
 export declare class Valid<T, E> implements Validated<T, E> {
     private readonly value;
     constructor(value: T);
@@ -22,6 +22,8 @@ export declare class Valid<T, E> implements Validated<T, E> {
     isInvalid(): boolean;
     isValid(): boolean;
     equals(otherValidated: Validated<T, E>): boolean;
+    test(predicate: (value: T) => boolean): boolean;
+    test(predicate: Predicate<T>): boolean;
 }
 export declare function valid<T, E>(value: T): Valid<T, E>;
 export declare function validatedObject<E>(): Valid<{}, E>;

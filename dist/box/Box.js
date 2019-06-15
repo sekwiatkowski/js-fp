@@ -55,8 +55,8 @@ class Box {
     }
     //endregion
     //region Testing
-    equals(otherBox, equality = exports.BoxEquality) {
-        return equality.test(this, otherBox);
+    equals(otherBox) {
+        return exports.BoxEquality.test(this, otherBox);
     }
     test(predicate) {
         if (predicate instanceof Function) {

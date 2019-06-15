@@ -1,5 +1,5 @@
 import {neitherIsUndefinedOrNull, strictEquality} from '../equivalence/Equality'
-import {Equivalence, Predicate} from '..'
+import {Predicate} from '..'
 
 export class Lazy<A> {
     constructor(private readonly lazyValue: () => A) {}
@@ -71,8 +71,8 @@ export class Lazy<A> {
     //endregion
 
     //region Testing
-    equals(otherLazy: Lazy<A>, equality: Equivalence<Lazy<any>> = LazyEquality): boolean {
-        return equality.test(this, otherLazy)
+    equals(otherLazy: Lazy<A>): boolean {
+        return LazyEquality.test(this, otherLazy)
     }
 
     test(predicate: (value: A) => boolean): boolean
@@ -96,46 +96,4 @@ export function lazyObject() : Lazy<{}> {
     return new Lazy(() => ({}))
 }
 
-export const LazyEquality = neitherIsUndefinedOrNull.and(strictEquality.adapt<Lazy<any>>(lazy => lazy.get()))
-
-/* interface User {
-    id: number
-    username: string,
-    supervisorId: number,
-}
-
-const users = [{id: 1, username: 'Sebi', supervisorId: 1}, {id: 2, username: 'Sebastian', supervisorId: 1}]
-
-class UserRepository {
-    get(id: number): User {
-        return users.find(u => u.id == id)
-    }
-
-    find(username: string): User {
-        return users.find(u => u.username == username)
-    }
-}
-
-function getUser(id: number): Reader<UserRepository, User> {
-    return reader((userRepository: UserRepository) => userRepository.get(id))
-}
-
-function findUser(username: string): Reader<UserRepository, User> {
-    return reader((userRepository: UserRepository) => userRepository.find(username))
-} */
-
-/*
-    for {
-      user <- findUser(username) // Reader<UserRepository, User>
-      boss <- getUser(user.supervisorId) // Reader<UserRepository, User>
-    } yield Map(
-      "fullName" -> s"${user.firstName} ${user.lastName}",
-      "email" -> s"${user.email}",
-      "boss" -> s"${boss.firstName} ${boss.lastName}"
-    )
- */
-
-/* new ReaderObject<UserRepository, {}>({})
-    .assign('user', () => findUser("sebastian"))
-    .assign('boss', scope => getUser(scope.user))
-    .runWith(new UserRepository()) */
+const LazyEquality = neitherIsUndefinedOrNull.and(strictEquality.adapt<Lazy<any>>(lazy => lazy.get()))

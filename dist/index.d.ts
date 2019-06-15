@@ -2,7 +2,6 @@ export { ensureEquivalenceFunction, Equivalence, equivalence } from './equivalen
 export { objectEquivalence } from './equivalence/ObjectEquivalence';
 export { neitherIsUndefinedOrNull, guardedStrictEquality, bothAreNull, nullableStrictEquality, NullableStringEquality, NullableNumberEquality, NullableBooleanEquality, NullableDateEquality, StringEquality, NumberEquality, BooleanEquality, DateEquality } from './equivalence/Equality';
 export { createArrayEquality, NullableStringArrayEquality, NullableNumberArrayEquality, NullableBooleanArrayEquality, NullableDateArrayEquality, StringArrayEquality, NumberArrayEquality, BooleanArrayEquality, DateArrayEquality } from './list/ArrayEquality';
-export { createListEquality, strictListEquality } from './list/ListEquality';
 export { Order, order, Ordering, orderBy, orderDescendinglyBy, AnyOrder, DescendingAnyOrder, StringOrder, NumberOrder, BooleanOrder, DateOrder, DescendingStringOrder, DescendingNumberOrder, DescendingBooleanOrder, DescendingDateOrder } from './order/Order';
 export { ensurePredicateFunction, Predicate, predicate } from './predicate/Predicate';
 export { Semigroup } from './combination/Semigroup';

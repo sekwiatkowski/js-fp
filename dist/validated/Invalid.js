@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const Validated_1 = require("./Validated");
 const __1 = require("..");
 class Invalid {
     constructor(errors) {
@@ -75,7 +76,10 @@ class Invalid {
     //endregion
     //region Testing
     equals(otherValidated) {
-        return otherValidated.match(() => false, otherErrors => __1.listFromArray(this.errors).equals(__1.listFromArray(otherErrors)));
+        return Validated_1.anyValidatedEquality.test(this, otherValidated);
+    }
+    test(predicate) {
+        return false;
     }
 }
 exports.Invalid = Invalid;

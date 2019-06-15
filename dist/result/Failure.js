@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const Result_1 = require("./Result");
 const Success_1 = require("./Success");
 const __1 = require("..");
 class Failure {
@@ -84,7 +85,10 @@ class Failure {
     //endregion
     //region Testing
     equals(otherResult) {
-        return otherResult.match(() => false, otherError => this.error === otherError);
+        return Result_1.anyResultEquality.test(this, otherResult);
+    }
+    test(predicate) {
+        return false;
     }
 }
 exports.Failure = Failure;
