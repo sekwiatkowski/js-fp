@@ -1,6 +1,6 @@
 export { ensureEquivalenceFunction, Equivalence, equivalence } from './equivalence/Equivalence';
 export { objectEquivalence } from './equivalence/ObjectEquivalence';
-export { neitherIsUndefinedOrNull, strictEquality, bothAreNull, nullableStrictEquality, NullableStringEquality, NullableNumberEquality, NullableBooleanEquality, NullableDateEquality, StringEquality, NumberEquality, BooleanEquality, DateEquality } from './equivalence/Equality';
+export { neitherIsUndefinedOrNull, guardedStrictEquality, bothAreNull, nullableStrictEquality, NullableStringEquality, NullableNumberEquality, NullableBooleanEquality, NullableDateEquality, StringEquality, NumberEquality, BooleanEquality, DateEquality } from './equivalence/Equality';
 export { createArrayEquality, NullableStringArrayEquality, NullableNumberArrayEquality, NullableBooleanArrayEquality, NullableDateArrayEquality, StringArrayEquality, NumberArrayEquality, BooleanArrayEquality, DateArrayEquality } from './list/ArrayEquality';
 export { createListEquality, strictListEquality } from './list/ListEquality';
 export { Order, order, Ordering, orderBy, orderDescendinglyBy, AnyOrder, DescendingAnyOrder, StringOrder, NumberOrder, BooleanOrder, DateOrder, DescendingStringOrder, DescendingNumberOrder, DescendingBooleanOrder, DescendingDateOrder } from './order/Order';
@@ -10,6 +10,7 @@ export { objectCombination } from './combination/ObjectCombination';
 export { Monoid, Any, All, Latest, Max, Earliest, Min, Sum, Product, ArrayConcatenation } from './combination/Monoid';
 export { Arrow, arrow } from './arrow/Arrow';
 export { Box, box, boxObject } from './box/Box';
+export { Lazy, lazy } from './lazy/Lazy';
 export { Option, option } from './option/Option';
 export { Some, some, optionObject } from './option/Some';
 export { None, none } from './option/None';

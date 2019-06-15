@@ -8,6 +8,8 @@ A TypeScript/JavaScript library designed to implement workflows as computational
 
 [**Box**](src/box/Box.ts): guaranteed computation with exactly one value
 
+[**Lazy**](src/box/Lazy.ts): lazy computation with exactly one value
+
 [**List**](src/list/List.ts): computation with zero, one or more values
 
 [**NonEmptyList**](src/list/NonEmptyList.ts): computation with one or more values

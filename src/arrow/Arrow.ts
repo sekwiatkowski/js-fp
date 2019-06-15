@@ -10,8 +10,8 @@ export class Arrow<A, B> {
         }
     }
 
-    adapt<C>(map: (input: C) => A): Arrow<C, B> {
-        return new Arrow((input: C) => this.f(map(input)))
+    adapt<C>(adaptor: (input: C) => A): Arrow<C, B> {
+        return new Arrow((input: C) => this.f(adaptor(input)))
     }
 
     apply(input: A) {

@@ -12,8 +12,8 @@ class Arrow {
             return new Arrow((input) => arrowOrFunction.apply((this.f(input))));
         }
     }
-    adapt(map) {
-        return new Arrow((input) => this.f(map(input)));
+    adapt(adaptor) {
+        return new Arrow((input) => this.f(adaptor(input)));
     }
     apply(input) {
         return this.f(input);

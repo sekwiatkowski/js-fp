@@ -204,7 +204,7 @@ class List {
     }
     //endregion
     //region Testing
-    contains(item, itemEquality = __1.strictEquality) {
+    contains(item, itemEquality = __1.guardedStrictEquality) {
         return ArrayFunctions_1.containsItem(this.items, item, __1.ensureEquivalenceFunction(itemEquality));
     }
     equals(otherList, listEquality = ListEquality_1.strictListEquality) {

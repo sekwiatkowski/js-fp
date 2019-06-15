@@ -3,7 +3,7 @@ export { ensureEquivalenceFunction, Equivalence, equivalence } from './equivalen
 export { objectEquivalence } from './equivalence/ObjectEquivalence'
 
 export {
-    neitherIsUndefinedOrNull, strictEquality, bothAreNull, nullableStrictEquality,
+    neitherIsUndefinedOrNull, guardedStrictEquality, bothAreNull, nullableStrictEquality,
     NullableStringEquality, NullableNumberEquality, NullableBooleanEquality, NullableDateEquality,
     StringEquality, NumberEquality, BooleanEquality, DateEquality
 } from './equivalence/Equality'
@@ -36,6 +36,8 @@ export { Monoid, Any, All, Latest, Max, Earliest, Min, Sum, Product, ArrayConcat
 export { Arrow, arrow } from './arrow/Arrow'
 
 export { Box, box, boxObject } from './box/Box'
+
+export { Lazy, lazy } from './lazy/Lazy'
 
 export { Option, option } from './option/Option'
 export { Some, some, optionObject } from './option/Some'

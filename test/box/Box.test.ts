@@ -105,4 +105,12 @@ describe('Box', () => {
             (box(valueText).toFuture() instanceof Future).should.be.true
         })
     })
+
+    it('should correctly test for equality', () => {
+        const boxOfOne = box(1)
+        boxOfOne.equals(box(1)).should.be.true
+        boxOfOne.equals(box(2)).should.be.false
+        boxOfOne.equals(null).should.be.false
+        boxOfOne.equals(undefined).should.be.false
+    })
 })

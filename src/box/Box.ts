@@ -1,4 +1,17 @@
-import {fulfill, Future, Option, Result, some, success, valid, Validated} from '..'
+import {
+    Equivalence,
+    fulfill,
+    Future,
+    neitherIsUndefinedOrNull,
+    Option,
+    Predicate,
+    Result,
+    some,
+    success,
+    valid,
+    Validated
+} from '..'
+import {strictEquality} from '../equivalence/Equality'
 
 export class Box<A> {
     constructor(private readonly value: A) {}
@@ -27,7 +40,7 @@ export class Box<A> {
     assign<A extends object, K extends string, B>(
         this: Box<A>,
         key: K,
-        memberOrBoxOrFunction: Box<B> | ((value: A) => Box<B>) | B | ((value: A) => B)): Box<A & { [key in K]: B }> {
+        memberOrBoxOrFunction: Box<B> | ((scope: A) => Box<B>) | B | ((scope: A) => B)): Box<A & { [key in K]: B }> {
         const memberOrBox = memberOrBoxOrFunction instanceof Function ? memberOrBoxOrFunction(this.value) : memberOrBoxOrFunction
         const member = memberOrBox instanceof Box ? memberOrBox.get() : memberOrBox
 
@@ -70,17 +83,19 @@ export class Box<A> {
     //endregion
 
     //region Testing
-    equals(otherBox: Box<A>): boolean {
-        if (otherBox == null) {
-            return false
-        }
-        else {
-            return this.value === otherBox.value
-        }
+    equals(otherBox: Box<A>, equality: Equivalence<Box<any>> = BoxEquality): boolean {
+        return equality.test(this, otherBox)
     }
 
-    test(predicate: (value: A) => boolean): boolean {
-        return predicate(this.value)
+    test(predicate: (value: A) => boolean): boolean
+    test(predicate: Predicate<A>): boolean
+    test(predicate: ((value: A) => boolean)|Predicate<A>): boolean {
+        if (predicate instanceof Function) {
+            return predicate(this.value)
+        }
+        else {
+            return predicate.test(this.value)
+        }
     }
     //endregion
 }
@@ -92,3 +107,5 @@ export function box<A>(value: A): Box<A> {
 export function boxObject() : Box<{}> {
     return box({})
 }
+
+export const BoxEquality = neitherIsUndefinedOrNull.and(strictEquality.adapt<Box<any>>(box => box.get()))

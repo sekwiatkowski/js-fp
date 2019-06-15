@@ -7,17 +7,17 @@ const eitherIsUndefined = equivalence((x, y) => isUndefined(x) || isUndefined(y)
 const eitherIsNull = equivalence((x, y) => isNull(x) || isNull(y))
 export const neitherIsUndefinedOrNull = eitherIsUndefined.or(eitherIsNull).not()
 
-const basicStrictEquality = equivalence((x, y) => x === y)
-export const strictEquality = neitherIsUndefinedOrNull.and(basicStrictEquality)
+export const strictEquality = equivalence((x, y) => x === y)
+export const guardedStrictEquality = neitherIsUndefinedOrNull.and(strictEquality)
 
-export const StringEquality: Equivalence<string> = strictEquality
-export const NumberEquality: Equivalence<number> = strictEquality
-export const BooleanEquality: Equivalence<boolean> = strictEquality
+export const StringEquality: Equivalence<string> = guardedStrictEquality
+export const NumberEquality: Equivalence<number> = guardedStrictEquality
+export const BooleanEquality: Equivalence<boolean> = guardedStrictEquality
 export const DateEquality: Equivalence<any> = (neitherIsUndefinedOrNull as Equivalence<Date>)
-    .and(basicStrictEquality.adapt(date => date.valueOf()))
+    .and(strictEquality.adapt(date => date.valueOf()))
 
 export const bothAreNull = equivalence((x, y) => isNull(x) && isNull(y))
-export const nullableStrictEquality = bothAreNull.or(strictEquality)
+export const nullableStrictEquality = bothAreNull.or(guardedStrictEquality)
 
 export const NullableStringEquality: Equivalence<string> = nullableStrictEquality
 export const NullableNumberEquality: Equivalence<number> = nullableStrictEquality

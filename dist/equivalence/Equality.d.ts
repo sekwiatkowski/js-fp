@@ -1,6 +1,7 @@
 import { Equivalence } from './Equivalence';
 export declare const neitherIsUndefinedOrNull: Equivalence<{}>;
 export declare const strictEquality: Equivalence<{}>;
+export declare const guardedStrictEquality: Equivalence<{}>;
 export declare const StringEquality: Equivalence<string>;
 export declare const NumberEquality: Equivalence<number>;
 export declare const BooleanEquality: Equivalence<boolean>;

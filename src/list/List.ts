@@ -7,6 +7,7 @@ import {
     ensurePredicateFunction,
     Equivalence,
     Future,
+    guardedStrictEquality,
     Latest,
     Max,
     Min,
@@ -21,7 +22,6 @@ import {
     Product,
     Semigroup,
     some,
-    strictEquality,
     Sum
 } from '..'
 import {
@@ -309,7 +309,7 @@ export class List<T> {
     //endregion
 
     //region Testing
-    contains(item: T, itemEquality: (((x: T, y: T) => boolean)|Equivalence<T>) = strictEquality): boolean {
+    contains(item: T, itemEquality: (((x: T, y: T) => boolean)|Equivalence<T>) = guardedStrictEquality): boolean {
         return containsItem(this.items, item, ensureEquivalenceFunction(itemEquality))
     }
 
