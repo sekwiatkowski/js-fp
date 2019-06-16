@@ -9,7 +9,7 @@ export { objectCombination } from './combination/ObjectCombination';
 export { Monoid, Any, All, Latest, Max, Earliest, Min, Sum, Product, ArrayConcatenation } from './combination/Monoid';
 export { Arrow, arrow } from './arrow/Arrow';
 export { Box, box, boxObject } from './box/Box';
-export { Lazy, lazy } from './lazy/Lazy';
+export { Context, context, contextualObject } from './context/Context';
 export { Option, option } from './option/Option';
 export { Some, some, optionObject } from './option/Some';
 export { None, none } from './option/None';
