@@ -12,7 +12,7 @@ A TypeScript/JavaScript library designed to implement workflows as computational
 
 [**Option**](src/option/Option.ts): computation with a value that may be present or absent
 
-[**Program**](src/arrow/Arrow.ts): computation with a shared environment (used for dependency injection)
+[**Program**](src/program/Program.ts): computation with a shared environment (used for dependency injection)
 
 [**Result**](src/result/Result.ts): synchronous computation that may succeed or fail, short-circuits when a failure occurs
 
