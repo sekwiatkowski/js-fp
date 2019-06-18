@@ -22,7 +22,7 @@ describe('objectCombination', () => {
         hasOptedIn: boolean
     }
 
-    it('should work with nested objects', () => {
+    it('works with nested objects', () => {
         const firstInterests = ['reading']
         const firstSignUp = new Date(2019, 1, 1)
         const firstClicks = 5

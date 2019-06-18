@@ -7,7 +7,7 @@ chai.should()
 describe('Box', () => {
     const valueText = 'value'
 
-    describe('should be able to build an object', () => {
+    describe('can build an object', () => {
         it('one member at a time', () => {
             box({})
                 .assign('a', 1)
@@ -37,7 +37,7 @@ describe('Box', () => {
         })
     })
 
-    it('should be able to apply parameters', () => {
+    it('can apply parameters', () => {
         box(a => b => c => d => a + b + c + d)
             .apply(1)
             .apply(() => 2)
@@ -47,20 +47,20 @@ describe('Box', () => {
             .should.equal(10)
     })
 
-    it('should be able to chain boxes', () => {
+    it('can be chained', () => {
         box(valueText)
             .chain(value => box(`${value} in new box`))
             .get()
             .should.equal(`${valueText} in new box`)
     })
 
-    it('should be able to return the boxed value', () => {
+    it('can return the contained value', () => {
         box(valueText)
             .get()
             .should.equal(valueText)
     })
 
-    it('should be able to map over the value', () => {
+    it('can be mapped over', () => {
         const f = value => `mapped over ${value}`
         box(valueText)
             .map(f)
@@ -68,17 +68,27 @@ describe('Box', () => {
             .should.equal(f(valueText))
     })
 
-    it('should be able to test the value', () => {
-        box(valueText)
-            .test(boxedValue => boxedValue === valueText)
-            .should.be.true
+    describe('cna test', () => {
+        it('a predict', () => {
+            box(valueText)
+                .test(boxedValue => boxedValue === valueText)
+                .should.be.true
 
-        box(valueText)
-            .test(boxedValue => boxedValue !== valueText)
-            .should.be.false
+            box(valueText)
+                .test(boxedValue => boxedValue !== valueText)
+                .should.be.false
+        })
+
+        it('test for equality', () => {
+            const boxOfOne = box(1)
+            boxOfOne.equals(box(1)).should.be.true
+            boxOfOne.equals(box(2)).should.be.false
+            boxOfOne.equals(null).should.be.false
+            boxOfOne.equals(undefined).should.be.false
+        })
     })
 
-    it('should be able to perform a side-effect using the value', () => {
+    it('can perform a side-effect on the contained value', () => {
         let mutable = 'no side-effect'
         const f = value => `side-effect using ${value}`
         box(valueText)
@@ -88,7 +98,7 @@ describe('Box', () => {
             .should.equal(f(valueText))
     })
 
-    describe('should convert to', () => {
+    describe('can be converted to', () => {
         it('an option', () => {
             (box(valueText).toOption() instanceof Some).should.be.true
         })
@@ -97,20 +107,12 @@ describe('Box', () => {
             (box(valueText).toResult() instanceof Success).should.be.true
         })
 
-        it('Validated', () => {
+        it('a Validated instance', () => {
             (box(valueText).toValidated() instanceof Valid).should.be.true
         })
 
-        it('to a future', () => {
+        it('a future', () => {
             (box(valueText).toFuture() instanceof Future).should.be.true
         })
-    })
-
-    it('should correctly test for equality', () => {
-        const boxOfOne = box(1)
-        boxOfOne.equals(box(1)).should.be.true
-        boxOfOne.equals(box(2)).should.be.false
-        boxOfOne.equals(null).should.be.false
-        boxOfOne.equals(undefined).should.be.false
     })
 })

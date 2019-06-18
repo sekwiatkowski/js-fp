@@ -16,7 +16,7 @@ describe('objectEquivalence', () => {
         signedUp: Date
     }
 
-    it('should be partial and work with nested objects', () => {
+    it('can be defined partially and works with nested objects', () => {
         const customerEquivalence = objectEquivalence<Customer>({
             id: NumberEquality,
             name: StringEquality,

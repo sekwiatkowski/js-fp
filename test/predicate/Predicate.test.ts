@@ -11,7 +11,7 @@ describe('Predicate', () => {
         id: number
     }
 
-    it('should test the provided input', () => {
+    it('can test the provided input', () => {
         isEven.test(1).should.be.false
         isEven.test(2).should.be.true
     })

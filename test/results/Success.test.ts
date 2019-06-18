@@ -11,7 +11,7 @@ describe('Success', () => {
     const createSuccessOfString = () => success<string, string>(containedValue)
     const noSideEffectText = 'no side-effect'
 
-    describe('should be able to build an object', () => {
+    describe('can build an object', () => {
         it('one member at a time', () => {
             success({})
                 .assign('a', 1)
@@ -40,7 +40,7 @@ describe('Success', () => {
             objectThatSatisfiesTestInterface.second.should.equal(secondValue)
         })
 
-        it('but switch to Failure when a Failure instance is assigned to a member', () => {
+        it('but switches to the failure path when an instance of Failure is assigned to a member', () => {
             const errorText = 'error'
             success({})
                 .assign('firstMember', failure(errorText))
@@ -49,7 +49,7 @@ describe('Success', () => {
         })
     })
 
-    it('should be able to apply parameters', () => {
+    it('can apply parameters', () => {
         success((a: number) => (b: number) => (c: number) => (d: number) => a + b + c + d)
             .apply(1)
             .apply(() => 2)
@@ -59,8 +59,8 @@ describe('Success', () => {
             .should.be.true
     })
 
-    describe('should perform', () => {
-        it('side-effects intended for the success path', () => {
+    describe('perform side-effects', () => {
+        it('intended for the success path', () => {
             let mutable = noSideEffectText
 
             createSuccessOfString().performOnSuccess(value => mutable = value)
@@ -68,13 +68,13 @@ describe('Success', () => {
             mutable.should.equal(containedValue)
         })
 
-        it('no side-effects intended for the failure path', () => {
+        it('but not for the failure path', () => {
             expect(() => createSuccessOfString().performOnFailure(() => { throw 'Unexpected side-effect!' }))
                 .not.to.throw()
         })
     })
 
-    describe('should not fall back', () => {
+    describe('does not fall back', () => {
         const fallbackText = 'fallback'
 
         it('to a default value', () => {
@@ -99,7 +99,7 @@ describe('Success', () => {
         })
     })
 
-    it('should indicate the correct path', () => {
+    it('indicates the correct path', () => {
         const success = createSuccessOfString()
         success.isSuccess().should.be.true
         success.isFailure().should.be.false
@@ -120,20 +120,20 @@ describe('Success', () => {
         })
     })
 
-    it('should return the value when matched', () => {
+    it('returns the value when matched', () => {
         createSuccessOfString()
             .match(value => value, unsafeGet)
             .should.equal(containedValue)
     })
 
-    describe('should return', () => {
-        it('the value when it is requested', () => {
+    describe('provides access to', () => {
+        it('to the value', () => {
             createSuccessOfString()
                 .getOrElse(unsafeGet)
                 .should.equal(containedValue)
         })
 
-        it('the alternative when the error is requested', () => {
+        it('and returns an alternative when the error is requested', () => {
             const alternativeText = 'alternative'
             createSuccessOfString()
                 .getErrorOrElse(alternativeText)

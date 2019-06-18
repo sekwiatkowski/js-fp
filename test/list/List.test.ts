@@ -12,7 +12,7 @@ describe('List<T>', () => {
 
     const isEven = (x: number) => x % 2 == 0
 
-    describe('should be able to map over the items', () => {
+    describe('can map over items', () => {
         it('sequentially', () => {
             const increment = x => x + 1
             const result = listFromArray([1, 2, 3])
@@ -33,43 +33,43 @@ describe('List<T>', () => {
         })
     })
 
-    describe('should be able to sort items', () => {
-        it('ascendingly', () => {
-            const result = listFromArray([3, 1, 2])
-                .sort()
-                .getArray()
+    describe('can sort items', () => {
+        describe('ascendingly', () => {
+            it('without a provided map', () => {
+                listFromArray([3, 1, 2])
+                    .sort()
+                    .getArray()
+                    .should.eql([1, 2, 3])
+            })
 
-            result.should.eql([1, 2, 3])
+            it('with a provided map', () => {
+                listFromArray([createNumber(3), createNumber(1), createNumber(2)])
+                    .sortBy(x => x.value)
+                    .map(x => x.value)
+                    .getArray()
+                    .should.eql([1, 2, 3])
+            })
         })
 
-        it('descendingly', () => {
-            const result = listFromArray([3, 2, 1])
-                .sortDescendingly()
-                .getArray()
+        describe('descendingly', () => {
+            it('without a provided map', () => {
+                listFromArray([3, 2, 1])
+                    .sortDescendingly()
+                    .getArray()
+                    .should.eql([3, 2, 1])
+            })
 
-            result.should.eql([3, 2, 1])
-        })
-
-        it('ascendingly by a provided map', () => {
-            const result = listFromArray([createNumber(3), createNumber(1), createNumber(2)])
-                .sortBy(x => x.value)
-                .map(x => x.value)
-                .getArray()
-
-            result.should.eql([1, 2, 3])
-        })
-
-        it('descendingly by a provided map', () => {
-            const result = listFromArray([createNumber(3), createNumber(1), createNumber(2)])
-                .sortDescendinglyBy(x => x.value)
-                .map(x => x.value)
-                .getArray()
-
-            result.should.eql([3, 2, 1])
+            it('with a provided map', () => {
+                listFromArray([createNumber(3), createNumber(1), createNumber(2)])
+                    .sortDescendinglyBy(x => x.value)
+                    .map(x => x.value)
+                    .getArray()
+                    .should.eql([3, 2, 1])
+            })
         })
     })
 
-    describe('should concatenate with another list', () => {
+    describe('can concatenate another list', () => {
         it('when the first list is larger than the second', () => {
             listFromArray([1, 2, 3]).concat(listFromArray([4, 5])).getArray().should.eql([1, 2, 3, 4, 5])
         })
@@ -83,29 +83,31 @@ describe('List<T>', () => {
         })
     })
 
-    describe('should be able to test', () => {
-        it('if all items satisfy a predicate', () => {
-            emptyList().all(isEven).should.be.true
-            listFromArray([1]).all(isEven).should.be.false
-            listFromArray([1, 2]).all(isEven).should.be.false
-            listFromArray([2]).all(isEven).should.be.true
-            listFromArray([2, 4]).all(isEven).should.be.true
-        })
+    describe('can test', () => {
+        describe('whether a provided predicate is satisfied', () => {
+            it('by all items', () => {
+                emptyList().all(isEven).should.be.true
+                listFromArray([1]).all(isEven).should.be.false
+                listFromArray([1, 2]).all(isEven).should.be.false
+                listFromArray([2]).all(isEven).should.be.true
+                listFromArray([2, 4]).all(isEven).should.be.true
+            })
 
-        it('if at least one items satisfy a predicate', () => {
-            emptyList().some(isEven).should.be.false
-            listFromArray([1]).some(isEven).should.be.false
-            listFromArray([1, 2]).some(isEven).should.be.true
-            listFromArray([1, 2, 3]).some(isEven).should.be.true
-            listFromArray([2, 4]).some(isEven).should.be.true
-        })
+            it('by at least one item', () => {
+                emptyList().some(isEven).should.be.false
+                listFromArray([1]).some(isEven).should.be.false
+                listFromArray([1, 2]).some(isEven).should.be.true
+                listFromArray([1, 2, 3]).some(isEven).should.be.true
+                listFromArray([2, 4]).some(isEven).should.be.true
+            })
 
-        it('if no items satisfy a predicate', () => {
-            emptyList().none(isEven).should.be.true
-            listFromArray([1]).none(isEven).should.be.true
-            listFromArray([1, 2]).none(isEven).should.be.false
-            listFromArray([1, 2, 3]).none(isEven).should.be.false
-            listFromArray([2, 4]).none(isEven).should.be.false
+            it('by no items', () => {
+                emptyList().none(isEven).should.be.true
+                listFromArray([1]).none(isEven).should.be.true
+                listFromArray([1, 2]).none(isEven).should.be.false
+                listFromArray([1, 2, 3]).none(isEven).should.be.false
+                listFromArray([2, 4]).none(isEven).should.be.false
+            })
         })
 
         it('how many items satisfy a predicate', () => {
@@ -126,52 +128,95 @@ describe('List<T>', () => {
             listFromArray(["B"]).contains("A").should.be.false
             listFromArray(["A", "B"]).contains("A").should.be.true
         })
-    })
 
-    describe('should safely return items', () => {
-        it('as Some instance if they do exist', () => {
-            listFromArray([1]).get(0).should.be.instanceOf(Some)
-            listFromArray([1, 2]).get(1).should.be.instanceOf(Some)
-        })
+        describe('for equality with another list', () => {
+            it('equal if it contains the same items', () => {
+                emptyList().equals(emptyList()).should.be.true
+                emptyList().equals(listFromArray([1])).should.be.false
+                listFromArray([1]).equals(emptyList()).should.be.false
+                listFromArray([1]).equals(listFromArray([1, 2])).should.be.false
+                listFromArray([1, 2]).equals(listFromArray([1])).should.be.false
+                listFromArray([1, 1, 2]).equals(listFromArray([1, 2])).should.be.false
+            })
 
-        it('and none if they do not exist', () => {
-            emptyList().get(0).should.be.instanceOf(None)
-            listFromArray([1]).get(1).should.be.instanceOf(None)
-        })
-    })
+            it('in the same sequence', () => {
+                listFromArray([1, 2]).equals(listFromArray([1, 2])).should.be.true
+                listFromArray([1, 2]).equals(listFromArray([2, 1])).should.be.false
+            })
 
-    describe('should return a default',  () => {
-        const defaultText = "default"
-        it('when an item at the provided index does not exists', () => {
-            emptyList().getOrElse(0, defaultText).should.equal(defaultText)
-            emptyList().getOrElse(0, () => defaultText).should.equal(defaultText)
-        })
-
-        it('but not when the item at the provided index exists', () => {
-            const valueText = "value"
-            listFromArray([valueText]).getOrElse(0, defaultText).should.equal(valueText)
-            listFromArray([valueText]).getOrElse(0, () => defaultText).should.equal(valueText)
+            it('and unequal if the other list is null or undefined', () => {
+                emptyList().equals(null).should.be.false
+                emptyList().equals(undefined).should.be.false
+            })
         })
     })
 
-    describe('should be able to take', () => {
-        const l = listFromArray([1, 2, 3])
-        it('the first n items', () => {
-            l.take(1).getArray().should.eql([1])
-            l.take(2).getArray().should.eql([1, 2])
+    describe('provides access', () => {
+        describe('to individual items', () => {
+            describe('safely', () => {
+                it('as Some instances if they do exist', () => {
+                    listFromArray([1]).get(0).should.be.instanceOf(Some)
+                    listFromArray([1, 2]).get(1).should.be.instanceOf(Some)
+                })
+
+                it('and returns none if they do not exist', () => {
+                    emptyList().get(0).should.be.instanceOf(None)
+                    listFromArray([1]).get(1).should.be.instanceOf(None)
+                })
+
+                describe('with distinct methods', () => {
+                    it('for the first item', () => {
+                        emptyList().first().should.equal(none)
+                        listFromArray([1]).first().equals(some(1)).should.be.true
+                    })
+
+                    describe('should return as the last item', () => {
+                        it('none if the list is empty', () => {
+                            emptyList().last().should.equal(none)
+                        })
+
+                        it('an instance of Some if the list is not empty', () => {
+                            listFromArray([1]).last().equals(some(1)).should.be.true
+                        })
+                    })
+                })
+            })
+
+            describe('... or a default value',  () => {
+                const defaultText = "default"
+                it('when an item at the provided index does not exist', () => {
+                    emptyList().getOrElse(0, defaultText).should.equal(defaultText)
+                    emptyList().getOrElse(0, () => defaultText).should.equal(defaultText)
+                })
+
+                it('but not when it does exist', () => {
+                    const valueText = "value"
+                    listFromArray([valueText]).getOrElse(0, defaultText).should.equal(valueText)
+                    listFromArray([valueText]).getOrElse(0, () => defaultText).should.equal(valueText)
+                })
+            })
+
         })
 
-        it('no items', () => {
-            l.take(0).getArray().should.eql([])
-        })
+        describe('to multiple items', () => {
+            const l = listFromArray([1, 2, 3])
+            it('such as the first n items', () => {
+                l.take(1).getArray().should.eql([1])
+                l.take(2).getArray().should.eql([1, 2])
+            })
 
-        it('the last n items', () => {
-            l.take(-1).getArray().should.eql([3])
-            l.take(-2).getArray().should.eql([2, 3])
+            it('no items', () => {
+                l.take(0).getArray().should.eql([])
+            })
+
+            it('or the last n items', () => {
+                l.take(-1).getArray().should.eql([3])
+                l.take(-2).getArray().should.eql([2, 3])
+            })
         })
     })
 
-    it('should be able to filter items', () => {
+    it('can filter items', () => {
         emptyList().filter(isEven).getArray().should.eql([])
         listFromArray([1]).filter(isEven).getArray().should.eql([])
         listFromArray([1, 2]).filter(isEven).getArray().should.eql([2])
@@ -179,62 +224,68 @@ describe('List<T>', () => {
         listFromArray([1, 2, 3, 4]).filter(isEven).getArray().should.eql([2, 4])
     })
 
-    it('should be able to return the number of items', () => {
+    it('can indicate the number of items', () => {
         emptyList().size().should.equal(0)
         listFromArray([1]).size().should.equal(1)
         listFromArray([1, 2]).size().should.equal(2)
     })
 
-    describe('should perform', () => {
+    describe('can perform side-effects', () => {
         const sideEffectText = 'side-effect'
         const noSideEffectText = 'no side-effect'
 
-        it('side-effects intended for the non-empty path only if the list contains, in fact, items', () => {
-            let mutable = noSideEffectText
+        describe('on both paths', () => {
+            it('if the list is empty', () => {
+                let mutable = noSideEffectText
 
-            listFromArray([1]).performOnNonEmpty(() => mutable = sideEffectText)
+                emptyList().perform(() => mutable = sideEffectText)
 
-            mutable.should.equal(sideEffectText)
+                mutable.should.equal(sideEffectText)
+            })
+
+            it('if the list is not empty', () => {
+                let mutable = noSideEffectText
+
+                listFromArray([1]).perform(() => mutable = sideEffectText)
+
+                mutable.should.equal(sideEffectText)
+            })
         })
 
-        it('and not if the list is empty', () => {
-            let mutable = noSideEffectText
+        describe('intended for the non-empty path', () => {
+            it('if the list, in fact, contains items', () => {
+                let mutable = noSideEffectText
 
-            emptyList().performOnNonEmpty(() => mutable = sideEffectText)
+                listFromArray([1]).performOnNonEmpty(() => mutable = sideEffectText)
 
-            mutable.should.equal(noSideEffectText)
+                mutable.should.equal(sideEffectText)
+            })
+
+            it('... and not if the list is empty', () => {
+                let mutable = noSideEffectText
+
+                emptyList().performOnNonEmpty(() => mutable = sideEffectText)
+
+                mutable.should.equal(noSideEffectText)
+            })
         })
 
-        it('side-effects intended for the empty path only if the list is, in fact, empty', () => {
-            let mutable = noSideEffectText
+        describe('intended for the empty path', () => {
+            it('if the list is, in fact, empty', () => {
+                let mutable = noSideEffectText
 
-            emptyList().performOnEmpty(() => mutable = sideEffectText)
+                emptyList().performOnEmpty(() => mutable = sideEffectText)
 
-            mutable.should.equal(sideEffectText)
-        })
+                mutable.should.equal(sideEffectText)
+            })
 
-        it('and not if the list contains values', () => {
-            let mutable = noSideEffectText
+            it('... and not if the list contains values', () => {
+                let mutable = noSideEffectText
 
-            listFromArray([1]).performOnEmpty(() => mutable = sideEffectText)
+                listFromArray([1]).performOnEmpty(() => mutable = sideEffectText)
 
-            mutable.should.equal(noSideEffectText)
-        })
-
-        it('side-effects on intended for both paths if the list is empty', () => {
-            let mutable = noSideEffectText
-
-            emptyList().perform(() => mutable = sideEffectText)
-
-            mutable.should.equal(sideEffectText)
-        })
-
-        it('side-effects on intended for both paths if the list is not empty', () => {
-            let mutable = noSideEffectText
-
-            listFromArray([1]).perform(() => mutable = sideEffectText)
-
-            mutable.should.equal(sideEffectText)
+                mutable.should.equal(noSideEffectText)
+            })
         })
 
         it('side-effects on individual items', () => {
@@ -250,46 +301,29 @@ describe('List<T>', () => {
         })
     })
 
-    describe('should consider another list to be', () => {
-        it('equal if it contains the same items', () => {
-            emptyList().equals(emptyList()).should.be.true
-            emptyList().equals(listFromArray([1])).should.be.false
-            listFromArray([1]).equals(emptyList()).should.be.false
-            listFromArray([1]).equals(listFromArray([1, 2])).should.be.false
-            listFromArray([1, 2]).equals(listFromArray([1])).should.be.false
-            listFromArray([1, 1, 2]).equals(listFromArray([1, 2])).should.be.false
-        })
-
-        it('in the same sequence', () => {
-            listFromArray([1, 2]).equals(listFromArray([1, 2])).should.be.true
-            listFromArray([1, 2]).equals(listFromArray([2, 1])).should.be.false
-        })
-
-        it('and unequal if the other list is null or undefined', () => {
-            emptyList().equals(null).should.be.false
-            emptyList().equals(undefined).should.be.false
-        })
-    })
-
     describe('should flatten', () => {
-        it('arrays of the same size', () => {
-            listFromArray([[1, 2], [3, 4]]).flatten().equals(listFromArray([1, 2, 3, 4]))
+        describe('arrays', () => {
+            it('of the same size', () => {
+                listFromArray([[1, 2], [3, 4]]).flatten().equals(listFromArray([1, 2, 3, 4]))
+            })
+
+            it('of different sizes', () => {
+                listFromArray([[1, 2], [3, 4, 5]]).flatten().equals(listFromArray([1, 2, 3, 4, 5]))
+            })
         })
 
-        it('lists of the same size', () => {
-            listFromArray([listFromArray([1, 2]), listFromArray([3, 4])]).flatten().equals(listFromArray([1, 2, 3, 4]))
-        })
+        describe('lists', () => {
+            it('of the same size', () => {
+                listFromArray([listFromArray([1, 2]), listFromArray([3, 4])]).flatten().equals(listFromArray([1, 2, 3, 4]))
+            })
 
-        it('arrays of the different sizes', () => {
-            listFromArray([[1, 2], [3, 4, 5]]).flatten().equals(listFromArray([1, 2, 3, 4, 5]))
-        })
-
-        it('lists of different sizes', () => {
-            listFromArray([listFromArray([1, 2]), listFromArray( [3, 4, 5])]).flatten().equals(listFromArray([1, 2, 3, 4, 5]))
+            it('of different sizes', () => {
+                listFromArray([listFromArray([1, 2]), listFromArray( [3, 4, 5])]).flatten().equals(listFromArray([1, 2, 3, 4, 5]))
+            })
         })
     })
 
-    describe('should group', () => {
+    describe('can group', () => {
         interface WithKeyAndValue {
             key: string
             value: number
@@ -303,7 +337,7 @@ describe('List<T>', () => {
             emptyList<WithKeyAndValue>().groupBy(item => item.key).should.be.empty
         })
 
-        it('a list with one key as an object with one property', () => {
+        it('a list with one selected key as an object with one property', () => {
             const A1 = create('A', 1)
             const A2 = create('A', 2)
 
@@ -312,7 +346,7 @@ describe('List<T>', () => {
             listFromArray([A1, A2]).groupBy(item => item.key).should.eql({'A': [A1, A2]})
         })
 
-        it('a list with one key as an object with two properties', () => {
+        it('a list with two selected key as an object with two properties', () => {
             const A1 = create('A', 1)
             const A2 = create('A', 2)
             const B1 = create('B', 1)
@@ -325,47 +359,29 @@ describe('List<T>', () => {
         })
     })
 
-    describe('should return as the first item', () => {
-        it('none if the list is empty', () => {
-            emptyList().first().should.equal(none)
+    describe('can safely search', () => {
+        describe('for the first item matching a predicate', () => {
+            it('and return none if there are no matches', () => {
+                listFromArray([1]).find(isEven).should.equal(none)
+            })
+
+            it('and return an instance of Some if there is a match', () => {
+                listFromArray([1, 2, 3, 4]).find(isEven).equals(some(2)).should.be.true
+            })
         })
 
-        it('an instance of Some if the list is not empty', () => {
-            listFromArray([1]).first().equals(some(1)).should.be.true
-        })
-    })
+        describe('for the last item matching a predicate', () => {
+            it('and return none if there are no matches', () => {
+                listFromArray([1]).findLast(isEven).should.equal(none)
+            })
 
-    describe('should return as the last item', () => {
-        it('none if the list is empty', () => {
-            emptyList().last().should.equal(none)
-        })
-
-        it('an instance of Some if the list is not empty', () => {
-            listFromArray([1]).last().equals(some(1)).should.be.true
-        })
-    })
-
-    describe('should search for the first item matching a predicate', () => {
-        it('and return none if there are no matches', () => {
-            listFromArray([1]).find(isEven).should.equal(none)
-        })
-
-        it('and return an instance of Some if there is a match', () => {
-            listFromArray([1, 2, 3, 4]).find(isEven).equals(some(2)).should.be.true
+            it('and return an instance of Some if there is a match', () => {
+                listFromArray([1, 2, 3, 4]).findLast(isEven).equals(some(4)).should.be.true
+            })
         })
     })
 
-    describe('should search for the last item matching a predicate', () => {
-        it('and return none if there are no matches', () => {
-            listFromArray([1]).findLast(isEven).should.equal(none)
-        })
-
-        it('and return an instance of Some if there is a match', () => {
-            listFromArray([1, 2, 3, 4]).findLast(isEven).equals(some(4)).should.be.true
-        })
-    })
-
-    describe('should add an item', () => {
+    describe('can add an item', () => {
         it('to the end', () => {
             listFromArray([1]).append(2).equals(list(1, 2)).should.be.true
         })
@@ -389,26 +405,26 @@ describe('List<T>', () => {
     const three = {number:3}
     const byNumber = x => x.number
 
-    describe('should reduce', () => {
+    describe('can reduce', () => {
         const addition = (a: number) => (b: number) => a+b
 
-        it('lists with less than two items to none', () => {
+        it('a list with less than two items to none', () => {
             assertNone(emptyList<number>().reduce(unusedFunction))
             assertNone(listFromArray([1]).reduce(unusedFunction))
         })
 
-        it('a list of numbers', () => {
+        it('a list of numbers using the provided semigroup', () => {
             assertSome(listFromArray([1, 2]).reduce(addition), 3)
             assertSome(listFromArray([1, 2, 3]).reduce(addition), 6)
         })
 
-        it('a list of objects with a numeric member', () => {
+        it('a  list based on a provided key selector', () => {
             assertSome(listFromArray([one, two]).reduceBy(byNumber, addition), 3)
             assertSome(listFromArray([one, two, three]).reduceBy(byNumber, addition), 6)
         })
     })
 
-    describe('should fold', () => {
+    describe('can fold', () => {
         it('an empty list to none', () => {
             assertNone(emptyList<number>().fold(unusedFunction, undefined))
         })

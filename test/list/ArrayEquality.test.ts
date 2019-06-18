@@ -16,7 +16,7 @@ const chai = require('chai')
 
 chai.should()
 
-describe('Equalities and nullable equalities for arrays of basic types should', () => {
+describe('Equalities and nullable equalities for arrays of basic types', () => {
     const equalities = list<Equivalence<any[]>>(
         StringArrayEquality, NumberArrayEquality, BooleanArrayEquality, DateArrayEquality,
         NullableStringArrayEquality, NullableNumberArrayEquality, NullableBooleanArrayEquality, NullableDateArrayEquality)
@@ -39,7 +39,7 @@ describe('Equalities and nullable equalities for arrays of basic types should', 
     })
 })
 
-describe('Equalities for arrays of basic types should', () => {
+describe('Equalities for arrays of basic types', () => {
     const equalities = list<Equivalence<any[]>>(
         StringArrayEquality,
         NumberArrayEquality,
@@ -52,7 +52,7 @@ describe('Equalities for arrays of basic types should', () => {
     })
 })
 
-describe('Nullable equality for basic types should return', () => {
+describe('Nullable equality for basic types', () => {
     const equalities = list<Equivalence<any>>(
         NullableStringArrayEquality,
         NullableNumberArrayEquality,
@@ -65,7 +65,7 @@ describe('Nullable equality for basic types should return', () => {
     })
 })
 
-describe('StringArrayEquality and NullableStringArrayEquality should', () => {
+describe('StringArrayEquality and NullableStringArrayEquality', () => {
     const equalities = list(StringArrayEquality, NullableStringArrayEquality)
     const { expectFalse, expectTrue } = expectFromTests(equalities)
 
@@ -87,7 +87,7 @@ describe('StringArrayEquality and NullableStringArrayEquality should', () => {
     })
 })
 
-describe('NumberArrayEquality and NullableNumberArrayEquality should', () => {
+describe('NumberArrayEquality and NullableNumberArrayEquality', () => {
     const equalities = list(NumberArrayEquality, NullableNumberArrayEquality)
     const { expectFalse, expectTrue } = expectFromTests(equalities)
 
@@ -109,7 +109,7 @@ describe('NumberArrayEquality and NullableNumberArrayEquality should', () => {
     })
 })
 
-describe('BooleanArrayEquality and NullableBooleanArrayEquality should', () => {
+describe('BooleanArrayEquality and NullableBooleanArrayEquality', () => {
     const equalities = list(BooleanArrayEquality, NullableBooleanArrayEquality)
     const { expectFalse, expectTrue } = expectFromTests(equalities)
 
@@ -135,7 +135,7 @@ describe('BooleanArrayEquality and NullableBooleanArrayEquality should', () => {
     })
 })
 
-describe('DateArrayEquality and NullableDateArrayEquality should', () => {
+describe('DateArrayEquality and NullableDateArrayEquality', () => {
     const equalities = list(DateArrayEquality, NullableDateArrayEquality)
     const { expectFalse, expectTrue } = expectFromTests(equalities)
 

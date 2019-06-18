@@ -22,22 +22,26 @@ describe('Order', () => {
         {rank: 3, experience: 5}
     ]
 
-    const check = (order: Order<Employee>) => createEmployees().sort(order).getArray().should.eql(expectedSorting)
-    it('should concatenate with a comparison function', () => {
+    const check = (order: Order<Employee>) => createEmployees()
+        .sort(order)
+        .getArray()
+        .should.eql(expectedSorting)
+
+    it('concatenates with a comparison function', () => {
         const comparison = (e1, e2) => DescendingNumberOrder.compare(e1.experience, e2.experience)
 
         check(order<Employee>((e1, e2) => NumberOrder.compare(e1.rank, e2.rank))
             .concat(comparison))
     })
 
-    it('should concatenate with another oder', () => {
+    it('concatenates with another oder', () => {
         const order = orderDescendinglyBy<Employee, number>(e => e.experience)
 
         check(orderBy<Employee, number>(e => e.rank)
             .concat(order))
     })
 
-    it('should concatenate using thenDescendinglyBy', () => {
+    it('concatenates using thenDescendinglyBy', () => {
         check(orderBy<Employee, number>(e => e.rank)
             .thenDescendinglyBy(e => e.experience))
     })

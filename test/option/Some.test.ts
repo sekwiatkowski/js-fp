@@ -12,7 +12,7 @@ describe('Some', () => {
     const satisfiedPredicate = value => value === containedValue
     const violatedPredicate = value => value === 'something else'
 
-    describe('should be able to build an object', () => {
+    describe('can build an object', () => {
         it('one member at a time', () => {
             some({})
                 .assign('a', 1)
@@ -41,14 +41,14 @@ describe('Some', () => {
             objectThatSatisfiesTestInterface.second.should.equal(secondValue)
         })
 
-        it('but switch to none when none is assigned to a member', () => {
+        it('but switches to none when none is assigned to a member', () => {
             some({})
                 .assign('firstMember', none)
                 .should.equal(none)
         })
     })
 
-    it('should be able to apply parameters', () => {
+    it('can apply parameters', () => {
         some((a: number) => (b: number) => (c: number) => (d: number) => a + b + c + d)
             .apply(1)
             .apply(() => 2)
@@ -58,7 +58,7 @@ describe('Some', () => {
             .should.be.true
     })
 
-    it('should map over the value', () => {
+    it('can map over the contained value', () => {
         const text = 'mapped over value'
         createSomeOfString()
             .map(() => text)
@@ -66,12 +66,12 @@ describe('Some', () => {
             .should.be.true
     })
 
-    it('should indicate the correct path', () => {
+    it('indicates the correct path', () => {
         createSomeOfString().isSome().should.be.true
         createSomeOfString().isNone().should.be.false
     })
 
-    it('should return the value when matched', () => {
+    it('returns the contained value when matched', () => {
         createSomeOfString()
             .match(
                 value => value,
@@ -80,8 +80,8 @@ describe('Some', () => {
             .should.equal(containedValue)
     })
 
-    describe('should perform', () => {
-        it('side-effects intended for the Some path', () => {
+    describe('performs side-effects', () => {
+        it('intended for the Some path', () => {
             let mutable = 'before side-effect'
 
             createSomeOfString().performOnSome(value => mutable = value)
@@ -89,23 +89,23 @@ describe('Some', () => {
             mutable.should.equal(containedValue)
         })
 
-        it('no side-effects intended for the None path', () => {
+        it('but ignores side-effects intended for the None path', () => {
             expect(() => createSomeOfString().performOnNone(() => { throw 'Unexpected side-effect!' }))
                 .not.to.throw()
         })
     })
 
-    describe('should not return', () => {
-        it('a default value', () => {
+    describe('does not return', () => {
+        it('default values', () => {
             createSomeOfString().getOrElse('default').should.equal(containedValue)
         })
 
-        it('the result of an alternative computation', () => {
+        it('or fallback computations', () => {
             createSomeOfString().getOrElse(() => 'alternative computation').should.equal(containedValue)
         })
     })
 
-    describe('should not fall back', () => {
+    describe('does not fall back to', () => {
         const fallbackText = 'fallback'
 
         it('to a default value', () => {
@@ -116,12 +116,11 @@ describe('Some', () => {
 
         })
 
-        it('to the result of a guaranteed computation', () => {
+        it('to the result of a computation', () => {
             const instance = createSomeOfString()
             instance
                 .orElse(() => fallbackText)
                 .should.equal(instance)
-
         })
 
         it('to an alternative attempt', () => {
@@ -132,12 +131,12 @@ describe('Some', () => {
         })
     })
 
-    it('should be able to test the contained value', () => {
+    it('can test predicates', () => {
         createSomeOfString().test(satisfiedPredicate).should.be.true
         createSomeOfString().test(violatedPredicate).should.be.false
     })
 
-    it('should be able to filter', () => {
+    it('can be filtered', () => {
         const instance = createSomeOfString()
         instance.filter(satisfiedPredicate).should.equal(instance)
         instance.filter(violatedPredicate).should.equal(none)

@@ -5,7 +5,7 @@ const chai = require('chai')
 chai.should()
 
 describe('Result', () => {
-    it('should be able to perform side-effects on both paths', () => {
+    it('can perform side-effects on both paths', () => {
         let mutable = 0
 
         success('value').perform(() => { mutable++ })

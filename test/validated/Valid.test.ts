@@ -11,7 +11,7 @@ describe('Valid', () => {
     const createValidString = () => valid<string, string>(containedString)
     const noSideEffectText = 'no side-effect'
 
-    it('should be able to apply parameters', () => {
+    it('can apply parameters', () => {
         valid((a: number) => (b: number) => (c: number) => (d: number) => a + b + c + d)
             .apply(1)
             .apply(() => 2)
@@ -21,7 +21,7 @@ describe('Valid', () => {
             .should.be.true
     })
 
-    describe('should be able to build objects', () => {
+    describe('can build objects', () => {
         it('one member at a time', () => {
             valid({})
                 .assign('a', 1)
@@ -33,7 +33,7 @@ describe('Valid', () => {
                 .should.be.true
         })
 
-        it('but switch to the Invalid path when an invalid instance is assigned to a member', () => {
+        it('but switches to the Invalid path when an instance of Invalid is assigned to a member', () => {
             const errors = ['error']
             valid({})
                 .assign('x', invalid(errors))
@@ -42,28 +42,28 @@ describe('Valid', () => {
         })
     })
 
-    describe('should be able to return', () => {
-        it('the value when it is requested', () => {
+    describe('provides access', () => {
+        it('to the value', () => {
             createValidString()
                 .getOrElse(unsafeGet)
                 .should.equal(containedString)
         })
 
         const fallback = ['fallback']
-        it('a default value when the errors are requested', () => {
+        it('but returns a default when the errors are requested', () => {
             createValidString()
                 .getErrorsOrElse(fallback)
                 .should.equal(fallback)
         })
 
-        it('the result of a guaranteed computation when the errors are requested', () => {
+        it('... or the result of a guaranteed computation', () => {
             createValidString()
                 .getErrorsOrElse(() => fallback)
                 .should.equal(fallback)
         })
     })
 
-    describe('should concatenate', () => {
+    describe('concatenates', () => {
         it('with another Valid instance by returning that other instance', () => {
             const other = valid<string, string>('another string')
             createValidString().concat(other).should.equal(other)
@@ -75,13 +75,13 @@ describe('Valid', () => {
         })
     })
 
-    it('should indicate the correct path', () => {
+    it('indicates the correct path', () => {
         const validString = createValidString()
         validString.isValid().should.be.true
         validString.isInvalid().should.be.false
     })
 
-    describe('should map', () => {
+    describe('maps', () => {
         it('over the value', () => {
             const f = value => `mapped over ${value}`
             createValidString()
@@ -90,7 +90,7 @@ describe('Valid', () => {
                 .should.be.true
         })
 
-        it('but ignore attempts to map over the list of errors', () => {
+        it('but ignores attempts to map over the list of errors', () => {
             expect(() => createValidString().mapErrors(() => { throw 'Unexpected map!' }))
                 .not.to.throw()
         })
@@ -104,15 +104,15 @@ describe('Valid', () => {
             .should.equal(containedString)
     })
 
-    describe('should perform', () => {
-        it('should be able to perform side-effects using the contained value', () => {
+    describe('perform side-effects', () => {
+        it('intended for the valid path', () => {
             let mutable = noSideEffectText
             const afterSideEffectText = 'after side-effect'
             createValidString().perform(() => mutable = 'after side-effect' )
             mutable.should.equal(afterSideEffectText)
         })
 
-        it('should ignore side-effects intended for the Invalid path', () => {
+        it('ignore side-effects intended for the invalid path', () => {
             expect(() => createValidString().performOnInvalid(() => { throw 'Unexpected side-effect!' }))
                 .not.to.throw()
         })

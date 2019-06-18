@@ -6,7 +6,7 @@ chai.should()
 const expect = chai.expect
 
 describe('None', () => {
-    it('should be able to apply parameters', () => {
+    it('ignores attempts to apply parameters', () => {
         (none as Option<(a: number) => (b: number) => (c: number) => (d: number) => number>)
             .apply(1)
             .apply(() => 2)
@@ -15,7 +15,7 @@ describe('None', () => {
             .should.equal(none)
     })
 
-    it('should ignore attempts to build an object', () => {
+    it('ignores attempts to build an object', () => {
         (none as Option<{}>)
             .assign('a', 1)
             .assign('b', scope => scope.a + 1)
@@ -25,27 +25,27 @@ describe('None', () => {
             .should.equal(none)
     })
 
-    it('should ignore attempts to chain', () => {
+    it('ignores attempts to chain', () => {
         none.chain(() => some('text')).should.equal(none)
     })
 
-    it('should ignore attempts to map over the value', () => {
+    it('ignores attempts to map', () => {
         none.map(() => 'mapped over value').should.equal(none)
     })
 
-    it('should indicate the correct path', () => {
+    it('can indicate the correct path', () => {
         none.isSome().should.be.false
         none.isNone().should.be.true
     })
 
-    it('should return the alternative when matched', () => {
+    it('returns the alternative when matched', () => {
         const alternativeText = 'alternative'
         none.match(
             value => value,
             () => alternativeText).should.equal(alternativeText)
     })
 
-    describe('should perform', () => {
+    describe('can perform', () => {
         it('side-effects intended for the None path', () => {
             let mutable = 'before side-effect'
 
@@ -55,26 +55,26 @@ describe('None', () => {
             mutable.should.equal(sideEffectText)
         })
 
-        it('no side-effects intended for the Some path', () => {
+        it('but no side-effects intended for the Some path', () => {
             expect(() => none.performOnSome(() => { throw 'Unexpected side-effect!' }))
                 .not.to.throw()
         })
     })
 
-    describe('should return', () => {
+    describe('can return', () => {
         it('a default value', () => {
             const defaultText = 'default';
             (none as Option<string>).getOrElse(defaultText).should.equal(defaultText)
         })
 
-        it('the result of an alternative computation', () => {
+        it('or the result of an alternative computation', () => {
             const alternativeText = 'alternative'
             const alternativeComputation = () => alternativeText;
             (none as Option<string>).getOrElse(alternativeComputation).should.equal(alternativeText)
         })
     })
 
-    describe('should fall back', () => {
+    describe('can fall back', () => {
         const fallbackText = 'fallback';
 
         it('to a default value', () => {
@@ -91,7 +91,7 @@ describe('None', () => {
                 .should.be.true
         })
 
-        it('to an alternative attempt', () => {
+        it('or try another computation with an optional result', () => {
             (none as Option<string>)
                 .orAttempt(() => some(fallbackText))
                 .equals(some(fallbackText))
@@ -99,11 +99,11 @@ describe('None', () => {
         })
     })
 
-    it('should return false when tested', () => {
+    it('always return false when tested for equality', () => {
         none.test(() => true).should.be.false
     })
 
-    it('should always return none when filtered', () => {
+    it('always return none when filtered', () => {
         none.filter(() => true).should.equal(none)
     })
 })

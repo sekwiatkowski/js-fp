@@ -9,7 +9,7 @@ describe('Failure', () => {
     const createFailureOfString = () => failure<string, string>(error)
     const noSideEffectText = 'no side-effect'
 
-    it('should ignore attempts to apply parameters', () => {
+    it('ignores attempts to apply parameters', () => {
         failure<((a: number) => (b: number) => (c: number) => (d: number) => number), string>(error)
             .apply(1)
             .apply(() => 2)
@@ -19,7 +19,7 @@ describe('Failure', () => {
             .should.be.true
     })
 
-    it('should ignore attempts to build an object', () => {
+    it('ignores attempts to build an object', () => {
         failure<{}, string>(error)
             .assign('a', 1)
             .assign('b', scope => scope.a + 1)
@@ -30,8 +30,8 @@ describe('Failure', () => {
             .should.be.true
     })
 
-    describe('should perform', () => {
-        it('side-effects intended for the failure path', () => {
+    describe('performs side-effects', () => {
+        it('intended for the failure path', () => {
             let mutable = noSideEffectText
 
             createFailureOfString().performOnFailure(error => mutable = error)
@@ -39,13 +39,13 @@ describe('Failure', () => {
             mutable.should.equal(error)
         })
 
-        it('no side-effects intended for the success path', () => {
+        it('but not for the success path', () => {
             expect(() => createFailureOfString().performOnSuccess(() => { throw 'Unexpected side-effect!'}))
                 .not.to.throw()
         })
     })
 
-    describe('should be able to switch to the success path', () => {
+    describe('can switch to the success path', () => {
         const fallbackText = 'fallback'
 
         it('using a default value', () => {
@@ -70,13 +70,13 @@ describe('Failure', () => {
         })
     })
 
-    it('should indicate the correct path', () => {
+    it('indicates the correct path', () => {
         const success = createFailureOfString()
         success.isSuccess().should.be.false
         success.isFailure().should.be.true
     })
 
-    describe('should map', () => {
+    describe('maps', () => {
         it('over the error', () => {
             const f = error => `mapped over ${error}`
             createFailureOfString()
@@ -85,19 +85,19 @@ describe('Failure', () => {
                 .should.be.true
         })
 
-        it('but ignore maps over the value', () => {
+        it('and ignores maps over the value', () => {
             expect(() => createFailureOfString().map(() => { throw 'Unexpected map!' }))
                 .not.to.throw()
         })
     })
 
-    it('should return the error when matched', () => {
+    it('returns the error when matched', () => {
         createFailureOfString()
             .match(unsafeGet, error => error)
             .should.equal(error)
     })
 
-    describe('should return', () => {
+    describe('returns', () => {
         it('the alternative when the value is requested', () => {
             const alternativeText = 'alternative'
             createFailureOfString()

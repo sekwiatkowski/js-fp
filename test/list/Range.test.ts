@@ -1,7 +1,7 @@
 import {emptyList, inclusiveRange, list, List, listFromArray, NonEmptyList, range} from '../../src'
 
 describe('range', () => {
-    describe('without an end argument should return', () => {
+    describe('without an end argument  returns', () => {
         function checkWithStartOnly(n: number, expected: List<number>) {
             range(n).equals(expected).should.be.true
         }
@@ -21,7 +21,7 @@ describe('range', () => {
         })
     })
 
-    describe('with a defined end argument should return', () => {
+    describe('with an end argument returns', () => {
         function check(start: number, end: number, expected: List<number>) {
             range(start, end).equals(expected).should.be.true
         }
@@ -64,7 +64,7 @@ describe('inclusiveRange', () => {
         check(2, list(0,1, 2))
     })
 
-    it('with a defined end argument should returna list from start to end', () => {
+    it('with an end argument should returns a list from start to end', () => {
         function check(start: number, end: number, expected: NonEmptyList<number>) {
             inclusiveRange(start, end).equals(expected).should.be.true
         }
@@ -86,6 +86,5 @@ describe('inclusiveRange', () => {
         check(1, 0, list(1, 0))
         check(1, 1, list(1))
         check(1, 2, list(1, 2))
-
     })
 })

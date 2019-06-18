@@ -25,24 +25,24 @@ export function expectFromTests<T>(equivalences: NonEmptyList<Equivalence<T>>) {
     }
 }
 
-describe('Equality and nullable equality should return false if', () => {
+describe('Equality and nullable equality return false', () => {
     const all = list<Equivalence<any>>(
         StringEquality, NumberEquality, BooleanEquality, DateEquality,
         NullableStringEquality, NullableNumberEquality, NullableBooleanEquality, NullableDateEquality)
 
     const { expectFalse } = expectFromTests(all)
 
-    it('both arguments are undefined', () => {
+    it('if both arguments are undefined', () => {
         expectFalse(undefined, undefined)
     })
 
-    it('null and undefined are tested', () => {
+    it('if null and undefined are tested', () => {
         expectFalse(null, undefined)
         expectFalse(undefined, null)
     })
 })
 
-describe('Equalities for basic types should', () => {
+describe('Equalities for basic types', () => {
     const equalities = list<Equivalence<any>>(
         StringEquality, NumberEquality, BooleanEquality, DateEquality)
 
@@ -53,7 +53,7 @@ describe('Equalities for basic types should', () => {
     })
 })
 
-describe('Nullable equality for basic types should', () => {
+describe('Nullable equality for basic types', () => {
     const nullableEqualities = list<Equivalence<any>>(
         NullableStringEquality, NullableNumberEquality, NullableBooleanEquality, NullableDateEquality)
 
@@ -72,7 +72,7 @@ describe('StringEquality and NullableStringEquality', () => {
     const sameText = 'text'
     const otherText = 'other'
 
-    it('should return true if and only if two strings identical in value are tested', () => {
+    it('return true if and only if two strings identical in value are tested', () => {
         expectTrue(text, sameText)
         expectTrue(sameText, text)
 
@@ -80,7 +80,7 @@ describe('StringEquality and NullableStringEquality', () => {
         expectFalse(otherText, text)
     })
 
-    describe('should return false', () => {
+    describe('return false', () => {
         it('if a string and null are tested', () => {
             expectFalse(text, null)
             expectFalse(null, text)
@@ -101,7 +101,7 @@ describe('NumberEquality and NullableNumberEquality', () => {
     const sameNumber = 1
     const otherNumber = 0
 
-    it('should return true if and only if two strings identical in value are tested', () => {
+    it('return true if and only if two strings identical in value are tested', () => {
         expectTrue(number, sameNumber)
         expectTrue(sameNumber, number)
 
@@ -109,7 +109,7 @@ describe('NumberEquality and NullableNumberEquality', () => {
         expectFalse(otherNumber, number)
     })
 
-    describe('should return false', () => {
+    describe('return false', () => {
         it('if a number and null are tested', () => {
             expectFalse(number, null)
             expectFalse(null, number)
@@ -133,7 +133,7 @@ describe('BooleanEquality and NullableBooleanEquality', () => {
         expectFalse(false, true)
     })
 
-    describe('should return false', () => {
+    describe('return false', () => {
         it('if a boolean and null are tested', () => {
             expectFalse(true, null)
             expectFalse(false, null)
@@ -158,14 +158,14 @@ describe('DateEquality and NullableDateEquality', () => {
     const sameDate = new Date(2019, 0, 1)
     const differentDate = new Date(2019, 0, 2)
 
-    it('should return true if and only if two dates identical in value are tested', () => {
+    it('return true if and only if two dates identical in value are tested', () => {
         expectTrue(date, sameDate)
         expectTrue(sameDate, date)
         expectFalse(date, differentDate)
         expectFalse(differentDate, date)
     })
 
-    describe('should return false', () => {
+    describe('return false', () => {
         it('if a date and null are tested', () => {
             expectFalse(date, null)
             expectFalse(null, date)

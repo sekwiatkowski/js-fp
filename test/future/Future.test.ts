@@ -18,7 +18,7 @@ describe('Future', () => {
 
     const timeout = 30
 
-    describe('should be able to build an object', () => {
+    describe('can build an object', () => {
         it('using values and guaranteed computations', async() => {
             const result = await fulfill({})
                 .assign('a', 1)
@@ -97,7 +97,7 @@ describe('Future', () => {
 
     })
 
-    it('should be able to apply parameters (in the future)', async() => {
+    it('can apply parameters (in the future)', async() => {
         const result = await fulfill((a: number) => (b: number) => (c: number) => (d: number) => (e: number) => (f: number) => a + b + c + d +e + f)
             .apply(1)
             .apply(() => 2)
@@ -110,7 +110,7 @@ describe('Future', () => {
         result.should.equal(21)
     })
 
-    describe('should promise to return', () => {
+    describe('can promise to return', () => {
         it('the value of a resolved promise', async() => {
             const got = await fulfill(value)
                 .getOrElse(unsafeGet)
@@ -126,7 +126,7 @@ describe('Future', () => {
         })
     })
 
-    describe('should map over', () => {
+    describe('can be mapped over', () => {
         it('the value of a resolved promise', async() => {
             const got = await fulfill(value)
                 .map(map)
@@ -144,70 +144,196 @@ describe('Future', () => {
         })
     })
 
-    describe('should perform', () => {
-        it('side-effects using the value of a resolved promise', done => {
-            let mutable = noSideEffectText
+    describe('can perform', () => {
+        describe('synchronous side-effects', () => {
+            it('on both paths', async() => {
+                let mutable = 0
 
-            fulfill(error)
-                .performSyncOnFulfilled(() => mutable = sideEffectText)
-                .run(
-                    () => {
-                        mutable.should.equal(sideEffectText)
-                        done()
-                    },
-                    () => {
-                        throw 'Unexpected rejection!'
-                    })
+                await fulfill({})
+                    .performSync(() => mutable += 1)
+                    .getOrElse(unsafeGet)
+
+                await reject({})
+                    .performSync(() => mutable += 1)
+                    .getErrorOrElse(unsafeGet)
+
+                mutable.should.equal(2)
+            })
+
+            it('intended for the fulfillment path', done => {
+                let mutable = noSideEffectText
+
+                fulfill(error)
+                    .performSyncOnFulfilled(() => mutable = sideEffectText)
+                    .run(
+                        () => {
+                            mutable.should.equal(sideEffectText)
+                            done()
+                        },
+                        () => {
+                            throw 'Unexpected rejection!'
+                        })
+            })
+
+            it('but not if the future is rejected', done => {
+                let mutable = noSideEffectText
+
+                reject(error)
+                    .performSyncOnFulfilled(() => mutable = sideEffectText)
+                    .run(
+                        () => {
+                            throw 'Unexpected resolution!'
+                        },
+                        () => {
+                            mutable.should.equal(noSideEffectText)
+                            done()
+                        })
+            })
+
+            it('intended for the rejection path', done => {
+                let mutable = noSideEffectText
+
+                reject(error)
+                    .performSyncOnRejected(() => mutable = sideEffectText)
+                    .run(
+                        () => {
+                            throw 'Unexpected resolution!'
+                        },
+                        () => {
+                            mutable.should.equal(sideEffectText)
+                            done()
+                        })
+            })
+
+            it('but not not if the future is fulfilled', done => {
+                let mutable = noSideEffectText
+
+                fulfill(value)
+                    .performSyncOnRejected(() => mutable = sideEffectText)
+                    .run(
+                        () => {
+                            mutable.should.equal(noSideEffectText)
+                            done()
+                        },
+                        () => {
+                            throw 'Unexpected rejection!'
+                        })
+            })
         })
 
-        it('no side-effects intended for the fulfillment path if the promise is rejected', done => {
-            let mutable = noSideEffectText
+        describe('chained asynchronous side-effects', () => {
+            it('on both paths', async() => {
+                let mutable = []
 
-            reject(error)
-                .performSyncOnFulfilled(() => mutable = sideEffectText)
-                .run(
-                    () => {
-                        throw 'Unexpected resolution!'
-                    },
-                    () => {
-                        mutable.should.equal(noSideEffectText)
-                        done()
-                    })
-        })
+                await fulfill({})
+                    .perform(() => new Promise(resolve => {
+                        setTimeout(() => {
+                            mutable.push('first')
+                            resolve()
+                        }, timeout)
+                    }))
+                    .perform(() => new Promise(resolve => {
+                        mutable.push('second')
+                        resolve()
+                    }))
+                    .getOrElse(unsafeGet)
 
-        it('side-effects using the error of a rejected promise', done => {
-            let mutable = noSideEffectText
+                await reject({})
+                    .perform(() => new Promise(resolve => {
+                        setTimeout(() => {
+                            mutable.push('third')
+                            resolve()
+                        }, timeout)
+                    }))
+                    .perform(() => new Promise(resolve => {
+                        mutable.push('fourth')
+                        resolve()
+                    }))
+                    .getErrorOrElse(unsafeGet)
 
-            reject(error)
-                .performSyncOnRejected(() => mutable = sideEffectText)
-                .run(
-                    () => {
-                        throw 'Unexpected resolution!'
-                    },
-                    () => {
-                        mutable.should.equal(sideEffectText)
-                        done()
-                    })
-        })
+                mutable.should.eql(['first', 'second', 'third', 'fourth'])
+            })
 
-        it('no side-effects intended for the rejection path the promise is resolved', done => {
-            let mutable = noSideEffectText
+            it('intended for the fulfillment path', async() => {
+                let mutable = []
 
-            fulfill(value)
-                .performSyncOnRejected(() => mutable = sideEffectText)
-                .run(
-                    () => {
-                        mutable.should.equal(noSideEffectText)
-                        done()
-                    },
-                    () => {
-                        throw 'Unexpected rejection!'
-                    })
+                await fulfill({})
+                    .performOnFulfilled(() => new Promise(resolve => {
+                        setTimeout(() => {
+                            mutable.push('first')
+                            resolve()
+                        }, timeout)
+                    }))
+                    .performOnFulfilled(() => new Promise(resolve => {
+                        mutable.push('second')
+                        resolve()
+                    }))
+                    .getOrElse(unsafeGet)
+
+                mutable.should.eql(['first', 'second'])
+            })
+
+            it('but not if the future is rejected', async() => {
+                let mutable = []
+
+                await reject({})
+                    .performOnFulfilled(() => new Promise(resolve => {
+                        setTimeout(() => {
+                            mutable.push('first')
+                            resolve()
+                        }, timeout)
+                    }))
+                    .performOnFulfilled(() => new Promise(resolve => {
+                        mutable.push('second')
+                        resolve()
+                    }))
+                    .getErrorOrElse(unsafeGet)
+
+                mutable.should.eql([])
+            })
+
+            it('intended for the rejection path', async() => {
+                let mutable = []
+
+                await reject({})
+                    .performOnRejected(() => new Promise(resolve => {
+                        setTimeout(() => {
+                            mutable.push('first')
+                            resolve()
+                        }, timeout)
+                    }))
+                    .performOnRejected(() => new Promise(resolve => {
+                        mutable.push('second')
+                        resolve()
+                    }))
+                    .getErrorOrElse(unsafeGet)
+
+                mutable.should.eql(['first', 'second'])
+            })
+
+            it('but not if the future is fulfilled', async() => {
+                let mutable = []
+
+                await fulfill({})
+                    .performOnRejected(() => new Promise(resolve => {
+                        setTimeout(() => {
+                            mutable.push('first')
+                            resolve()
+                        }, timeout)
+                    }))
+                    .performOnRejected(() => new Promise(resolve => {
+                        mutable.push('second')
+                        resolve()
+                    }))
+                    .getOrElse(unsafeGet)
+
+                mutable.should.eql([])
+            })
         })
     })
 
-    describe('should match', () => {
-        it('by mapping over the value of a resolved promise', async() => {
+    describe('matches', () => {
+        it('by mapping over the value if the future is fulfilled', async() => {
             const actualValue = await fulfill(value)
                 .match(
                     map,
@@ -217,7 +343,7 @@ describe('Future', () => {
             actualValue.should.equal(expectedValue)
         })
 
-        it('by mapping over the error associated with a rejected promise', async() => {
+        it('by mapping over the errorif the future is rejected', async() => {
             const actualValue = await reject(error)
                 .match(
                     () => { throw 'Unexpected resolution!' },
@@ -228,58 +354,8 @@ describe('Future', () => {
         })
     })
 
-    describe('should fall back', () => {
-        it('to a promise if the future is in the rejection state', async() => {
-            const got = await reject(error)
-                .orPromise(Promise.resolve(value))
-                .getOrElse(unsafeGet)
-
-            got.should.equal(value)
-        })
-
-        it('to a promise if the future is in the rejection state and the first fallback promise has been rejected', async() => {
-            const got = await reject(error)
-                .orPromise(Promise.reject(error))
-                .orPromise(() => Promise.resolve(value))
-                .getOrElse(unsafeGet)
-
-            got.should.equal(value)
-        })
-
-        it('but continue on the rejection path if the fallback promise is rejected', async() => {
-            const got = await reject(error)
-                .orPromise(() => Promise.reject(error))
-                .getErrorOrElse(unsafeGetError)
-
-            got.should.equal(error)
-        })
-
-        it('to a future if the future is in the rejection state', async() => {
-            const got = await reject(error)
-                .orAttempt(fulfill(value))
-                .getOrElse(unsafeGet)
-
-            got.should.equal(value)
-        })
-
-        it('to a future if the future is in the rejection state and the first fallback future has been rejected', async() => {
-            const got = await reject(error)
-                .orAttempt(reject(error))
-                .orAttempt(() => fulfill(value))
-                .getOrElse(unsafeGet)
-
-            got.should.equal(value)
-        })
-
-        it('but continue on the rejection path if the fallback future is rejected', async() => {
-            const got = await reject(error)
-                .orAttempt(() => reject(error))
-                .getErrorOrElse(unsafeGetError)
-
-            got.should.equal(error)
-        })
-
-        it('to a default value', async() => {
+    describe('can fall back', () => {
+        it('to a default value', async () => {
             const defaultValue = 'default'
             const got = await reject(error)
                 .orElse(defaultValue)
@@ -288,7 +364,7 @@ describe('Future', () => {
             got.should.equal(defaultValue)
         })
 
-        it('to the result of a guaranteed computation', async() => {
+        it('to the result of a guaranteed computation', async () => {
             const defaultValue = 'default'
             const got = await reject(error)
                 .orElse(() => defaultValue)
@@ -298,7 +374,60 @@ describe('Future', () => {
         })
     })
 
-    describe('should skip over errors maps', () => {
+    describe('can attempt to fallback', () => {
+
+        it('with a promise', async() => {
+            const got = await reject(error)
+                .orPromise(Promise.resolve(value))
+                .getOrElse(unsafeGet)
+
+            got.should.equal(value)
+        })
+
+        it('... or yet another promise', async() => {
+            const got = await reject(error)
+                .orPromise(Promise.reject(error))
+                .orPromise(() => Promise.resolve(value))
+                .getOrElse(unsafeGet)
+
+            got.should.equal(value)
+        })
+
+        it('but continues on the rejection path if the fallback promise has been rejected', async() => {
+            const got = await reject(error)
+                .orPromise(() => Promise.reject(error))
+                .getErrorOrElse(unsafeGetError)
+
+            got.should.equal(error)
+        })
+
+        it('with another future', async() => {
+            const got = await reject(error)
+                .orAttempt(fulfill(value))
+                .getOrElse(unsafeGet)
+
+            got.should.equal(value)
+        })
+
+        it('... yet another future', async() => {
+            const got = await reject(error)
+                .orAttempt(reject(error))
+                .orAttempt(() => fulfill(value))
+                .getOrElse(unsafeGet)
+
+            got.should.equal(value)
+        })
+
+        it('but continues on the rejection path if the fallback future has been rejected', async() => {
+            const got = await reject(error)
+                .orAttempt(() => reject(error))
+                .getErrorOrElse(unsafeGetError)
+
+            got.should.equal(error)
+        })
+    })
+
+    describe('skips over errors maps', () => {
         it('when chaining', async() => {
             let sideEffectText = noSideEffectText
 
@@ -337,131 +466,7 @@ describe('Future', () => {
         })
     })
 
-    it('should synchronously perform a side-effect on both paths', async() => {
-        let mutable = 0
-
-        await fulfill({})
-            .performSync(() => mutable += 1)
-            .getOrElse(unsafeGet)
-
-        await reject({})
-            .performSync(() => mutable += 1)
-            .getErrorOrElse(unsafeGet)
-
-        mutable.should.equal(2)
-    })
-
-    describe('should asynchronously perform', () => {
-        it('chained side-effects on the value if the future is fulfilled', async() => {
-            let mutable = []
-
-            await fulfill({})
-                .performOnFulfilled(() => new Promise(resolve => {
-                    setTimeout(() => {
-                        mutable.push('first')
-                        resolve()
-                    }, timeout)
-                }))
-                .performOnFulfilled(() => new Promise(resolve => {
-                    mutable.push('second')
-                    resolve()
-                }))
-                .getOrElse(unsafeGet)
-
-            mutable.should.eql(['first', 'second'])
-        })
-
-        it('no side-effects intended for the fulfillment path if the future is rejected', async() => {
-            let mutable = []
-
-            await reject({})
-                .performOnFulfilled(() => new Promise(resolve => {
-                    setTimeout(() => {
-                        mutable.push('first')
-                        resolve()
-                    }, timeout)
-                }))
-                .performOnFulfilled(() => new Promise(resolve => {
-                    mutable.push('second')
-                    resolve()
-                }))
-                .getErrorOrElse(unsafeGet)
-
-            mutable.should.eql([])
-        })
-
-        it('chained side-effect on the error if the future is rejected', async() => {
-            let mutable = []
-
-            await reject({})
-                .performOnRejected(() => new Promise(resolve => {
-                    setTimeout(() => {
-                        mutable.push('first')
-                        resolve()
-                    }, timeout)
-                }))
-                .performOnRejected(() => new Promise(resolve => {
-                    mutable.push('second')
-                    resolve()
-                }))
-                .getErrorOrElse(unsafeGet)
-
-            mutable.should.eql(['first', 'second'])
-        })
-
-        it('no side-effects intended for the rejection path if the future is fulfilled', async() => {
-            let mutable = []
-
-            await fulfill({})
-                .performOnRejected(() => new Promise(resolve => {
-                    setTimeout(() => {
-                        mutable.push('first')
-                        resolve()
-                    }, timeout)
-                }))
-                .performOnRejected(() => new Promise(resolve => {
-                    mutable.push('second')
-                    resolve()
-                }))
-                .getOrElse(unsafeGet)
-
-            mutable.should.eql([])
-        })
-
-        it('chained side-effects on both paths', async() => {
-            let mutable = []
-
-            await fulfill({})
-                .perform(() => new Promise(resolve => {
-                    setTimeout(() => {
-                        mutable.push('first')
-                        resolve()
-                    }, timeout)
-                }))
-                .perform(() => new Promise(resolve => {
-                    mutable.push('second')
-                    resolve()
-                }))
-                .getOrElse(unsafeGet)
-
-            await reject({})
-                .perform(() => new Promise(resolve => {
-                    setTimeout(() => {
-                        mutable.push('third')
-                        resolve()
-                    }, timeout)
-                }))
-                .perform(() => new Promise(resolve => {
-                    mutable.push('fourth')
-                    resolve()
-                }))
-                .getErrorOrElse(unsafeGet)
-
-            mutable.should.eql(['first', 'second', 'third', 'fourth'])
-        })
-    })
-
-    describe('should indicate the status', () => {
+    describe('can indicate the status', () => {
         it('when rejected', async() => {
             const createRejectedFuture = () => reject({})
 
@@ -483,7 +488,7 @@ describe('Future', () => {
         })
     })
 
-    describe('should reject a future', () => {
+    describe('is rejected', () => {
         it('if a side-effect in the fulfillment path is rejected', async() => {
             const createFutureWithRejectedSideEffectOnFulfilled = () => fulfill({})
                 .performOnFulfilled(() => Promise.reject({}))
@@ -507,94 +512,94 @@ describe('Future', () => {
         })
     })
 
-    describe('should determine equality', () => {
-        describe('with another future by', () => {
-            it('returning true when two fulfilled futures with the same value are tested', async() => {
-                (await fulfill(1).equals(fulfill(1))).should.be.true
+    describe('can test', () => {
+        describe('for equality', () => {
+            describe('with another future', () => {
+                it('returning true when two fulfilled futures with the same value are tested', async () => {
+                    (await fulfill(1).equals(fulfill(1))).should.be.true
+                })
+
+                it('returning false when two fulfilled futures with different values are tested', async () => {
+                    const oneAndTwoResult = await fulfill(1).equals(fulfill(2))
+                    oneAndTwoResult.should.be.false
+
+                    const twoAndOneResult = await fulfill(2).equals(fulfill(1))
+                    twoAndOneResult.should.be.false
+                })
+
+                it('returning true when two rejected futures with the same error are tested', async () => {
+                    (await reject('error').equals(reject('error'))).should.be.true
+                })
+
+                it('returning false when two rejected futures with different errors are tested', async () => {
+                    const oneAndTwoResult = await reject(1).equals(reject(2))
+                    oneAndTwoResult.should.be.false
+
+                    const twoAndOneResult = await reject(2).equals(reject(1))
+                    twoAndOneResult.should.be.false
+                })
             })
+            describe('with a promise', () => {
+                it('returning true when a fulfilled future is compared with a fulfilled promise of the same value', async () => {
+                    (await fulfill(1).equals(Promise.resolve(1))).should.be.true
+                })
 
-            it('returning false when two fulfilled futures with different values are tested', async() => {
-                const oneAndTwoResult = await fulfill(1).equals(fulfill(2))
-                oneAndTwoResult.should.be.false
+                it('returning false when a fulfilled future is compared with a fulfilled promise of a different value', async () => {
+                    (await fulfill(1).equals(Promise.resolve(2))).should.be.false
+                })
 
-                const twoAndOneResult = await fulfill(2).equals(fulfill(1))
-                twoAndOneResult.should.be.false
-            })
+                it('returning true when a rejected future is compared with a rejected promise with the same error', async () => {
+                    (await reject(1).equals(Promise.reject(1))).should.be.true
+                })
 
-            it('returning true when two rejected futures with the same error are tested', async() => {
-                (await reject('error').equals(reject('error'))).should.be.true
-            })
-
-            it('returning false when two rejected futures with different errors are tested', async() => {
-                const oneAndTwoResult = await reject(1).equals(reject(2))
-                oneAndTwoResult.should.be.false
-
-                const twoAndOneResult = await reject(2).equals(reject(1))
-                twoAndOneResult.should.be.false
+                it('returning false when a rejected future is compared with a rejected promise with a different error', async () => {
+                    (await reject(1).equals(Promise.reject(2))).should.be.false
+                })
             })
         })
 
-        describe('with a promise by', () => {
-            it('returning true when a fulfilled future is compared with a fulfilled promise of the same value', async() => {
-                (await fulfill(1).equals(Promise.resolve(1))).should.be.true
+        describe('a predicate', () => {
+            const isEven = x => x % 2 == 0
+            const isEvenPredicate = predicate(isEven)
+
+            describe('when fulfilled', () => {
+                it('using function', async() => {
+                    const one = await fulfill(1).test(isEven)
+                    one.should.be.false
+
+                    const two = await fulfill(2).test(isEven)
+                    two.should.be.true
+                })
+
+                it('using a Predicate instance', async() => {
+
+                    const one = await fulfill(1).test(isEvenPredicate)
+                    one.should.be.false
+
+                    const two = await fulfill(2).test(isEvenPredicate)
+                    two.should.be.true
+                })
             })
 
-            it('returning false when a fulfilled future is compared with a fulfilled promise of a different value', async() => {
-                (await fulfill(1).equals(Promise.resolve(2))).should.be.false
+            describe('when rejected', () => {
+                it('using a function', async() => {
+                    const one = await reject(1).test(isEven)
+                    one.should.be.false
+
+                    const two = await reject(2).test(isEvenPredicate)
+                    two.should.be.false
+                })
+
+                it('using a Predicate instance', async() => {
+
+                    const one = await reject(1).test(isEvenPredicate)
+                    one.should.be.false
+
+                    const two = await reject(2).test(isEvenPredicate)
+                    two.should.be.false
+                })
             })
 
-            it('returning true when a rejected future is compared with a rejected promise with the same error', async() => {
-                (await reject(1).equals(Promise.reject(1))).should.be.true
-            })
-
-            it('returning false when a rejected future is compared with a rejected promise with a different error', async() => {
-                (await reject(1).equals(Promise.reject(2))).should.be.false
-            })
         })
     })
-
-    describe('should test', () => {
-        const isEven = x => x % 2 == 0
-        const isEvenPredicate = predicate(isEven)
-
-        describe('fulfilled futures', () => {
-            it('using a predicate function', async() => {
-                const one = await fulfill(1).test(isEven)
-                one.should.be.false
-
-                const two = await fulfill(2).test(isEven)
-                two.should.be.true
-            })
-
-            it('using a Predicate instance', async() => {
-
-                const one = await fulfill(1).test(isEvenPredicate)
-                one.should.be.false
-
-                const two = await fulfill(2).test(isEvenPredicate)
-                two.should.be.true
-            })
-        })
-
-        describe('rejected futures', () => {
-            it('using a predicate function', async() => {
-                const one = await reject(1).test(isEven)
-                one.should.be.false
-
-                const two = await reject(2).test(isEvenPredicate)
-                two.should.be.false
-            })
-
-            it('using a Predicate instance', async() => {
-
-                const one = await reject(1).test(isEvenPredicate)
-                one.should.be.false
-
-                const two = await reject(2).test(isEvenPredicate)
-                two.should.be.false
-            })
-        })
-
-    })
-
 })
