@@ -1,7 +1,7 @@
 import {box, Box} from '..'
 
 export class Arrow<A, B> {
-    constructor(private f: (input: A) => B) {}
+    constructor(private readonly f: (input: A) => B) {}
 
     andThen<C>(arrowOrFunction: Arrow<B, C>|((input: B) => C)): Arrow<A, C> {
         return new Arrow((input: A) => {

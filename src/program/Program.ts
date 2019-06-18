@@ -1,5 +1,5 @@
 export class Program<E, T> {
-    constructor(private f: (shared: E) => T) {}
+    constructor(private readonly f: (shared: E) => T) {}
 
     run(shared: E): T {
         return this.f(shared)

@@ -1,5 +1,5 @@
 export class Equivalence<T> {
-    constructor(private f: (x: T, y: T) => boolean) {}
+    constructor(private readonly f: (x: T, y: T) => boolean) {}
 
     test(x: T, y: T): boolean {
         return this.f(x, y)

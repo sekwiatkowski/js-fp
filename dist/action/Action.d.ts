@@ -1,6 +1,6 @@
 import { Arrow } from '..';
 export declare class Action<A> {
-    private f;
+    private readonly f;
     constructor(f: () => A);
     andThen<B>(arrowOrFunction: Arrow<A, B> | ((input: A) => B)): Action<B>;
     act(): A;

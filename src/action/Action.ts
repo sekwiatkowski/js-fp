@@ -1,7 +1,7 @@
 import {Arrow} from '..'
 
 export class Action<A> {
-    constructor(private f: () => A) {}
+    constructor(private readonly f: () => A) {}
 
     andThen<B>(arrowOrFunction: Arrow<A, B>|((input: A) => B)): Action<B> {
         return new Action(() => (arrowOrFunction instanceof Function ? arrowOrFunction : arrowOrFunction.get())(this.f()))

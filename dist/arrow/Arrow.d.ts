@@ -1,6 +1,6 @@
 import { Box } from '..';
 export declare class Arrow<A, B> {
-    private f;
+    private readonly f;
     constructor(f: (input: A) => B);
     andThen<C>(arrowOrFunction: Arrow<B, C> | ((input: B) => C)): Arrow<A, C>;
     adapt<C>(adaptor: (input: C) => A): Arrow<C, B>;

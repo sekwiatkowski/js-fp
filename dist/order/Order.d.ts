@@ -1,6 +1,6 @@
 export declare type Ordering = -1 | 0 | 1;
 export declare class Order<T> {
-    private f;
+    private readonly f;
     constructor(f: (x: T, y: T) => Ordering);
     get(): (x: T, y: T) => Ordering;
     compare(x: T, y: T): Ordering;

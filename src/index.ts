@@ -33,6 +33,7 @@ export { Monoid, Any, All, Latest, Max, Earliest, Min, Sum, Product, ArrayConcat
 
 //region Computation
 export { Box, box, boxObject } from './box/Box'
+export { Pair, pair } from './pair/Pair'
 
 export { Program, program } from './program/Program'
 

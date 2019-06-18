@@ -1,5 +1,5 @@
 export declare class Equivalence<T> {
-    private f;
+    private readonly f;
     constructor(f: (x: T, y: T) => boolean);
     test(x: T, y: T): boolean;
     get(): (x: T, y: T) => boolean;

@@ -1,7 +1,7 @@
 export type Ordering = -1|0|1
 
 export class Order<T> {
-    constructor (private f: (x: T, y: T) => Ordering) {}
+    constructor (private readonly f: (x: T, y: T) => Ordering) {}
 
     get() {
         return this.f

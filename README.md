@@ -4,7 +4,9 @@ A TypeScript/JavaScript library designed to implement workflows as computational
 
 ## Computation with monad(-like) containers
 
-[**Box**](src/box/Box.ts): guaranteed computation with exactly one value
+[**Box**](src/box/Box.ts): computation with exactly one value
+
+[**Pair**](src/box/Box.ts): computation with two values
 
 [**List**](src/list/List.ts): computation with zero, one or more values
 

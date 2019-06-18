@@ -29,6 +29,12 @@ class Box {
         return this.map(obj => (Object.assign({}, Object(obj), { [key]: member })));
     }
     //endregion
+    //region Combination
+    combine(otherValueOrBox, semigroup) {
+        const otherValue = otherValueOrBox instanceof Box ? otherValueOrBox.get() : otherValueOrBox;
+        return this.map(value => semigroup.combine(value)(otherValue));
+    }
+    //endregion
     //region Conversion
     toFuture() {
         return __1.fulfill(this.value);

@@ -8,6 +8,7 @@ export { Semigroup } from './combination/Semigroup';
 export { objectCombination } from './combination/ObjectCombination';
 export { Monoid, Any, All, Latest, Max, Earliest, Min, Sum, Product, ArrayConcatenation } from './combination/Monoid';
 export { Box, box, boxObject } from './box/Box';
+export { Pair, pair } from './pair/Pair';
 export { Program, program } from './program/Program';
 export { Option, option } from './option/Option';
 export { Some, some, optionObject } from './option/Some';

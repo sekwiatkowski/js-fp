@@ -1,5 +1,5 @@
 export class Predicate<T> {
-    constructor(private f: (x: T) => boolean) {}
+    constructor(private readonly f: (x: T) => boolean) {}
 
     test(x: T): boolean {
         return this.f(x)

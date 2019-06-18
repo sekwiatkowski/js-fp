@@ -6,6 +6,7 @@ import {
     Option,
     Predicate,
     Result,
+    Semigroup,
     some,
     success,
     valid,
@@ -48,6 +49,14 @@ export class Box<A> {
             ...Object(obj),
             [key]: member
         }))
+    }
+    //endregion
+
+    //region Combination
+    combine(otherValueOrBox: A|Box<A>, semigroup: Semigroup<A>): Box<A> {
+        const otherValue = otherValueOrBox instanceof Box ? otherValueOrBox.get() : otherValueOrBox
+
+        return this.map(value => semigroup.combine(value)(otherValue))
     }
     //endregion
 

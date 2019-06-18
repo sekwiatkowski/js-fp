@@ -1,5 +1,5 @@
 export declare class Program<E, T> {
-    private f;
+    private readonly f;
     constructor(f: (shared: E) => T);
     run(shared: E): T;
 }

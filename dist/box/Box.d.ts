@@ -1,4 +1,4 @@
-import { Equivalence, Future, Option, Predicate, Result, Validated } from '..';
+import { Equivalence, Future, Option, Predicate, Result, Semigroup, Validated } from '..';
 export declare class Box<A> {
     private readonly value;
     constructor(value: A);
@@ -8,6 +8,7 @@ export declare class Box<A> {
     assign<A extends object, K extends string, B>(this: Box<A>, key: K, memberOrBoxOrFunction: Box<B> | ((scope: A) => Box<B>) | B | ((scope: A) => B)): Box<A & {
         [key in K]: B;
     }>;
+    combine(otherValueOrBox: A | Box<A>, semigroup: Semigroup<A>): Box<A>;
     toFuture<E>(): Future<A, E>;
     toOption(): Option<A>;
     toResult<E>(): Result<A, E>;
