@@ -11,13 +11,15 @@ describe('Arrow', () => {
 
     it('should return the result of applying the function to a value', () => {
         arrow((x: string) => x.toUpperCase())
-            .apply('test').should.equal('TEST')
+            .apply('test')
+            .perform(x => x.should.equal('TEST'))
     })
 
     it('should map the input', () => {
         arrow((x: string) => x.toUpperCase())
             .adapt<Product>(p => p.name)
-            .apply({ name: 'test'}).should.equal('TEST')
+            .apply({ name: 'test'})
+            .perform(x => x.should.equal('TEST'))
     })
 
     it('should compose with a function', () => {
@@ -25,16 +27,18 @@ describe('Arrow', () => {
         const double = x => 2*x
 
         arrow(increment)
-            .compose(double)
-            .apply(1).should.equal(4)
+            .andThen(double)
+            .apply(1)
+            .perform(x => x.should.equal(4))
     })
 
     it('compose with another Arrow instance', () => {
         const incrementArrow = arrow((x: number) => x+1)
         const doubleArrow = arrow((x: number) => 2*x)
 
-        incrementArrow.compose(doubleArrow)
-            .apply(1).should.equal(4)
+        incrementArrow.andThen(doubleArrow)
+            .apply(1)
+            .perform(x => x.should.equal(4))
     })
 
     it('should be lazy', () => {
@@ -42,13 +46,14 @@ describe('Arrow', () => {
 
         const composition = arrow((x: string) => { count++; return x.toUpperCase() })
             .adapt<Product>((p) => { count++; return p.name })
-            .compose(arrow(x => { count++; return x.length }))
-            .compose(x => { count++; return x-1})
+            .andThen(arrow(x => { count++; return x.length }))
+            .andThen(x => { count++; return x-1})
 
         count.should.equal(0)
 
         composition
-            .apply({ name: 'test'}).should.equal(3)
+            .apply({ name: 'test'})
+            .perform(x => x.should.equal(3))
 
         count.should.equal(4)
     })

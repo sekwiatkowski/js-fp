@@ -32,11 +32,9 @@ export { Monoid, Any, All, Latest, Max, Earliest, Min, Sum, Product, ArrayConcat
 //endregion
 
 //region Computation
-export { Arrow, arrow } from './arrow/Arrow'
-
 export { Box, box, boxObject } from './box/Box'
 
-export { Context, context, contextualObject } from './context/Context'
+export { Program, program } from './program/Program'
 
 export { Option, option } from './option/Option'
 export { Some, some, optionObject } from './option/Some'
@@ -54,4 +52,9 @@ export { Future, future, fulfill, reject, futureObject } from './future/Future'
 
 export { emptyList, List, listFromArray, range, repeat } from './list/List'
 export { inclusiveRange, list, NonEmptyList } from './list/NonEmptyList'
+//endregion
+
+//region Functions
+export { Action, action } from './action/Action'
+export { Arrow, arrow } from './arrow/Arrow'
 //endregion

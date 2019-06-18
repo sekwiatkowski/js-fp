@@ -63,17 +63,13 @@ exports.Product = Monoid_1.Product;
 exports.ArrayConcatenation = Monoid_1.ArrayConcatenation;
 //endregion
 //region Computation
-var Arrow_1 = require("./arrow/Arrow");
-exports.Arrow = Arrow_1.Arrow;
-exports.arrow = Arrow_1.arrow;
 var Box_1 = require("./box/Box");
 exports.Box = Box_1.Box;
 exports.box = Box_1.box;
 exports.boxObject = Box_1.boxObject;
-var Context_1 = require("./context/Context");
-exports.Context = Context_1.Context;
-exports.context = Context_1.context;
-exports.contextualObject = Context_1.contextualObject;
+var Program_1 = require("./program/Program");
+exports.Program = Program_1.Program;
+exports.program = Program_1.program;
 var Option_1 = require("./option/Option");
 exports.option = Option_1.option;
 var Some_1 = require("./option/Some");
@@ -113,5 +109,13 @@ var NonEmptyList_1 = require("./list/NonEmptyList");
 exports.inclusiveRange = NonEmptyList_1.inclusiveRange;
 exports.list = NonEmptyList_1.list;
 exports.NonEmptyList = NonEmptyList_1.NonEmptyList;
+//endregion
+//region Functions
+var Action_1 = require("./action/Action");
+exports.Action = Action_1.Action;
+exports.action = Action_1.action;
+var Arrow_1 = require("./arrow/Arrow");
+exports.Arrow = Arrow_1.Arrow;
+exports.arrow = Arrow_1.arrow;
 //endregion
 //# sourceMappingURL=index.js.map

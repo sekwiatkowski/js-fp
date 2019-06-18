@@ -1,21 +1,22 @@
+import {box, Box} from '..'
+
 export class Arrow<A, B> {
     constructor(private f: (input: A) => B) {}
 
-    compose<C>(arrowOrFunction: Arrow<B, C>|((input: B) => C)): Arrow<A, C> {
-        if(arrowOrFunction instanceof Function) {
-            return new Arrow((input: A) => arrowOrFunction(this.f(input)))
-        }
-        else {
-            return new Arrow((input: A) => arrowOrFunction.apply((this.f(input))))
-        }
+    andThen<C>(arrowOrFunction: Arrow<B, C>|((input: B) => C)): Arrow<A, C> {
+        return new Arrow((input: A) => {
+            const g = arrowOrFunction instanceof Function ? arrowOrFunction : arrowOrFunction.get()
+
+            return g(this.f(input))
+        })
     }
 
     adapt<C>(adaptor: (input: C) => A): Arrow<C, B> {
         return new Arrow((input: C) => this.f(adaptor(input)))
     }
 
-    apply(input: A) {
-        return this.f(input)
+    apply(input: A): Box<B> {
+        return box(this.f(input))
     }
 
     get(): (input: A) => B {

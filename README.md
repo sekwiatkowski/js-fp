@@ -4,11 +4,7 @@ A TypeScript/JavaScript library designed to implement workflows as computational
 
 ## Computation with monad(-like) containers
 
-[**Arrow**](src/arrow/Arrow.ts): wrapper around a function that enables composition and adaptation of the input  
-
 [**Box**](src/box/Box.ts): guaranteed computation with exactly one value
-
-[**Context**](src/context/Context.ts): guaranteed computation with exactly one value and a shared context
 
 [**List**](src/list/List.ts): computation with zero, one or more values
 
@@ -16,11 +12,19 @@ A TypeScript/JavaScript library designed to implement workflows as computational
 
 [**Option**](src/option/Option.ts): computation with a value that may be present or absent
 
+[**Program**](src/arrow/Arrow.ts): computation with a shared environment (used for dependency injection)
+
 [**Result**](src/result/Result.ts): synchronous computation that may succeed or fail, short-circuits when a failure occurs
 
 [**Validated**](src/validated/Validated.ts): like *Result*, but accumulates errors instead of short-circuiting
 
 [**Future**](src/future/Future.ts): asynchronous computation that may succeed or fail (a monadic alternative to Promises)
+
+## Functions
+
+[**Action**](src/action/Action.ts): wrapper around a function with no parameters that enables composition
+
+[**Arrow**](src/arrow/Arrow.ts): wrapper around a function with one or more parameters that enables composition and adaptation of the input
 
 ## Combination
 

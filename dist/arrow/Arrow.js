@@ -1,22 +1,21 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const __1 = require("..");
 class Arrow {
     constructor(f) {
         this.f = f;
     }
-    compose(arrowOrFunction) {
-        if (arrowOrFunction instanceof Function) {
-            return new Arrow((input) => arrowOrFunction(this.f(input)));
-        }
-        else {
-            return new Arrow((input) => arrowOrFunction.apply((this.f(input))));
-        }
+    andThen(arrowOrFunction) {
+        return new Arrow((input) => {
+            const g = arrowOrFunction instanceof Function ? arrowOrFunction : arrowOrFunction.get();
+            return g(this.f(input));
+        });
     }
     adapt(adaptor) {
         return new Arrow((input) => this.f(adaptor(input)));
     }
     apply(input) {
-        return this.f(input);
+        return __1.box(this.f(input));
     }
     get() {
         return this.f;
