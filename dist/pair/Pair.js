@@ -6,12 +6,21 @@ class Pair {
         this._first = _first;
         this._second = _second;
     }
-    //region Access
-    first() {
-        return this._first;
+    first(f) {
+        if (f) {
+            return f(this._first);
+        }
+        else {
+            return this._first;
+        }
     }
-    second() {
-        return this._second;
+    second(f) {
+        if (f) {
+            return f(this._second);
+        }
+        else {
+            return this._second;
+        }
     }
     //endregion
     //region Chaining

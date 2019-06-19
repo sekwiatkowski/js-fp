@@ -6,9 +6,13 @@ class Box {
     constructor(value) {
         this.value = value;
     }
-    //region Access
-    get() {
-        return this.value;
+    get(f) {
+        if (f) {
+            return f(this.value);
+        }
+        else {
+            return this.value;
+        }
     }
     // endregion
     //region Application

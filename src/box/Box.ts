@@ -18,8 +18,15 @@ export class Box<A> {
     constructor(private readonly value: A) {}
 
     //region Access
-    get(): A {
-        return this.value
+    get(): A
+    get<T>(f: (value : A) => T): T
+    get<T>(f?: (value : A) => T): A|T {
+        if (f) {
+            return f(this.value)
+        }
+        else {
+            return this.value
+        }
     }
     // endregion
 
@@ -39,7 +46,7 @@ export class Box<A> {
 
     //region Comprehension
     assign<A extends object, K extends string, B>(
-        this: Box<A>,
+      this: Box<A>,
         key: K,
         memberOrBoxOrFunction: Box<B> | ((scope: A) => Box<B>) | B | ((scope: A) => B)): Box<A & { [key in K]: B }> {
         const memberOrBox = memberOrBoxOrFunction instanceof Function ? memberOrBoxOrFunction(this.value) : memberOrBoxOrFunction

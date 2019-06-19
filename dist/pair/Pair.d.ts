@@ -4,7 +4,9 @@ export declare class Pair<A, B> {
     private readonly _second;
     constructor(_first: A, _second: B);
     first(): A;
+    first<T>(f: (second: A) => T): T;
     second(): B;
+    second<T>(f: (second: B) => T): T;
     chain<C, D>(f: (first: A, second: B) => Pair<C, D>): Pair<C, D>;
     toArray(): [A, B];
     toBox<C>(f: (A: any, B: any) => C): Box<C>;

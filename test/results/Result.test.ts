@@ -1,7 +1,6 @@
 import {failure, success} from '../../src'
 
 const chai = require('chai')
-
 chai.should()
 
 describe('Result', () => {

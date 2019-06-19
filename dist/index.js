@@ -112,6 +112,9 @@ var NonEmptyList_1 = require("./list/NonEmptyList");
 exports.inclusiveRange = NonEmptyList_1.inclusiveRange;
 exports.list = NonEmptyList_1.list;
 exports.NonEmptyList = NonEmptyList_1.NonEmptyList;
+var State_1 = require("./state/State");
+exports.State = State_1.State;
+exports.state = State_1.state;
 //endregion
 //region Functions
 var Action_1 = require("./action/Action");

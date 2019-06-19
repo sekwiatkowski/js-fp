@@ -4,12 +4,26 @@ export class Pair<A, B> {
     constructor(private readonly _first: A, private readonly _second: B) {}
 
     //region Access
-    first(): A {
-        return this._first
+    first(): A
+    first<T>(f: (second : A) => T): T
+    first<T>(f?: (second : A) => T): A|T {
+        if (f) {
+            return f(this._first)
+        }
+        else {
+            return this._first
+        }
     }
 
-    second(): B {
-        return this._second
+    second(): B
+    second<T>(f: (second : B) => T): T
+    second<T>(f?: (second : B) => T): B|T {
+        if (f) {
+            return f(this._second)
+        }
+        else {
+            return this._second
+        }
     }
     //endregion
 

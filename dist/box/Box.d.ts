@@ -3,6 +3,7 @@ export declare class Box<A> {
     private readonly value;
     constructor(value: A);
     get(): A;
+    get<T>(f: (value: A) => T): T;
     apply<B, C>(this: Box<(parameter: B) => C>, argumentOrBoxOrFunction: B | Box<B> | (() => B) | (() => Box<B>)): Box<C>;
     chain<B>(f: (value: A) => Box<B>): Box<B>;
     assign<A extends object, K extends string, B>(this: Box<A>, key: K, memberOrBoxOrFunction: Box<B> | ((scope: A) => Box<B>) | B | ((scope: A) => B)): Box<A & {

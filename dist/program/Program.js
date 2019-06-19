@@ -4,7 +4,7 @@ class Program {
     constructor(f) {
         this.f = f;
     }
-    run(shared) {
+    runWith(shared) {
         return this.f(shared);
     }
 }

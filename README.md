@@ -20,6 +20,8 @@ A TypeScript/JavaScript library designed to implement workflows as computational
 
 [**Validated**](src/validated/Validated.ts): like *Result*, but accumulates errors instead of short-circuiting
 
+[**State**](src/state/State.ts): stateful computation
+
 [**Future**](src/future/Future.ts): asynchronous computation that may succeed or fail (a monadic alternative to Promises)
 
 ## Functions

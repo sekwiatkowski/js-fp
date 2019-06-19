@@ -22,5 +22,6 @@ export { Invalid, invalid } from './validated/Invalid';
 export { Future, future, fulfill, reject, futureObject } from './future/Future';
 export { emptyList, List, listFromArray, range, repeat } from './list/List';
 export { inclusiveRange, list, NonEmptyList } from './list/NonEmptyList';
+export { State, state } from './state/State';
 export { Action, action } from './action/Action';
 export { Arrow, arrow } from './arrow/Arrow';
