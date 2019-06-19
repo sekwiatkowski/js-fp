@@ -6,9 +6,13 @@ export declare class State<S, A> {
     chain<B>(g: (current: A) => State<S, B>): State<S, B>;
     runWith(state: S): Pair<S, A>;
     evaluateWith(state: S): A;
-    assign<S, A extends object, B, K extends string>(this: State<S, A>, key: K, memberOrStateOrFunction: (State<S, B> | ((scope: A) => State<S, B>)) | B | ((scope: A) => B)): State<S, A & {
+    assign<S, A extends object, K extends string, B>(this: State<S, A>, key: K, memberOrStateOrFunction: (State<S, B> | ((scope: A) => State<S, B>)) | B | ((scope: A) => B)): State<S, A & {
         [key in K]: B;
     }>;
+    accessState<A extends object, K extends string>(this: State<S, A>, key: K): State<S, A & {
+        [key in K]: S;
+    }>;
+    replaceState<A extends object>(this: State<S, A>, valueOrFunction: ((current: S) => S) | S): State<S, A>;
     map<B>(f: (current: A) => B): State<S, B>;
     perform(sideEffect: (resultant: A) => void): State<S, A>;
 }

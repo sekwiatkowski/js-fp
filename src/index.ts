@@ -54,7 +54,7 @@ export { Future, future, fulfill, reject, futureObject } from './future/Future'
 export { emptyList, List, listFromArray, range, repeat } from './list/List'
 export { inclusiveRange, list, NonEmptyList } from './list/NonEmptyList'
 
-export { State, state } from './state/State'
+export { State, state, stateObject } from './state/State'
 //endregion
 
 //region Functions

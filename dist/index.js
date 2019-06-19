@@ -115,6 +115,7 @@ exports.NonEmptyList = NonEmptyList_1.NonEmptyList;
 var State_1 = require("./state/State");
 exports.State = State_1.State;
 exports.state = State_1.state;
+exports.stateObject = State_1.stateObject;
 //endregion
 //region Functions
 var Action_1 = require("./action/Action");

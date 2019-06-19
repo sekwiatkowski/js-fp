@@ -44,6 +44,16 @@ class State {
             }
         });
     }
+    accessState(key) {
+        return this.assign(key, new State(state => __1.pair(state, state)));
+    }
+    replaceState(valueOrFunction) {
+        return new State((state) => {
+            const modifiedState = valueOrFunction instanceof Function ? valueOrFunction(state) : valueOrFunction;
+            const obj = this.runWith(state).second();
+            return __1.pair(modifiedState, obj);
+        });
+    }
     //endregion
     //region Mapping
     map(f) {

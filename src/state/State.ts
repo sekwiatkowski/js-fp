@@ -29,7 +29,7 @@ export class State<S, A> {
     //endregion
 
     //region Comprehension
-    assign<S, A extends object, B, K extends string>(
+    assign<S, A extends object, K extends string, B>(
         this: State<S, A>,
         key: K,
         memberOrStateOrFunction: (State<S, B> | ((scope: A) => State<S, B>)) | B | ((scope: A) => B)): State<S, A & { [key in K]: B }> {
@@ -53,6 +53,23 @@ export class State<S, A> {
 
                 return pair(updatedState, updatedResultant)
             }
+        })
+    }
+
+    accessState<A extends object, K extends string>(
+        this: State<S, A>,
+        key: K) : State<S, A & { [key in K]: S }> {
+        return this.assign<S, any, K, S>(key, new State(state => pair(state, state)))
+    }
+
+    replaceState<A extends object>(
+        this: State<S, A>,
+        valueOrFunction: ((current: S) => S)|S): State<S, A> {
+        return new State<S, A>((state: S) => {
+            const modifiedState = valueOrFunction instanceof Function ? valueOrFunction(state) : valueOrFunction
+            const obj = this.runWith(state).second()
+
+            return pair(modifiedState, obj)
         })
     }
     //endregion

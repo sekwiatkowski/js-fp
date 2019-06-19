@@ -1,12 +1,25 @@
-import {Pair, pair, state} from '../../src'
-
-import {stateObject} from '../../src/state/State'
+import {Pair, pair, state, stateObject} from '../../src'
 
 const chai = require('chai')
 chai.should()
 
 describe('State', () => {
     const increment = (state: number) => pair(state, state + 1)
+
+    function createRng(): (number) => Pair<number, number> {
+        return (seed: number) => {
+
+            function randomInteger(seed) {
+                const a = 11, c = 17, m = 25;
+                return (a * seed + c) % m;
+            }
+
+            const generatedNumber = randomInteger(seed)
+            const updatedState = randomInteger(generatedNumber)
+
+            return pair(updatedState, generatedNumber)
+        }
+    }
 
     it('can run the computation', () => {
         state(increment)
@@ -29,22 +42,7 @@ describe('State', () => {
     })
 
     describe('can build an object', () => {
-        function createRng(): (number) => Pair<number, number> {
-            return (seed: number) => {
-
-                function randomInteger(seed) {
-                    const a = 11, c = 17, m = 25;
-                    return (a * seed + c) % m;
-                }
-
-                const generatedNumber = randomInteger(seed)
-                const updatedState = randomInteger(generatedNumber)
-
-                return pair(updatedState, generatedNumber)
-            }
-        }
-
-        it('which works like manual assignments', () => {
+        it('that is equivalent to the result of manual assignments with a constant state', () => {
             const seed = 1
 
             const rng = createRng()
@@ -72,5 +70,44 @@ describe('State', () => {
 
             withoutState.should.eql(withState)
         })
+
+        it('and to the result of manual assignments combined with a replacement of the seed', () => {
+            const firstSeed = 1, secondSeed = 1
+
+            const rng = createRng()
+
+            const a = rng(firstSeed)
+            const b = rng(a.first())
+            const c = rng(secondSeed)
+            const d = rng(c.first())
+
+            const withoutState = {
+                a: a.second(),
+                b: b.second(),
+                c: c.second(),
+                d: d.second()
+            }
+
+            const rngState = state(rng)
+
+            stateObject<number>()
+                .assign('a', rngState)
+                .assign('b', rngState)
+                .replaceState(secondSeed)
+                .assign('c', rngState)
+                .assign('d', rngState)
+                .evaluateWith(firstSeed)
+                .should.eql(withoutState)
+        })
+
+        it('while being able to access and replace the state', () => {
+            stateObject<number>()
+                .accessState('first')
+                .replaceState(2)
+                .accessState('second')
+                .evaluateWith(1)
+                .should.eql({first: 1, second: 2})
+        })
     })
+
 })
