@@ -23,6 +23,6 @@ export { Future, future, fulfill, reject, futureObject } from './future/Future';
 export { emptyList, List, listFromArray, range, repeat } from './list/List';
 export { inclusiveRange, list, NonEmptyList } from './list/NonEmptyList';
 export { State, state, stateObject } from './state/State';
-export { Writer, writer } from './writer/Writer';
+export { Writer, writer, stringWriter, listWriter } from './writer/Writer';
 export { Action, action } from './action/Action';
 export { Arrow, arrow } from './arrow/Arrow';

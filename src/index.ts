@@ -56,7 +56,7 @@ export { inclusiveRange, list, NonEmptyList } from './list/NonEmptyList'
 
 export { State, state, stateObject } from './state/State'
 
-export { Writer, writer } from './writer/Writer'
+export { Writer, writer, stringWriter, listWriter } from './writer/Writer'
 //endregion
 
 //region Functions

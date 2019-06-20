@@ -118,6 +118,8 @@ exports.state = State_1.state;
 exports.stateObject = State_1.stateObject;
 var Writer_1 = require("./writer/Writer");
 exports.writer = Writer_1.writer;
+exports.stringWriter = Writer_1.stringWriter;
+exports.listWriter = Writer_1.listWriter;
 //endregion
 //region Functions
 var Action_1 = require("./action/Action");

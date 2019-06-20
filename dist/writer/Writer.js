@@ -12,45 +12,44 @@ function stringWriter(value, log = Monoid_1.StringConcatenation.identityElement)
 }
 exports.stringWriter = stringWriter;
 function writer(value, monoid, log = monoid.identityElement) {
-    return {
-        //region Access
-        get() {
-            return __1.pair(value, log);
-        },
-        getValue() {
-            return value;
-        },
-        //endregion
-        getLog() {
-            return log;
-        },
-        //endregion
-        //region Chaining
+    class WriterImpl {
         chain(f) {
             const nextWriter = f(value);
             return writer(nextWriter.getValue(), monoid, monoid.combine(log)(nextWriter.getLog()));
-        },
-        //endregion
-        //region Mapping
+        }
+        get() {
+            return __1.pair(value, log);
+        }
+        getLog() {
+            return log;
+        }
+        getValue() {
+            return value;
+        }
         map(f) {
             return writer(f(value), monoid, log);
-        },
-        mapLog(f, monoid) {
-            return writer(value, monoid, f(log));
-        },
-        mapBoth(valueMap, logMap, monoid) {
-            return writer(valueMap(value), monoid, logMap(log));
-        },
-        //endregion
-        //region Modification
+        }
+        mapBoth(mapOverValue, mapOverLog, monoid) {
+            return this
+                .map(mapOverValue)
+                .mapLog(mapOverLog, monoid);
+        }
+        mapLog(f, newMonoid) {
+            if (monoid) {
+                return writer(value, newMonoid, f(log));
+            }
+            else {
+                return writer(value, monoid, f(log));
+            }
+        }
         reset() {
-            return this.mapLog(log => monoid.identityElement);
-        },
+            return this.mapLog(() => monoid.identityElement);
+        }
         tell(other) {
             return this.mapLog(log => monoid.combine(log)(other));
         }
-        //endregion
-    };
+    }
+    return new WriterImpl();
 }
 exports.writer = writer;
 //# sourceMappingURL=Writer.js.map
