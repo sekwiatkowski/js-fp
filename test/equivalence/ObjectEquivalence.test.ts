@@ -1,7 +1,6 @@
 import {DateEquality, NumberArrayEquality, NumberEquality, objectEquivalence, StringEquality} from '../../src'
 
-const chai = require('chai')
-chai.should()
+require('chai').should()
 
 describe('objectEquivalence', () => {
     interface Customer {

@@ -1,5 +1,7 @@
 import {emptyList, inclusiveRange, list, List, listFromArray, NonEmptyList, range} from '../../src'
 
+require('chai').should()
+
 describe('range', () => {
     describe('without an end argument  returns', () => {
         function checkWithStartOnly(n: number, expected: List<number>) {

@@ -1,6 +1,5 @@
 import {failure, success} from '../../src'
 
-require('chai').should()
 const expect = require('chai').expect
 
 describe('Failure', () => {

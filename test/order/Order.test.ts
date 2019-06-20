@@ -1,7 +1,6 @@
 import {DescendingNumberOrder, list, NumberOrder, Order, order, orderBy, orderDescendinglyBy} from '../../src'
 
-const chai = require('chai')
-chai.should()
+require('chai').should()
 
 describe('Order', () => {
     interface Employee {

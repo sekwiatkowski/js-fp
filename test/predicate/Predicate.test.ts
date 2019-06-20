@@ -1,7 +1,6 @@
 import {list, predicate} from '../../src'
 
-const chai = require('chai')
-chai.should()
+require('chai').should()
 
 describe('Predicate', () => {
     const isEven = predicate((x: number) => x % 2 === 0)

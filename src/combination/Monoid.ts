@@ -50,6 +50,12 @@ export const Product: Monoid<number> = {
 }
 //endregion Number
 
+//region String
+export const StringConcatenation: Monoid<string> = {
+    combine: (x: string) => (y: string) => x + y,
+    identityElement: ''
+}
+//endregion
 
 //region Array
 export const ArrayConcatenation: Monoid<any[]> = {

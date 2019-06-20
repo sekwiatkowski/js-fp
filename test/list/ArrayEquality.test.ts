@@ -12,9 +12,7 @@ import {
 } from '../../src'
 import {expectFromTests} from '../equivalence/Equality.test'
 
-const chai = require('chai')
-
-chai.should()
+require('chai').should()
 
 describe('Equalities and nullable equalities for arrays of basic types', () => {
     const equalities = list<Equivalence<any[]>>(

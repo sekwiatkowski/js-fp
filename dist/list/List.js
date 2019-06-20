@@ -37,7 +37,7 @@ class List {
     //endregion
     //region Combination
     concat(other) {
-        return new List(__1.ArrayConcatenation.combine(this.items)(other instanceof Array ? other : other.items));
+        return new List(__1.ArrayConcatenation.combine(this.getArray())(other instanceof Array ? other : other.getArray()));
     }
     combine(other, semigroup) {
         if (other instanceof Array) {
@@ -248,4 +248,8 @@ function repeat(times, valueOrFunction) {
 }
 exports.repeat = repeat;
 exports.anyListEquality = __1.neitherIsUndefinedOrNull.and(__1.createArrayEquality().adapt(l => l.getArray()));
+exports.ListConcatenation = {
+    combine: (xs) => (ys) => new List(__1.ArrayConcatenation.combine(xs.getArray())(ys.getArray())),
+    identityElement: emptyList()
+};
 //# sourceMappingURL=List.js.map

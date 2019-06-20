@@ -1,8 +1,6 @@
 import {fulfill, future, futureObject, predicate, reject} from '../../src'
 
-const chai = require('chai')
-
-chai.should()
+require('chai').should()
 
 describe('Future', () => {
     const value = 'value'

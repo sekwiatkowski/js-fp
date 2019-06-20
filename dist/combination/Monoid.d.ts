@@ -10,4 +10,5 @@ export declare const Min: Monoid<number>;
 export declare const Max: Monoid<number>;
 export declare const Sum: Monoid<number>;
 export declare const Product: Monoid<number>;
+export declare const StringConcatenation: Monoid<string>;
 export declare const ArrayConcatenation: Monoid<any[]>;

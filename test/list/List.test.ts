@@ -1,8 +1,6 @@
 import {emptyList, list, listFromArray, none, None, Option, range, some, Some} from '../../src'
 
-const chai = require('chai')
-
-chai.should()
+require('chai').should()
 
 describe('List<T>', () => {
     interface NumberValue {

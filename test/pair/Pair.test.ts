@@ -1,8 +1,6 @@
 import {box, pair} from '../../src'
 
-const chai = require('chai')
-
-chai.should()
+require('chai').should()
 
 describe('Pair', () => {
     describe('can return', () => {
@@ -31,7 +29,7 @@ describe('Pair', () => {
         })
 
         it('both values', () => {
-            pair(1, 2).bimap(increment, increment).toArray().should.eql([ 2, 3])
+            pair(1, 2).mapBoth(increment, increment).toArray().should.eql([ 2, 3])
         })
     })
 

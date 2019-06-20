@@ -1,7 +1,6 @@
 import {Pair, pair, state, stateObject} from '../../src'
 
-const chai = require('chai')
-chai.should()
+require('chai').should()
 
 describe('State', () => {
     const increment = (state: number) => pair(state, state + 1)

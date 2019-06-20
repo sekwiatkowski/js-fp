@@ -70,3 +70,4 @@ export declare function listFromArray<T>(array: T[]): List<T>;
 export declare function range(start: number, end?: number): List<number>;
 export declare function repeat<T>(times: number, valueOrFunction: T | ((index?: number) => T)): List<T>;
 export declare const anyListEquality: Equivalence<List<any>>;
+export declare const ListConcatenation: Monoid<List<any>>;

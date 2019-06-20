@@ -38,6 +38,12 @@ exports.Product = {
     identityElement: 1
 };
 //endregion Number
+//region String
+exports.StringConcatenation = {
+    combine: (x) => (y) => x + y,
+    identityElement: ''
+};
+//endregion
 //region Array
 exports.ArrayConcatenation = {
     combine: (xs) => (ys) => xs.concat(ys),

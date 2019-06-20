@@ -96,7 +96,7 @@ export class List<T> {
 
     //region Combination
     concat(other: T[]|List<T>): List<T> {
-        return new List(ArrayConcatenation.combine(this.items)(other instanceof Array ? other : other.items))
+        return new List(ArrayConcatenation.combine(this.getArray())(other instanceof Array ? other : other.getArray()))
     }
 
     combine(other: T[], semigroup: Semigroup<T[]>);
@@ -364,3 +364,8 @@ export function repeat<T>(times: number, valueOrFunction: T|((index?: number) =>
 }
 
 export const anyListEquality = (neitherIsUndefinedOrNull as Equivalence<List<any>>).and(createArrayEquality().adapt<List<any>>(l => l.getArray()))
+
+export const ListConcatenation : Monoid<List<any>> = {
+    combine: (xs: List<any>) => (ys: List<any>) => new List(ArrayConcatenation.combine(xs.getArray())(ys.getArray())),
+    identityElement: emptyList()
+}

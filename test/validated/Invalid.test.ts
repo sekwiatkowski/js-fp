@@ -1,7 +1,6 @@
 import {invalid, valid} from '../../src'
 
 const chai = require('chai')
-chai.should()
 const expect = chai.expect
 
 describe('Invalid', () => {

@@ -1,5 +1,7 @@
 import {emptyList, listFromArray, repeat} from '../../src'
 
+require('chai').should()
+
 describe('repeat can', () => {
     const value = 'value'
 

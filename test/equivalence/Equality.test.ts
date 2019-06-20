@@ -12,8 +12,7 @@ import {
     StringEquality
 } from '../../src'
 
-const chai = require('chai')
-chai.should()
+require('chai').should()
 
 export function expectFromTests<T>(equivalences: NonEmptyList<Equivalence<T>>) {
     const test = (x: T, y: T) => equivalences

@@ -2,11 +2,11 @@
 
 A TypeScript/JavaScript library designed to implement workflows as computational graphs
 
-## Computation with monad(-like) containers
+## Computation with monad(-like) objects
 
 [**Box**](src/box/Box.ts): computation with exactly one value
 
-[**Pair**](src/box/Box.ts): computation with two values
+[**Future**](src/future/Future.ts): asynchronous computation that may succeed or fail (a monadic alternative to Promises)
 
 [**List**](src/list/List.ts): computation with zero, one or more values
 
@@ -14,15 +14,17 @@ A TypeScript/JavaScript library designed to implement workflows as computational
 
 [**Option**](src/option/Option.ts): computation with a value that may be present or absent
 
+[**Pair**](src/box/Box.ts): computation with two values
+
 [**Program**](src/program/Program.ts): computation with a shared environment (used for dependency injection)
 
 [**Result**](src/result/Result.ts): synchronous computation that may succeed or fail, short-circuits when a failure occurs
 
-[**Validated**](src/validated/Validated.ts): like *Result*, but accumulates errors instead of short-circuiting
-
 [**State**](src/state/State.ts): stateful computation
 
-[**Future**](src/future/Future.ts): asynchronous computation that may succeed or fail (a monadic alternative to Promises)
+[**Validated**](src/validated/Validated.ts): like *Result*, but accumulates errors instead of short-circuiting
+
+[**Writer**](src/writer/Writer.ts): computation with additional data (used for logging)
 
 ## Functions
 

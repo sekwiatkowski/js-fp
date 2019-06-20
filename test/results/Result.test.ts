@@ -1,7 +1,6 @@
 import {failure, success} from '../../src'
 
-const chai = require('chai')
-chai.should()
+require('chai').should()
 
 describe('Result', () => {
     it('can perform side-effects on both paths', () => {

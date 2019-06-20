@@ -1,7 +1,6 @@
 import {none, option, some, Some} from '../../src'
 
-const chai = require('chai')
-chai.should()
+require('chai').should()
 
 describe('Option', () => {
     it('can perform side-effects on both paths', () => {

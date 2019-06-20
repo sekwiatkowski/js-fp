@@ -1,7 +1,6 @@
 import {All, Any, ArrayConcatenation, Earliest, Latest, objectCombination, Sum} from '../../src'
 
-const chai = require('chai')
-chai.should()
+require('chai').should()
 
 describe('objectCombination', () => {
 

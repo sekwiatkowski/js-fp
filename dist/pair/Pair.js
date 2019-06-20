@@ -37,7 +37,7 @@ class Pair {
     }
     //endregion
     //region Mapping
-    bimap(fa, fb) {
+    mapBoth(fa, fb) {
         return new Pair(fa(this._first), fb(this._second));
     }
     mapFirst(f) {

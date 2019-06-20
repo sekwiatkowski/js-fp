@@ -1,8 +1,6 @@
 import {arrow} from '../../src'
 
-const chai = require('chai')
-
-chai.should()
+require('chai').should()
 
 describe('Arrow', () => {
     interface Product {

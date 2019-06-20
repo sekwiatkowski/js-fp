@@ -1,8 +1,6 @@
 import {box, Future, Some, Success, Valid} from '../../src'
 
-const chai = require('chai')
-
-chai.should()
+require('chai').should()
 
 describe('Box', () => {
     const valueText = 'value'
