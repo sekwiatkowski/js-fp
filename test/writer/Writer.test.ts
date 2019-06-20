@@ -1,8 +1,35 @@
-import {listWriter} from '../../src/writer/Writer'
+import {listWriter, stringWriter} from '../../src/writer/Writer'
 
 require('chai').should()
 
 describe('Writer', () => {
+    const value = 1
+    const log = 'initial log'
+    const createWriter = () => stringWriter(value, log)
+
+    describe('can return', () => {
+        it('the value', () => {
+            createWriter()
+                .getValue()
+                .should.equal(value)
+        })
+
+        it('the log', () => {
+            createWriter()
+                .getLog()
+                .should.equal(log)
+        })
+
+        it('both', () => {
+            const [accessedValue, accessedLog] = createWriter()
+                .get()
+                .toArray()
+
+            accessedValue.should.equal(value)
+            accessedLog.should.equal(log)
+        })
+    })
+
     it('can map', () => {
         listWriter(1)
             .map(x => x + 1)

@@ -25,15 +25,29 @@ function writer(value, monoid, log = monoid.identityElement) {
             return log;
         },
         //endregion
-        //region Mapping
-        map(f) {
-            return writer(f(value), monoid, log);
-        },
-        //endregion
         //region Chaining
         chain(f) {
             const nextWriter = f(value);
             return writer(nextWriter.getValue(), monoid, monoid.combine(log)(nextWriter.getLog()));
+        },
+        //endregion
+        //region Mapping
+        map(f) {
+            return writer(f(value), monoid, log);
+        },
+        mapLog(f, monoid) {
+            return writer(value, monoid, f(log));
+        },
+        mapBoth(valueMap, logMap, monoid) {
+            return writer(valueMap(value), monoid, logMap(log));
+        },
+        //endregion
+        //region Modification
+        reset() {
+            return this.mapLog(log => monoid.identityElement);
+        },
+        tell(other) {
+            return this.mapLog(log => monoid.combine(log)(other));
         }
         //endregion
     };
