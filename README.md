@@ -4,27 +4,39 @@ A TypeScript/JavaScript library designed to implement workflows as computational
 
 ## Computation with monad(-like) objects
 
-[**Box**](src/box/Box.ts): computation with exactly one value
+### Computation with one or two values
 
-[**Future**](src/future/Future.ts): asynchronous computation that may succeed or fail (a monadic alternative to Promises)
+[**Box**](src/box/Box.ts): computation with one value
+
+[**Pair**](src/box/Box.ts): computation with two values
+
+### Computation with *n* values
 
 [**List**](src/list/List.ts): computation with zero, one or more values
 
 [**NonEmptyList**](src/list/NonEmptyList.ts): computation with one or more values
 
+### Computation with error handling
+
 [**Option**](src/option/Option.ts): computation with a value that may be present or absent
-
-[**Pair**](src/box/Box.ts): computation with two values
-
-[**Program**](src/program/Program.ts): computation with a shared environment (used for dependency injection)
-
-[**Result**](src/result/Result.ts): synchronous computation that may succeed or fail, short-circuits when a failure occurs
-
-[**State**](src/state/State.ts): stateful computation
 
 [**Validated**](src/validated/Validated.ts): like *Result*, but accumulates errors instead of short-circuiting
 
+[**Result**](src/result/Result.ts): synchronous computation that may succeed or fail, short-circuits when a failure occurs
+
+### Computation with a value and a context
+
+[**State**](src/state/State.ts): stateful computation
+
 [**Writer**](src/writer/Writer.ts): computation with additional data (used for logging)
+
+### Asynchronous computation
+
+[**Future**](src/future/Future.ts): asynchronous computation that may succeed or fail (a monadic alternative to Promises)
+
+### High-level computation
+
+[**Program**](src/program/Program.ts): computation with a shared environment (used for dependency injection)
 
 ## Functions
 

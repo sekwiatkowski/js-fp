@@ -27,7 +27,7 @@ export interface Option<A> {
     //region Comprehension
     assign<A extends object, K extends string, B>(
         this: Option<A>,
-        key: K,
+        key: Exclude<K, keyof A>,
         memberOrFunctionOrOption: Option<B> | ((value: A) => Option<B>) | B | ((value: A) => B)): Option<A & { [key in K]: B }>
     //endregion
 

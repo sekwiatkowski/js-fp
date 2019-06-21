@@ -6,7 +6,7 @@ export declare class None<A> implements Option<A> {
     getOrElse(alternative: A | (() => A)): A;
     apply<B, C>(this: Option<(parameter: B) => C>, argumentOrOptionOrFunction: B | (() => B) | Option<B> | (() => Option<B>)): Option<C>;
     chain<B>(f: (a: A) => Option<B>): Option<B>;
-    assign<A extends object, K extends string, B>(this: None<A>, key: K, memberOrOptionOrFunction: Option<B> | ((value: A) => Option<B>) | B | ((value: A) => B)): Option<A & {
+    assign<A extends object, K extends string, B>(this: None<A>, key: Exclude<K, keyof A>, memberOrOptionOrFunction: Option<B> | ((value: A) => Option<B>) | B | ((value: A) => B)): Option<A & {
         [key in K]: B;
     }>;
     toFuture<E>(error: E): Future<A, E>;

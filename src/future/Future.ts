@@ -86,7 +86,7 @@ export class Future<T, E> {
     //region Comprehension
     assign<T extends object, K extends string, U>(
         this: Future<T, E>,
-        key: K,
+        key: Exclude<K, keyof T>,
         memberOrFutureOrPromiseOrFunction: Future<U, E> | ((value: T) => Future<U, E>) | Promise<U> | ((value: T) => Promise<U>) | U | ((value: T) => U)): Future<T & { [key in K]: U }, E> {
         return new Future(() =>
             new Promise(resolve => {

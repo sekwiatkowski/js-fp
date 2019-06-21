@@ -31,7 +31,7 @@ export class State<S, A> {
     //region Comprehension
     assign<S, A extends object, K extends string, B>(
         this: State<S, A>,
-        key: K,
+        key: Exclude<K, keyof A>,
         memberOrStateOrFunction: (State<S, B> | ((scope: A) => State<S, B>)) | B | ((scope: A) => B)): State<S, A & { [key in K]: B }> {
 
         return new State(state => {
@@ -58,8 +58,8 @@ export class State<S, A> {
 
     accessState<A extends object, K extends string>(
         this: State<S, A>,
-        key: K) : State<S, A & { [key in K]: S }> {
-        return this.assign<S, any, K, S>(key, new State(state => pair(state, state)))
+        key: Exclude<K, keyof A>): State<S, A & { [key in K]: S }> {
+        return this.assign(key, new State(state => pair(state, state)))
     }
 
     replaceState<A extends object>(

@@ -46,8 +46,8 @@ export class Box<A> {
 
     //region Comprehension
     assign<A extends object, K extends string, B>(
-      this: Box<A>,
-        key: K,
+        this: Box<A>,
+        key: Exclude<K, keyof A>,
         memberOrBoxOrFunction: Box<B> | ((scope: A) => Box<B>) | B | ((scope: A) => B)): Box<A & { [key in K]: B }> {
         const memberOrBox = memberOrBoxOrFunction instanceof Function ? memberOrBoxOrFunction(this.value) : memberOrBoxOrFunction
         const member = memberOrBox instanceof Box ? memberOrBox.get() : memberOrBox

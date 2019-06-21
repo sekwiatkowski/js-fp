@@ -8,7 +8,7 @@ export declare class Writer<V, L> {
     getLog(): L;
     getValue(): V;
     chain<U>(f: (value: V) => Writer<U, L>): Writer<U, L>;
-    assign<V extends object, K extends string, W>(this: Writer<V, L>, key: K, memberOrWriterOrFunction: Writer<W, L> | ((scope: V) => Writer<W, L>) | W | ((scope: V) => W)): Writer<V & {
+    assign<V extends object, K extends string, W>(this: Writer<V, L>, key: Exclude<K, keyof V>, memberOrWriterOrFunction: Writer<W, L> | ((scope: V) => Writer<W, L>) | W | ((scope: V) => W)): Writer<V & {
         [key in K]: W;
     }, L>;
     map<U>(f: (value: V) => U): Writer<U, L>;

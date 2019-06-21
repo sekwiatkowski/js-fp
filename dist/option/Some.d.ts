@@ -6,7 +6,7 @@ export declare class Some<A> implements Option<A> {
     getOrElse(alternative: A | (() => A)): A;
     apply<B, C>(this: Option<(parameter: B) => C>, argumentOrFunctionOrOption: B | (() => B) | Option<B> | (() => Option<B>)): Option<C>;
     chain<B>(f: (value: A) => Option<B>): Option<B>;
-    assign<A extends object, K extends string, B>(this: Some<A>, key: K, memberOrOptionOrFunction: Option<B> | ((value: A) => Option<B>) | B | ((value: A) => B)): Option<A & {
+    assign<A extends object, K extends string, B>(this: Some<A>, key: Exclude<K, keyof A>, memberOrOptionOrFunction: Option<B> | ((value: A) => Option<B>) | B | ((value: A) => B)): Option<A & {
         [key in K]: B;
     }>;
     toResult<E>(error: E): Result<A, E>;

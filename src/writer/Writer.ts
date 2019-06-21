@@ -40,7 +40,7 @@ export class Writer<V, L> {
     //region
     assign<V extends object, K extends string, W>(
         this: Writer<V, L>,
-        key: K,
+        key: Exclude<K, keyof V>,
         memberOrWriterOrFunction: Writer<W, L> | ((scope: V) => Writer<W, L>) | W | ((scope: V) => W)): Writer<V & { [key in K]: W }, L> {
         return this.chain(obj => {
             const memberOrWriter = memberOrWriterOrFunction instanceof Function ? memberOrWriterOrFunction(obj) : memberOrWriterOrFunction

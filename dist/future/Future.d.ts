@@ -7,7 +7,7 @@ export declare class Future<T, E> {
     getErrorOrElse(alternative: E | ((value: T) => E)): Promise<E>;
     apply<B, C>(this: Future<(parameter: B) => C, E>, argumentOrFutureOrPromiseOrFunction: B | (() => B) | Future<B, E> | (() => Future<B, E>) | Promise<B> | (() => Promise<B>)): Future<C, E>;
     chain<U>(f: ((value: T) => Future<U, E>) | ((value: T) => Promise<U>)): Future<U, E>;
-    assign<T extends object, K extends string, U>(this: Future<T, E>, key: K, memberOrFutureOrPromiseOrFunction: Future<U, E> | ((value: T) => Future<U, E>) | Promise<U> | ((value: T) => Promise<U>) | U | ((value: T) => U)): Future<T & {
+    assign<T extends object, K extends string, U>(this: Future<T, E>, key: Exclude<K, keyof T>, memberOrFutureOrPromiseOrFunction: Future<U, E> | ((value: T) => Future<U, E>) | Promise<U> | ((value: T) => Promise<U>) | U | ((value: T) => U)): Future<T & {
         [key in K]: U;
     }, E>;
     orAttempt(alternative: Future<T, E> | ((error: E) => Future<T, E>)): Future<T, E>;

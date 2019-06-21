@@ -25,7 +25,7 @@ export class Invalid<T, E> implements Validated<T, E> {
     //region Comprehension
     assign<T extends object, K extends string, U>(
         this: Invalid<T, E>,
-        key: K,
+        key: Exclude<K, keyof T>,
         memberOrValidatedOrFunction: Validated<U, E> | ((value: T) => Validated<U, E>) | U | ((value: T) => U)): Validated<T & { [key in K]: U }, E> {
         return new Invalid<T & { [key in K]: U }, E>(this.errors)
     }
