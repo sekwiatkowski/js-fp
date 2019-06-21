@@ -37,9 +37,9 @@ export interface Writer<V, L> {
     //endregion
 
     //region Side-effects
-    perform(f: (value: V) => void)
-    performOnLog(f: (log: L) => void)
-    performOnBoth(f: (value: V, log: L) => void)
+    perform(f: (value: V) => void): void
+    performOnLog(f: (log: L) => void): void
+    performOnBoth(f: (value: V, log: L) => void): void
     //endregion
 
     //region Testing
@@ -51,7 +51,7 @@ export interface Writer<V, L> {
     //endregion
 }
 
-export function listWriter<V, I>(value: V, log: List<I>|I = ListConcatenation.identityElement): Writer<V, List<I>> {
+export function listWriter<V, I=string>(value: V, log: List<I>|I = ListConcatenation.identityElement): Writer<V, List<I>> {
     return writer(value, ListConcatenation, log instanceof List ? log : listFromArray([log]))
 }
 

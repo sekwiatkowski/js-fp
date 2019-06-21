@@ -42,11 +42,11 @@ export class Order<T> {
         })
     }
 
-    thenBy<U extends { [key in any]: any }, V>(this: Order<U>, by: (obj: U) => V, byOrder?: Order<U>) {
+    thenBy<U extends { [key in any]: any }, V>(this: Order<U>, by: (obj: U) => V, byOrder?: Order<V>) {
         return this.concat(orderBy(by, byOrder))
     }
 
-    thenDescendinglyBy<U extends { [key in any]: any }, V>(this: Order<U>, by: (obj: U) => V, byOrder?: Order<U>) {
+    thenDescendinglyBy<U extends { [key in any]: any }, V>(this: Order<U>, by: (obj: U) => V, byOrder?: Order<V>) {
         return this.concat(orderBy(by, byOrder).invert())
     }
 }

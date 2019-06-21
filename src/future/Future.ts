@@ -255,7 +255,7 @@ export class Future<T, E> {
                         const futureOrPromise = f()
 
                         const fulfillAgain = () => resolve(fulfilled(firstValue))
-                        const rejectForFirstTime = error => resolve(rejected(error))
+                        const rejectForFirstTime = (error: E) => resolve(rejected(error))
 
                         if (futureOrPromise instanceof Future) {
                             futureOrPromise.run(fulfillAgain, rejectForFirstTime)
@@ -291,7 +291,7 @@ export class Future<T, E> {
                 this.run(
                     firstValue => {
                         const fulfillAgain = () => resolve(fulfilled(firstValue))
-                        const rejectForFirstTime = error => resolve(rejected(error))
+                        const rejectForFirstTime = (error: E) => resolve(rejected(error))
 
                         const futureOrPromise = f(firstValue)
 

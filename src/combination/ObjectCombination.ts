@@ -8,6 +8,6 @@ export const objectCombination = <T extends { [key: string]: any }>(semigroups: 
                 combinedObject[key] = semigroups[key].combine(a[key])(b[key])
                 return combinedObject
 
-            }, {}) as T
+            }, {} as any) as T
         }
     })

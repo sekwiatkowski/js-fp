@@ -9,10 +9,10 @@ export declare class NonEmptyList<T> {
     getOrElse(index: number, alternative: T | (() => T)): T;
     last(): T;
     take(n: number): NonEmptyList<T>;
-    flatten<U>(this: NonEmptyList<NonEmptyList<U> | U[]>): NonEmptyList<U>;
-    chain(f: (T: any) => NonEmptyList<T>): NonEmptyList<T>;
+    flatten<U>(this: NonEmptyList<NonEmptyList<U>> | NonEmptyList<U[]>): NonEmptyList<U>;
+    chain(f: (item: T) => NonEmptyList<T>): NonEmptyList<T>;
     concat(otherList: NonEmptyList<T>): NonEmptyList<T>;
-    combine(other: T[], semigroup: Semigroup<T[]>): any;
+    combine(other: T[], semigroup: Semigroup<T[]>): NonEmptyList<T>;
     combine(other: NonEmptyList<T>, semigroup: Semigroup<NonEmptyList<T>>): NonEmptyList<T>;
     append(item: T): NonEmptyList<T>;
     prepend(item: T): NonEmptyList<T>;

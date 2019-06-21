@@ -15,7 +15,7 @@ describe('Success', () => {
 
     describe('can build an object', () => {
         it('one member at a time', () => {
-            success({})
+            success<object, any>({})
                 .assign('a', 1)
                 .assign('b', scope => scope.a + 1)
                 .assign('c', success(3))
@@ -44,7 +44,7 @@ describe('Success', () => {
 
         it('but switches to the failure path when an instance of Failure is assigned to a member', () => {
             const errorText = 'error'
-            success({})
+            success<object, string>({})
                 .assign('firstMember', failure(errorText))
                 .equals(failure(errorText), createResultEquality())
                 .should.be.true
@@ -52,7 +52,8 @@ describe('Success', () => {
     })
 
     it('can apply parameters', () => {
-        success((a: number) => (b: number) => (c: number) => (d: number) => a + b + c + d)
+        const f = (a: number) => (b: number) => (c: number) => (d: number) => a + b + c + d
+        success<((a: number) => (b: number) => (c: number) => (d: number) => number), any>(f)
             .apply(1)
             .apply(() => 2)
             .apply(success(3))
@@ -109,7 +110,7 @@ describe('Success', () => {
 
     describe('should map', () => {
         it('over the value', () => {
-            const f = value => `mapped over ${value}`
+            const f = (value: string) => `mapped over ${value}`
             createSuccessOfString()
                 .map(f)
                 .equals(success(f(containedValue)), resultOfStringStringEquality)

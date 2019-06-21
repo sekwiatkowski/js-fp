@@ -8,6 +8,6 @@ export interface Settled<T, E> {
     perform(sideEffect: () => void): Settled<T, E>;
     performOnFulfilled(sideEffect: (value: T) => void): Settled<T, E>;
     performOnRejected(sideEffect: (error: E) => void): Settled<T, E>;
-    run(whenFulfilled: (value: T) => void, whenRejected: (error: E) => void): any;
+    run(whenFulfilled: (value: T) => void, whenRejected: (error: E) => void): void;
 }
 export declare function createSettledEquality<T, E>(valueEquality?: Equivalence<T>, errorEquality?: Equivalence<E>): Equivalence<Settled<T, E>>;

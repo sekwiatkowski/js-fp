@@ -5,12 +5,12 @@ require('chai').should()
 describe('State', () => {
     const increment = (state: number) => pair(state, state + 1)
 
-    function createRng(): (number) => Pair<number, number> {
+    function createRng(): (seed: number) => Pair<number, number> {
         return (seed: number) => {
 
-            function randomInteger(seed) {
+            function randomInteger(z: number) {
                 const a = 11, c = 17, m = 25;
-                return (a * seed + c) % m;
+                return (a * z + c) % m;
             }
 
             const generatedNumber = randomInteger(seed)
@@ -60,7 +60,7 @@ describe('State', () => {
 
             const rngState = state(rng)
 
-            const withState = stateObject()
+            const withState = stateObject<number>()
                 .assign('a', rngState)
                 .assign('b', () => rngState)
                 .assign('c', c.second())

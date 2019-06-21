@@ -15,12 +15,12 @@ import {
 require('chai').should()
 
 export function expectFromTests<T>(equivalences: NonEmptyList<Equivalence<T>>) {
-    const test = (x: T, y: T) => equivalences
-        .all(equivalence => equivalence.test(x, y))
+    const test = (x: T|null|undefined, y: T|null|undefined) => equivalences
+        .all(equivalence => equivalence.test(x as any, y as any))
 
     return {
-        expectTrue: (x: T, y: T) => test(x, y).should.be.true,
-        expectFalse: (x: T, y: T) => test(x, y).should.be.false
+        expectTrue: (x: T|null|undefined, y: T|null|undefined) => test(x, y).should.be.true,
+        expectFalse: (x: T|null|undefined, y: T|null|undefined) => test(x, y).should.be.false
     }
 }
 

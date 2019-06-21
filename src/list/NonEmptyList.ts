@@ -88,11 +88,11 @@ export class NonEmptyList<T> {
     //endregion
 
     //region Chaining
-    flatten<U>(this: NonEmptyList<NonEmptyList<U>|U[]>): NonEmptyList<U> {
-        return new NonEmptyList(flatten(this.items))
+    flatten<U>(this: NonEmptyList<NonEmptyList<U>>|NonEmptyList<U[]>): NonEmptyList<U> {
+        return new NonEmptyList(flatten(this.getArray()))
     }
 
-    chain(f: (T) => NonEmptyList<T>): NonEmptyList<T> {
+    chain(f: (item: T) => NonEmptyList<T>): NonEmptyList<T> {
         return this.map(f).flatten()
     }
     //endregion
@@ -102,8 +102,8 @@ export class NonEmptyList<T> {
         return new NonEmptyList(ArrayConcatenation.combine(this.items)(otherList.items))
     }
 
-    combine(other: T[], semigroup: Semigroup<T[]>);
-    combine(other: NonEmptyList<T>, semigroup: Semigroup<NonEmptyList<T>>): NonEmptyList<T>;
+    combine(other: T[], semigroup: Semigroup<T[]>): NonEmptyList<T>
+    combine(other: NonEmptyList<T>, semigroup: Semigroup<NonEmptyList<T>>): NonEmptyList<T>
     combine(other: T[]|NonEmptyList<T>, semigroup: Semigroup<T[]>|Semigroup<NonEmptyList<T>>): NonEmptyList<T> {
         if (other instanceof Array) {
             return new NonEmptyList((semigroup as Semigroup<T[]>).combine(this.items)(other))

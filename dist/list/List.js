@@ -29,7 +29,7 @@ class List {
     //endregion
     //region Chaining
     flatten() {
-        return new List(ArrayFunctions_1.flatten(this.items));
+        return new List(ArrayFunctions_1.flatten(this.getArray()));
     }
     chain(f) {
         return this.map(f).flatten();

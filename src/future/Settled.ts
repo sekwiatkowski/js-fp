@@ -13,7 +13,7 @@ export interface Settled<T, E> {
     performOnFulfilled(sideEffect: (value: T) => void): Settled<T, E>
     performOnRejected(sideEffect: (error: E) => void): Settled<T, E>
 
-    run(whenFulfilled: (value: T) => void, whenRejected: (error: E) => void)
+    run(whenFulfilled: (value: T) => void, whenRejected: (error: E) => void): void
 }
 
 export function createSettledEquality<T, E>(

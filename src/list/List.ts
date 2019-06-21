@@ -85,11 +85,11 @@ export class List<T> {
     //endregion
 
     //region Chaining
-    flatten<U>(this: List<List<U>|U[]>): List<U> {
-        return new List(flatten(this.items))
+    flatten<U>(this: List<List<U>>|List<U[]>): List<U> {
+        return new List(flatten(this.getArray()))
     }
 
-    chain(f: (T) => List<T>): List<T> {
+    chain(f: (item: T) => List<T>): List<T> {
         return this.map(f).flatten()
     }
     //endregion
@@ -99,8 +99,8 @@ export class List<T> {
         return new List(ArrayConcatenation.combine(this.getArray())(other instanceof Array ? other : other.getArray()))
     }
 
-    combine(other: T[], semigroup: Semigroup<T[]>);
-    combine(other: List<T>, semigroup: Semigroup<List<T>>): List<T>;
+    combine(other: T[], semigroup: Semigroup<T[]>): List<T>
+    combine(other: List<T>, semigroup: Semigroup<List<T>>): List<T>
     combine(other: T[]|List<T>, semigroup: Semigroup<T[]>|Semigroup<List<T>>): List<T> {
         if (other instanceof Array) {
             return new List((semigroup as Semigroup<T[]>).combine(this.items)(other))
@@ -348,7 +348,7 @@ export class List<T> {
 }
 
 export function emptyList<T>(): List<T> {
-    return new List([])
+    return new List<T>([])
 }
 
 export function listFromArray<T>(array: T[]): List<T> {
@@ -359,7 +359,7 @@ export function range(start: number, end?: number): List<number> {
     return listFromArray(rangeOfItems(start, end))
 }
 
-export function repeat<T>(times: number, valueOrFunction: T|((index?: number) => T)): List<T> {
+export function repeat<T>(times: number, valueOrFunction: T|((index: number) => T)): List<T> {
     return listFromArray(repeatItems(times, valueOrFunction))
 }
 

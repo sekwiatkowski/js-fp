@@ -23,8 +23,8 @@ describe('Arrow', () => {
     describe('can be composed', () => {
 
         it('with another function', () => {
-            const increment = x => x+1
-            const double = x => 2*x
+            const increment = (x: number) => x+1
+            const double = (x: number) => 2*x
 
             arrow(increment)
                 .andThen(double)
@@ -46,8 +46,8 @@ describe('Arrow', () => {
         let count = 0
 
         const composition = arrow((x: string) => { count++; return x.toUpperCase() })
-            .adapt<Product>((p) => { count++; return p.name })
-            .andThen(arrow(x => { count++; return x.length }))
+            .adapt<Product>(p => { count++; return p.name })
+            .andThen(arrow((x: string) => { count++; return x.length }))
             .andThen(x => { count++; return x-1})
 
         count.should.equal(0)

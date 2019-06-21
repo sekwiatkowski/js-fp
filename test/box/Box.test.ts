@@ -36,7 +36,7 @@ describe('Box', () => {
     })
 
     it('can apply parameters', () => {
-        box(a => b => c => d => a + b + c + d)
+        box((a: number) => (b: number) => (c: number) => (d: number) => a + b + c + d)
             .apply(1)
             .apply(() => 2)
             .apply(box(3))
@@ -59,7 +59,7 @@ describe('Box', () => {
     })
 
     it('can be mapped over', () => {
-        const f = value => `mapped over ${value}`
+        const f = (value: string) => `mapped over ${value}`
         box(valueText)
             .map(f)
             .get()
@@ -82,14 +82,12 @@ describe('Box', () => {
             const boxEquality = createBoxEquality<number>(guardedStrictEquality)
             boxOfOne.equals(box(1), boxEquality).should.be.true
             boxOfOne.equals(box(2), boxEquality).should.be.false
-            boxOfOne.equals(null, boxEquality).should.be.false
-            boxOfOne.equals(undefined, boxEquality).should.be.false
         })
     })
 
     it('can perform a side-effect on the contained value', () => {
         let mutable = 'no side-effect'
-        const f = value => `side-effect using ${value}`
+        const f = (value: string) => `side-effect using ${value}`
         box(valueText)
             .perform(value => mutable = f(value))
 

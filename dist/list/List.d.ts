@@ -9,10 +9,10 @@ export declare class List<T> {
     getOrElse(index: number, alternative: T | (() => T)): T;
     last(): Option<T>;
     take(n: number): List<T>;
-    flatten<U>(this: List<List<U> | U[]>): List<U>;
-    chain(f: (T: any) => List<T>): List<T>;
+    flatten<U>(this: List<List<U>> | List<U[]>): List<U>;
+    chain(f: (item: T) => List<T>): List<T>;
     concat(other: T[] | List<T>): List<T>;
-    combine(other: T[], semigroup: Semigroup<T[]>): any;
+    combine(other: T[], semigroup: Semigroup<T[]>): List<T>;
     combine(other: List<T>, semigroup: Semigroup<List<T>>): List<T>;
     append(item: T): NonEmptyList<T>;
     prepend(item: T): NonEmptyList<T>;
@@ -68,6 +68,6 @@ export declare class List<T> {
 export declare function emptyList<T>(): List<T>;
 export declare function listFromArray<T>(array: T[]): List<T>;
 export declare function range(start: number, end?: number): List<number>;
-export declare function repeat<T>(times: number, valueOrFunction: T | ((index?: number) => T)): List<T>;
+export declare function repeat<T>(times: number, valueOrFunction: T | ((index: number) => T)): List<T>;
 export declare function createListEquality<T>(itemEquality?: Equivalence<T>): Equivalence<List<T>>;
 export declare const ListConcatenation: Monoid<List<any>>;

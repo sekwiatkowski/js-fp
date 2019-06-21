@@ -27,7 +27,7 @@ describe('Order', () => {
         .should.eql(expectedSorting)
 
     it('concatenates with a comparison function', () => {
-        const comparison = (e1, e2) => DescendingNumberOrder.compare(e1.experience, e2.experience)
+        const comparison = (e1: Employee, e2: Employee) => DescendingNumberOrder.compare(e1.experience, e2.experience)
 
         check(order<Employee>((e1, e2) => NumberOrder.compare(e1.rank, e2.rank))
             .concat(comparison))

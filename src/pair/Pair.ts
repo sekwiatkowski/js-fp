@@ -38,7 +38,7 @@ export class Pair<A, B> {
         return [this._first, this._second]
     }
 
-    toBox<C>(f: (A, B) => C): Box<C> {
+    toBox<C>(f: (first: A, second: B) => C): Box<C> {
         return box(f(this._first, this._second))
     }
     //endregion

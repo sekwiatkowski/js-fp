@@ -33,7 +33,7 @@ describe('Invalid', () => {
 
     describe('concatenates', () => {
         it('with a Valid instance by returning itself', () => {
-            const invalidInstance = createInvalidInstance()
+            const invalidInstance = createInvalidInstance<string>()
             invalidInstance
                 .concat(valid('value'))
                 .should.equal(invalidInstance)
@@ -80,7 +80,7 @@ describe('Invalid', () => {
 
     describe('maps', () => {
         it('over the errors', () => {
-            const f = error => `mapped ${error}`
+            const f = (error: string) => `mapped ${error}`
             const mappedErrors = errors.map(f)
             createInvalidInstance()
                 .mapErrors(errors => errors.map(f))
@@ -96,7 +96,7 @@ describe('Invalid', () => {
     })
 
     it('maps over the errors when matched', () => {
-        const f = error => `mapped ${error}`
+        const f = (error: string) => `mapped ${error}`
         const mappedErrors = errors.map(f)
         createInvalidInstance()
             .match(
@@ -108,7 +108,7 @@ describe('Invalid', () => {
     describe('performs side-effects', () => {
         it('intended for the invalid path', () => {
             let mutable = noSideEffectText
-            const f = errors => `${errors[0]} ${errors[1]}`
+            const f = (errors: string[]) => `${errors[0]} ${errors[1]}`
             createInvalidInstance()
                 .performOnInvalid(errors => mutable = f(errors))
 

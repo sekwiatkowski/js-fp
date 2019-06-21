@@ -8,7 +8,7 @@ describe('objectEquivalence', () => {
         name: string,
         orders: number[],
         activity: Activity,
-        interests: string[]
+        interests: string[]|null
     }
 
     interface Activity {

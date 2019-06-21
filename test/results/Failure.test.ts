@@ -80,7 +80,7 @@ describe('Failure', () => {
 
     describe('maps', () => {
         it('over the error', () => {
-            const f = error => `mapped over ${error}`
+            const f = (error: string) => `mapped over ${error}`
             createFailureOfString()
                 .mapError(f)
                 .equals(failure(f(error)), resultOfStringStringEquality)

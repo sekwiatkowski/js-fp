@@ -11,10 +11,10 @@ export declare class Order<T> {
     concat(otherOrFunction: ((x: T, y: T) => Ordering) | Order<T>): Order<T>;
     thenBy<U extends {
         [key in any]: any;
-    }, V>(this: Order<U>, by: (obj: U) => V, byOrder?: Order<U>): Order<U>;
+    }, V>(this: Order<U>, by: (obj: U) => V, byOrder?: Order<V>): Order<U>;
     thenDescendinglyBy<U extends {
         [key in any]: any;
-    }, V>(this: Order<U>, by: (obj: U) => V, byOrder?: Order<U>): Order<U>;
+    }, V>(this: Order<U>, by: (obj: U) => V, byOrder?: Order<V>): Order<U>;
 }
 export declare const order: <T>(f: (x: T, y: T) => Ordering) => Order<T>;
 export declare const AnyOrder: Order<any>;

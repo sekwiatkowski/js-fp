@@ -7,8 +7,8 @@ describe('Some', () => {
     const unsafeGet = () => { throw 'Unexpected failure to get the value!' }
     const containedValue = 'value'
     const createSomeOfString = () => some(containedValue)
-    const satisfiedPredicate = value => value === containedValue
-    const violatedPredicate = value => value === 'something else'
+    const satisfiedPredicate = (value: string) => value === containedValue
+    const violatedPredicate = (value: string) => value === 'something else'
 
     const optionOfNumberEquality = createOptionEquality<number>()
     const optionOfStringEquality = createOptionEquality<string>()

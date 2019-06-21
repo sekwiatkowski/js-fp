@@ -34,7 +34,7 @@ class NonEmptyList {
     //endregion
     //region Chaining
     flatten() {
-        return new NonEmptyList(ArrayFunctions_1.flatten(this.items));
+        return new NonEmptyList(ArrayFunctions_1.flatten(this.getArray()));
     }
     chain(f) {
         return this.map(f).flatten();

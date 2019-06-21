@@ -9,15 +9,15 @@ export interface Writer<V, L> {
     mapLog<M>(f: (log: L) => M, monoid: Monoid<M>): Writer<V, M>;
     reset(): Writer<V, L>;
     tell(other: L): Writer<V, L>;
-    perform(f: (value: V) => void): any;
-    performOnLog(f: (log: L) => void): any;
-    performOnBoth(f: (value: V, log: L) => void): any;
+    perform(f: (value: V) => void): void;
+    performOnLog(f: (log: L) => void): void;
+    performOnBoth(f: (value: V, log: L) => void): void;
     equals(otherWriter: Writer<V, L>, equality: Equivalence<Writer<V, L>>): boolean;
     test(predicate: (value: V) => boolean): boolean;
     test(predicate: Predicate<V>): boolean;
     test(predicate: ((value: V) => boolean) | Predicate<V>): boolean;
 }
-export declare function listWriter<V, I>(value: V, log?: List<I> | I): Writer<V, List<I>>;
+export declare function listWriter<V, I = string>(value: V, log?: List<I> | I): Writer<V, List<I>>;
 export declare function stringWriter<V, I>(value: V, log?: string): Writer<V, string>;
 export declare function writer<V, L>(value: V, monoid: Monoid<L>, log?: L): Writer<V, L>;
 export declare function createWriterEquality<V, L>(valueEquality?: Equivalence<V>, logEquality?: Equivalence<L>): Equivalence<Writer<V, L>>;

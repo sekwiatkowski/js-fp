@@ -11,10 +11,10 @@ export declare function foldItemsBy<T, U>(items: T[], by: (item: T) => U, operat
 export declare function groupItemsBy<T>(items: T[], computeKey: (item: T) => string): {
     [id: string]: T[];
 };
-export declare function mapItems<T, U>(items: T[], f: (T: any) => U): U[];
+export declare function mapItems<T, U>(items: T[], f: (item: T) => U): U[];
 export declare function parallelMapItems<T, U, E>(items: T[], f: (item: T) => U): Future<U[], E>;
 export declare function rangeOfItems(start: number, end?: number): number[];
-export declare function repeatItems<T>(times: number, valueOrFunction: T | ((index?: number) => T)): T[];
+export declare function repeatItems<T>(times: number, valueOrFunction: T | ((index: number) => T)): T[];
 export declare function findItem<T>(items: T[], predicate: (item: T) => boolean): Option<T>;
 export declare function findLastItem<T>(items: T[], predicate: (item: T) => boolean): Option<T>;
 export declare function forEachItem<T>(items: T[], sideEffect: (item: T) => void): void;

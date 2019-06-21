@@ -6,7 +6,7 @@ describe('Future', () => {
     const value = 'value'
     const error = 'error'
 
-    const map = value => `mapped over ${value}`
+    const map = (value: string) => `mapped over ${value}`
 
     const unsafeGet = () => { throw 'Unexpected error!' }
     const unsafeGetError = () => { throw 'Unexpected value!' }
@@ -44,7 +44,7 @@ describe('Future', () => {
         })
 
         it('using futures', async() => {
-            const result = await fulfill({})
+            const result = await fulfill<object, string>({})
                 .assign('x', future<number, string>(() => Promise.resolve(1)))
                 .assign('y', () => future<number, string>(() => Promise.resolve(2)))
                 .match(
@@ -221,7 +221,7 @@ describe('Future', () => {
 
         describe('chained asynchronous side-effects', () => {
             it('on both paths', async() => {
-                let mutable = []
+                let mutable: string[] = []
 
                 await fulfill({})
                     .perform(() => new Promise(resolve => {
@@ -253,7 +253,7 @@ describe('Future', () => {
             })
 
             it('intended for the fulfillment path', async() => {
-                let mutable = []
+                let mutable: string[] = []
 
                 await fulfill({})
                     .performOnFulfilled(() => new Promise(resolve => {
@@ -272,7 +272,7 @@ describe('Future', () => {
             })
 
             it('but not if the future is rejected', async() => {
-                let mutable = []
+                let mutable: string[] = []
 
                 await reject({})
                     .performOnFulfilled(() => new Promise(resolve => {
@@ -291,7 +291,7 @@ describe('Future', () => {
             })
 
             it('intended for the rejection path', async() => {
-                let mutable = []
+                let mutable: string[] = []
 
                 await reject({})
                     .performOnRejected(() => new Promise(resolve => {
@@ -310,7 +310,7 @@ describe('Future', () => {
             })
 
             it('but not if the future is fulfilled', async() => {
-                let mutable = []
+                let mutable: string[] = []
 
                 await fulfill({})
                     .performOnRejected(() => new Promise(resolve => {
@@ -558,7 +558,7 @@ describe('Future', () => {
         })
 
         describe('a predicate', () => {
-            const isEven = x => x % 2 == 0
+            const isEven = (x: number) => x % 2 === 0
             const isEvenPredicate = predicate(isEven)
 
             describe('when fulfilled', () => {
@@ -582,19 +582,19 @@ describe('Future', () => {
 
             describe('when rejected', () => {
                 it('using a function', async() => {
-                    const one = await reject(1).test(isEven)
+                    const one = await reject<number, number>(1).test(isEven)
                     one.should.be.false
 
-                    const two = await reject(2).test(isEvenPredicate)
+                    const two = await reject<number, number>(2).test(isEvenPredicate)
                     two.should.be.false
                 })
 
                 it('using a Predicate instance', async() => {
 
-                    const one = await reject(1).test(isEvenPredicate)
+                    const one = await reject<number, number>(1).test(isEvenPredicate)
                     one.should.be.false
 
-                    const two = await reject(2).test(isEvenPredicate)
+                    const two = await reject<number, number>(2).test(isEvenPredicate)
                     two.should.be.false
                 })
             })

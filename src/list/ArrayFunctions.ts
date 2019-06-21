@@ -110,7 +110,7 @@ export function groupItemsBy<T>(items: T[], computeKey: (item: T) => string): { 
 //endregion
 
 //region Mapping
-export function mapItems<T, U>(items: T[], f: (T) => U): U[] {
+export function mapItems<T, U>(items: T[], f: (item: T) => U): U[] {
     return items.map(f)
 }
 
@@ -177,7 +177,7 @@ export function rangeOfItems(start: number, end?: number): number[] {
     return range
 }
 
-export function repeatItems<T>(times: number, valueOrFunction: T|((index?: number) => T)): T[] {
+export function repeatItems<T>(times: number, valueOrFunction: T|((index: number) => T)): T[] {
     const items = new Array<T>(times)
     if (valueOrFunction instanceof Function) {
         for (let index = 0; index < times; index++) {

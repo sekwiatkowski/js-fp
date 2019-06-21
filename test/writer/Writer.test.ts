@@ -14,58 +14,58 @@ import {ListConcatenation} from '../../src/list/List'
 require('chai').should()
 
 describe('Writer', () => {
-    const defaultValue = 1
-    const defaultLog = 'initial log'
-    const createStringWriter = (value: number = defaultValue, log: string = defaultLog) => stringWriter(value, log)
+    const initialValue = 1
+    const initialLog = 'initial log'
+    const createNumberStringWriter = (value: number = initialValue, log: string = initialLog) => stringWriter(value, log)
 
     describe('can return', () => {
         it('the value', () => {
-            createStringWriter()
+            createNumberStringWriter()
                 .getValue()
-                .should.equal(defaultValue)
+                .should.equal(initialValue)
         })
 
         it('the log', () => {
-            createStringWriter()
+            createNumberStringWriter()
                 .getLog()
-                .should.equal(defaultLog)
+                .should.equal(initialLog)
         })
 
         it('both', () => {
-            const [accessedValue, accessedLog] = createStringWriter()
+            const [accessedValue, accessedLog] = createNumberStringWriter()
                 .get()
                 .toArray()
 
-            accessedValue.should.equal(defaultValue)
-            accessedLog.should.equal(defaultLog)
+            accessedValue.should.equal(initialValue)
+            accessedLog.should.equal(initialLog)
         })
     })
 
     describe('can map', () => {
-        const mapOverValue = x => x + 1
+        const mapOverValue = (x: number) => x + 1
         const mapOverLogToAnotherString = (log: string) => `mapped over ${log}`
-        const mapOverLogToArray = log => [log]
+        const mapOverLogToArray = (log: string) => [log]
 
         it('over the value', () => {
-            createStringWriter()
+            createNumberStringWriter()
                 .map(mapOverValue)
                 .getValue()
-                .should.equal(mapOverValue(defaultValue))
+                .should.equal(mapOverValue(initialValue))
         })
 
         describe('over the log', () => {
             it('without a monoid', () => {
-                createStringWriter()
+                createNumberStringWriter()
                     .mapLog(mapOverLogToAnotherString)
                     .getLog()
-                    .should.equal(mapOverLogToAnotherString(defaultLog))
+                    .should.equal(mapOverLogToAnotherString(initialLog))
             })
 
             it('with a monoid', () => {
-                createStringWriter()
+                createNumberStringWriter()
                     .mapLog(mapOverLogToArray, ArrayConcatenation)
                     .getLog()
-                    .should.eql(mapOverLogToArray(defaultLog))
+                    .should.eql(mapOverLogToArray(initialLog))
             })
         })
     })
@@ -110,30 +110,35 @@ describe('Writer', () => {
     })
 
     describe('can perform side-effects', () => {
+        const noSideEffect = 'no side-effect'
+        const valueSideEffectText = 'value side-effect'
+        const logSideEffectText = 'log side-effect'
+        const createStringStringWriter = () => stringWriter(valueSideEffectText, logSideEffectText)
+
         it('on the value', () => {
-            let mutable = null
-            createStringWriter()
+            let mutable = noSideEffect
+            createStringStringWriter()
                 .perform(value => mutable = value)
-            mutable.should.equal(defaultValue)
+            mutable.should.equal(valueSideEffectText)
         })
 
         it('on the log', () => {
-            let mutable = null
-            createStringWriter()
+            let mutable = noSideEffect
+            createStringStringWriter()
                 .performOnLog(log => mutable = log)
-            mutable.should.equal(defaultLog)
+            mutable.should.equal(logSideEffectText)
         })
 
         it('on both', () => {
-            let firstMutable = null
-            let secondMutable = null
-            createStringWriter()
+            let firstMutable = noSideEffect
+            let secondMutable = noSideEffect
+            createStringStringWriter()
                 .performOnBoth((value, log) => {
                     firstMutable = value
                     secondMutable = log
                 })
-            firstMutable.should.equal(defaultValue)
-            secondMutable.should.equal(defaultLog)
+            firstMutable.should.equal(valueSideEffectText)
+            secondMutable.should.equal(logSideEffectText)
         })
     })
 
@@ -143,15 +148,15 @@ describe('Writer', () => {
 
             it('using functions', () => {
 
-                createStringWriter(1).test(isEven).should.be.false
-                createStringWriter(2).test(isEven).should.be.true
+                createNumberStringWriter(1).test(isEven).should.be.false
+                createNumberStringWriter(2).test(isEven).should.be.true
             })
 
             it('using Predicate instances', () => {
                 const isEvenPredicate = predicate(isEven)
 
-                createStringWriter(1).test(isEvenPredicate).should.be.false
-                createStringWriter(2).test(isEvenPredicate).should.be.true
+                createNumberStringWriter(1).test(isEvenPredicate).should.be.false
+                createNumberStringWriter(2).test(isEvenPredicate).should.be.true
             })
 
         })
@@ -159,9 +164,9 @@ describe('Writer', () => {
         it('for equality', () => {
             const equality = createWriterEquality()
 
-            createStringWriter().equals(createStringWriter(), equality).should.be.true
-            createStringWriter().equals(stringWriter(2, defaultLog), equality).should.be.false
-            createStringWriter().equals(stringWriter(defaultValue, 'other log'), equality).should.be.false
+            createNumberStringWriter().equals(createNumberStringWriter(), equality).should.be.true
+            createNumberStringWriter().equals(stringWriter(2, initialLog), equality).should.be.false
+            createNumberStringWriter().equals(stringWriter(initialValue, 'other log'), equality).should.be.false
         })
     })
 })

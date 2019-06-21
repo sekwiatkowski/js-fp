@@ -21,7 +21,7 @@ function createSameItemsEquality<T>(itemEquality: Equivalence<T> = strictEqualit
 }
 
 export function createArrayEquality<T>(itemEquality: Equivalence<T> = strictEquality): Equivalence<T[]> {
-    return neitherIsUndefinedOrNull.and(sameLength.and(createSameItemsEquality(itemEquality)))
+    return (neitherIsUndefinedOrNull as Equivalence<T[]>).and(sameLength.and(createSameItemsEquality(itemEquality)))
 }
 
 export const StringArrayEquality = createArrayEquality(StringEquality)
@@ -30,7 +30,7 @@ export const BooleanArrayEquality = createArrayEquality(BooleanEquality)
 export const DateArrayEquality = createArrayEquality(DateEquality)
 
 export function createNullableArrayEquality<T>(itemEquality: Equivalence<T> = strictEquality): Equivalence<T[]> {
-    return bothAreNull.or(createArrayEquality(itemEquality))
+    return (bothAreNull as Equivalence<T[]>).or(createArrayEquality(itemEquality))
 }
 
 export const NullableStringArrayEquality = createNullableArrayEquality(NullableStringEquality)

@@ -25,11 +25,11 @@ describe('List<T>', () => {
     const optionOfNumberEquality = createOptionEquality<number>()
     const nelOfNumbersEquality = createNonEmptyListEquality<number>()
 
-    const isEven = (x: number) => x % 2 == 0
+    const isEven = (x: number) => x % 2 === 0
 
     describe('can map over items', () => {
         it('sequentially', () => {
-            const increment = x => x + 1
+            const increment = (x: number) => x + 1
             const result = listFromArray([1, 2, 3])
                 .map(increment)
                 .getArray()
@@ -101,7 +101,7 @@ describe('List<T>', () => {
     describe('can test', () => {
         describe('whether a provided predicate is satisfied', () => {
             it('by all items', () => {
-                emptyList().all(isEven).should.be.true
+                emptyList<number>().all(isEven).should.be.true
                 listFromArray([1]).all(isEven).should.be.false
                 listFromArray([1, 2]).all(isEven).should.be.false
                 listFromArray([2]).all(isEven).should.be.true
@@ -109,7 +109,7 @@ describe('List<T>', () => {
             })
 
             it('by at least one item', () => {
-                emptyList().some(isEven).should.be.false
+                emptyList<number>().some(isEven).should.be.false
                 listFromArray([1]).some(isEven).should.be.false
                 listFromArray([1, 2]).some(isEven).should.be.true
                 listFromArray([1, 2, 3]).some(isEven).should.be.true
@@ -117,7 +117,7 @@ describe('List<T>', () => {
             })
 
             it('by no items', () => {
-                emptyList().none(isEven).should.be.true
+                emptyList<number>().none(isEven).should.be.true
                 listFromArray([1]).none(isEven).should.be.true
                 listFromArray([1, 2]).none(isEven).should.be.false
                 listFromArray([1, 2, 3]).none(isEven).should.be.false
@@ -126,7 +126,7 @@ describe('List<T>', () => {
         })
 
         it('how many items satisfy a predicate', () => {
-            emptyList().count(isEven).should.equal(0)
+            emptyList<number>().count(isEven).should.equal(0)
             listFromArray([1]).count(isEven).should.equal(0)
             listFromArray([1, 2]).count(isEven).should.equal(1)
             listFromArray([1, 2, 3]).count(isEven).should.equal(1)
@@ -146,8 +146,8 @@ describe('List<T>', () => {
 
         describe('for equality with another list', () => {
             it('equal if it contains the same items', () => {
-                emptyList().equals(emptyList(), listOfNumbersEquality).should.be.true
-                emptyList().equals(listFromArray([1]), listOfNumbersEquality).should.be.false
+                emptyList<number>().equals(emptyList<number>(), listOfNumbersEquality).should.be.true
+                emptyList<number>().equals(listFromArray([1]), listOfNumbersEquality).should.be.false
                 listFromArray([1]).equals(emptyList(), listOfNumbersEquality).should.be.false
                 listFromArray([1]).equals(listFromArray([1, 2]), listOfNumbersEquality).should.be.false
                 listFromArray([1, 2]).equals(listFromArray([1]), listOfNumbersEquality).should.be.false
@@ -157,11 +157,6 @@ describe('List<T>', () => {
             it('in the same sequence', () => {
                 listFromArray([1, 2]).equals(listFromArray([1, 2]), listOfNumbersEquality).should.be.true
                 listFromArray([1, 2]).equals(listFromArray([2, 1]), listOfNumbersEquality).should.be.false
-            })
-
-            it('and unequal if the other list is null or undefined', () => {
-                emptyList().equals(null, listOfNumbersEquality).should.be.false
-                emptyList().equals(undefined, listOfNumbersEquality).should.be.false
             })
         })
     })
@@ -232,7 +227,7 @@ describe('List<T>', () => {
     })
 
     it('can filter items', () => {
-        emptyList().filter(isEven).getArray().should.eql([])
+        emptyList<number>().filter(isEven).getArray().should.eql([])
         listFromArray([1]).filter(isEven).getArray().should.eql([])
         listFromArray([1, 2]).filter(isEven).getArray().should.eql([2])
         listFromArray([1, 2, 3]).filter(isEven).getArray().should.eql([2])
@@ -415,10 +410,13 @@ describe('List<T>', () => {
         actual.equals(some(expected), optionOfNumberEquality).should.be.true
     }
 
+    interface WithNumber {
+        number: number
+    }
     const one = {number:1}
     const two = {number:2}
     const three = {number:3}
-    const byNumber = x => x.number
+    const byNumber = (x: WithNumber) => x.number
 
     describe('can reduce', () => {
         const addition = (a: number) => (b: number) => a+b
@@ -440,34 +438,30 @@ describe('List<T>', () => {
     })
 
     describe('can fold', () => {
-        it('an empty list to none', () => {
-            assertNone(emptyList<number>().fold(unusedFunction, undefined))
-        })
-
         describe('a list of objects with a numeric member', () => {
             it('with the Max monoid by selecting a number', () => {
-                assertNone(emptyList().maxBy(byNumber))
+                assertNone(emptyList<WithNumber>().maxBy(byNumber))
                 assertSome(listFromArray([one]).maxBy(byNumber), 1)
                 assertSome(listFromArray([one, two]).maxBy(byNumber), 2)
                 assertSome(listFromArray([two, one]).maxBy(byNumber), 2)
             })
 
             it('with the Min monoid by selecting a number', () => {
-                assertNone(emptyList().minBy(byNumber))
+                assertNone(emptyList<WithNumber>().minBy(byNumber))
                 assertSome(listFromArray([one]).minBy(byNumber), 1)
                 assertSome(listFromArray([one, two]).minBy(byNumber), 1)
                 assertSome(listFromArray([two, one]).minBy(byNumber), 1)
             })
 
             it('with the Sum monoid by selecting a number', () => {
-                assertNone(emptyList().sumBy(byNumber))
+                assertNone(emptyList<WithNumber>().sumBy(byNumber))
                 assertSome(listFromArray([one]).sumBy(byNumber), 1)
                 assertSome(listFromArray([one, two]).sumBy(byNumber), 3)
                 assertSome(listFromArray([two, one]).sumBy(byNumber), 3)
             })
 
             it('with the Product monoid by selecting a number', () => {
-                assertNone(emptyList().productBy(byNumber))
+                assertNone(emptyList<WithNumber>().productBy(byNumber))
                 assertSome(listFromArray([one]).productBy(byNumber), 1)
                 assertSome(listFromArray([one, two]).productBy(byNumber), 2)
                 assertSome(listFromArray([two, one]).productBy(byNumber), 2)

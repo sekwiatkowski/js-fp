@@ -3,7 +3,8 @@
     "module": "commonjs",
     "target": "es6",
     "sourceMap": false,
-    "declaration": false
+    "declaration": false,
+    "strict": true
   },
   "exclude": [
     "node_modules",

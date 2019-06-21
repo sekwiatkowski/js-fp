@@ -18,7 +18,7 @@ describe('Pair', () => {
     })
 
     describe('can map', () => {
-        const increment = x => x + 1
+        const increment = (x: number) => x + 1
 
         it('the first value', () => {
             pair(1, 2).mapFirst(increment).first().should.equal(2)

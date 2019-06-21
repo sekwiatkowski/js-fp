@@ -163,7 +163,7 @@ class Future {
             this.run(firstValue => {
                 const futureOrPromise = f();
                 const fulfillAgain = () => resolve(Fulfilled_1.fulfilled(firstValue));
-                const rejectForFirstTime = error => resolve(Rejected_1.rejected(error));
+                const rejectForFirstTime = (error) => resolve(Rejected_1.rejected(error));
                 if (futureOrPromise instanceof Future) {
                     futureOrPromise.run(fulfillAgain, rejectForFirstTime);
                 }
@@ -189,7 +189,7 @@ class Future {
     performOnFulfilled(f) {
         return new Future(() => new Promise(resolve => this.run(firstValue => {
             const fulfillAgain = () => resolve(Fulfilled_1.fulfilled(firstValue));
-            const rejectForFirstTime = error => resolve(Rejected_1.rejected(error));
+            const rejectForFirstTime = (error) => resolve(Rejected_1.rejected(error));
             const futureOrPromise = f(firstValue);
             if (futureOrPromise instanceof Future) {
                 futureOrPromise.run(fulfillAgain, rejectForFirstTime);

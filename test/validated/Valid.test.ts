@@ -13,7 +13,7 @@ describe('Valid', () => {
     const validatedOfStringStringEquality = createValidatedEquality<string, string>()
 
     it('can apply parameters', () => {
-        valid((a: number) => (b: number) => (c: number) => (d: number) => a + b + c + d)
+        valid<((a: number) => (b: number) => (c: number) => (d: number) => number), string>((a: number) => (b: number) => (c: number) => (d: number) => a + b + c + d)
             .apply(1)
             .apply(() => 2)
             .apply(valid(3))
@@ -24,7 +24,7 @@ describe('Valid', () => {
 
     describe('can build objects', () => {
         it('one member at a time', () => {
-            valid({})
+            valid<object, string>({})
                 .assign('a', 1)
                 .assign('b', scope => scope.a + 1)
                 .assign('c', valid(3))
@@ -36,7 +36,7 @@ describe('Valid', () => {
 
         it('but switches to the Invalid path when an instance of Invalid is assigned to a member', () => {
             const errors = ['error']
-            valid({})
+            valid<object, string>({})
                 .assign('x', invalid(errors))
                 .equals(invalid(errors), createValidatedEquality())
                 .should.be.true
@@ -84,7 +84,7 @@ describe('Valid', () => {
 
     describe('maps', () => {
         it('over the value', () => {
-            const f = value => `mapped over ${value}`
+            const f = (value: string) => `mapped over ${value}`
             createValidString()
                 .map(f)
                 .equals(valid(f(containedString)), validatedOfStringStringEquality)

@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const Equivalence_1 = require("./Equivalence");
-const isUndefined = x => typeof x === 'undefined';
-const isNull = x => x === null;
+const isUndefined = (x) => x == undefined;
+const isNull = (x) => x === null;
 const eitherIsUndefined = Equivalence_1.equivalence((x, y) => isUndefined(x) || isUndefined(y));
 const eitherIsNull = Equivalence_1.equivalence((x, y) => isNull(x) || isNull(y));
 exports.neitherIsUndefinedOrNull = eitherIsUndefined.or(eitherIsNull).not();

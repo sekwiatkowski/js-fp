@@ -9,7 +9,7 @@ export declare class Pair<A, B> {
     second<T>(f: (second: B) => T): T;
     chain<C, D>(f: (first: A, second: B) => Pair<C, D>): Pair<C, D>;
     toArray(): [A, B];
-    toBox<C>(f: (A: any, B: any) => C): Box<C>;
+    toBox<C>(f: (first: A, second: B) => C): Box<C>;
     mapFirst<M>(f: (value: A) => M): Pair<M, B>;
     mapSecond<M>(f: (value: B) => M): Pair<A, M>;
     perform(sideEffect: (first: A, second: B) => void): Pair<A, B>;
