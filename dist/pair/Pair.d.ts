@@ -10,7 +10,6 @@ export declare class Pair<A, B> {
     chain<C, D>(f: (first: A, second: B) => Pair<C, D>): Pair<C, D>;
     toArray(): [A, B];
     toBox<C>(f: (A: any, B: any) => C): Box<C>;
-    mapBoth<M, N>(fa: (value: A) => M, fb: (value: B) => N): Pair<M, N>;
     mapFirst<M>(f: (value: A) => M): Pair<M, B>;
     mapSecond<M>(f: (value: B) => M): Pair<A, M>;
     perform(sideEffect: (first: A, second: B) => void): Pair<A, B>;

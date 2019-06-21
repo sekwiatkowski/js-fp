@@ -1,5 +1,6 @@
-import {ArrayConcatenation} from '../../src/combination/Monoid'
-import {listWriter, stringWriter} from '../../src'
+import {ArrayConcatenation, listFromArray, listWriter, stringWriter, writer} from '../../src'
+import {StringConcatenation} from '../../src/combination/Monoid'
+import {ListConcatenation} from '../../src/list/List'
 
 require('chai').should()
 
@@ -58,24 +59,6 @@ describe('Writer', () => {
                     .should.eql(mapOverLogToArray(log))
             })
         })
-
-        describe('over both', () => {
-            it('without a monoid', () => {
-                const mapped = createStringWriter()
-                    .mapBoth(mapOverValue, mapOverLogToAnotherString)
-
-                mapped.getValue().should.equal(mapOverValue(value))
-                mapped.getLog().should.eql(mapOverLogToAnotherString(log))
-            })
-
-            it('with a monoid', () => {
-                const mapped = createStringWriter()
-                    .mapBoth(mapOverValue, mapOverLogToArray, ArrayConcatenation)
-
-                mapped.getValue().should.equal(mapOverValue(value))
-                mapped.getLog().should.eql(mapOverLogToArray(log))
-            })
-        })
     })
 
     it('can chain', () => {
@@ -88,5 +71,32 @@ describe('Writer', () => {
 
         chained.getLog().getArray().should.eql(['Incremented', 'Doubled'])
         chained.getValue().should.equal(4)
+    })
+
+    describe('can modify the log', () => {
+        it('through a reset', () => {
+            stringWriter(undefined, 'log')
+                .reset()
+                .getLog()
+                .should.equal(StringConcatenation.identityElement)
+
+            listWriter(undefined, 'log')
+                .reset()
+                .getLog()
+                .should.equal(ListConcatenation.identityElement)
+        })
+
+        it('through a combination with a another log', () => {
+            writer(undefined, { combine: x => y => x + '\n' + y, identityElement: '' }, 'first')
+                .tell('second')
+                .getLog()
+                .should.equal('first\nsecond')
+
+            listWriter(undefined, listFromArray(['first']))
+                .tell(listFromArray(['second']))
+                .getLog()
+                .equals(listFromArray(['first', 'second']))
+                .should.be.true
+        })
     })
 })

@@ -37,9 +37,6 @@ class Pair {
     }
     //endregion
     //region Mapping
-    mapBoth(fa, fb) {
-        return new Pair(fa(this._first), fb(this._second));
-    }
     mapFirst(f) {
         return new Pair(f(this._first), this._second);
     }

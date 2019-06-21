@@ -29,11 +29,6 @@ function writer(value, monoid, log = monoid.identityElement) {
         map(f) {
             return writer(f(value), monoid, log);
         }
-        mapBoth(mapOverValue, mapOverLog, monoid) {
-            return this
-                .map(mapOverValue)
-                .mapLog(mapOverLog, monoid);
-        }
         mapLog(f, newMonoid) {
             if (monoid) {
                 return writer(value, newMonoid, f(log));

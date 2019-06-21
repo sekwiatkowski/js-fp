@@ -3,12 +3,10 @@ export interface Writer<V, L> {
     get(): Pair<V, L>;
     getValue(): V;
     getLog(): L;
+    chain<U>(f: (value: V) => Writer<U, L>): Writer<U, L>;
     map<U>(f: (value: V) => U): Writer<U, L>;
     mapLog(f: (value: L) => L): Writer<V, L>;
     mapLog<M>(f: (value: L) => M, monoid: Monoid<M>): Writer<V, M>;
-    mapBoth<W, M>(mapOverValue: (value: V) => W, mapOverLog: (log: L) => L): Writer<W, M>;
-    mapBoth<W, M>(mapOverValue: (value: V) => W, mapOverLog: (log: L) => M, monoid: Monoid<M>): Writer<W, M>;
-    chain<U>(f: (value: V) => Writer<U, L>): Writer<U, L>;
     reset(): Writer<V, L>;
     tell(other: L): Writer<V, L>;
 }

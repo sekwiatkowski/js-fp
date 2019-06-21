@@ -3,22 +3,27 @@ import {ListConcatenation} from '../list/List'
 import {StringConcatenation} from '../combination/Monoid'
 
 export interface Writer<V, L> {
+    //region Access
     get(): Pair<V, L>
     getValue(): V
     getLog(): L
+    //endregion
 
+    //region Chaining
+    chain<U>(f: (value: V) => Writer<U, L>): Writer<U, L>
+    //endregion
+
+    //region Mapping
     map<U>(f: (value: V) => U): Writer<U, L>
 
     mapLog(f: (value: L) => L): Writer<V, L>
     mapLog<M>(f: (value: L) => M, monoid: Monoid<M>): Writer<V, M>
+    //endregion
 
-    mapBoth<W, M>(mapOverValue: (value: V) => W, mapOverLog: (log: L) => L): Writer<W, M>
-    mapBoth<W, M>(mapOverValue: (value: V) => W, mapOverLog: (log: L) => M, monoid: Monoid<M>): Writer<W, M>
-
-    chain<U>(f: (value: V) => Writer<U, L>): Writer<U, L>
-
+    //region Modification
     reset(): Writer<V, L>
     tell(other: L): Writer<V, L>
+    //endregion
 }
 
 export function listWriter<V, I>(value: V, log: List<I>|I = ListConcatenation.identityElement): Writer<V, List<I>> {
@@ -52,14 +57,6 @@ export function writer<V, L>(value: V, monoid: Monoid<L>, log: L = monoid.identi
             return writer(f(value), monoid, log)
         }
 
-        mapBoth<W>(mapOverValue: (value: V) => W, mapOverLog: (log: L) => L): Writer<W, L>
-        mapBoth<W, M>(mapOverValue: (value: V) => W, mapOverLog: (log: L) => M, monoid: Monoid<M>): Writer<W, M>
-        mapBoth<W, M>(mapOverValue: (value: V) => W, mapOverLog: (log: L) => L|M, monoid?: Monoid<M>): Writer<W, L|M> {
-            return this
-                .map(mapOverValue)
-                .mapLog(mapOverLog, monoid)
-        }
-
         mapLog(f: (value: L) => L): Writer<V, L>
         mapLog<M>(f: (value: L) => M, newMonoid: Monoid<M>): Writer<V, M>
         mapLog<M>(f: ((value: L) => L)|((value: L) => M), newMonoid?: Monoid<M>): Writer<V, L|M> {
@@ -78,7 +75,6 @@ export function writer<V, L>(value: V, monoid: Monoid<L>, log: L = monoid.identi
         tell(other: L): Writer<V, L> {
             return this.mapLog(log => monoid.combine(log)(other))
         }
-
     }
 
     return new WriterImpl()

@@ -44,10 +44,6 @@ export class Pair<A, B> {
     //endregion
 
     //region Mapping
-    mapBoth<M, N>(fa: (value: A) => M, fb: (value: B) => N): Pair<M, N> {
-        return new Pair(fa(this._first), fb(this._second))
-    }
-
     mapFirst<M>(f: (value: A) => M): Pair<M, B> {
         return new Pair(f(this._first), this._second)
     }
