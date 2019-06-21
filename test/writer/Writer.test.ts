@@ -2,14 +2,17 @@ import {
     ArrayConcatenation,
     createListEquality,
     createWriterEquality,
+    emptyList,
     listFromArray,
     listWriter,
+    pair,
     predicate,
     stringWriter,
     writer
 } from '../../src'
 import {StringConcatenation} from '../../src/combination/Monoid'
 import {ListConcatenation} from '../../src/list/List'
+import {listWriterObject} from '../../src/writer/Writer'
 
 require('chai').should()
 
@@ -17,6 +20,24 @@ describe('Writer', () => {
     const initialValue = 1
     const initialLog = 'initial log'
     const createNumberStringWriter = (value: number = initialValue, log: string = initialLog) => stringWriter(value, log)
+
+    describe('can build an object', () => {
+        it('while adding to the log', () => {
+            listWriterObject()
+                .assign('a', listWriter(1, 'first member'))
+                .assign('b', () => listWriter(2, 'second member'))
+                .get()
+                .should.eql(pair({a: 1, b: 2}, listFromArray(['first member', 'second member'])))
+        })
+
+        it('with values', () => {
+            listWriterObject()
+                .assign('a', 1)
+                .assign('b', 2)
+                .get()
+                .should.eql(pair({a: 1, b: 2}, emptyList()))
+        })
+    })
 
     describe('can return', () => {
         it('the value', () => {
@@ -162,7 +183,7 @@ describe('Writer', () => {
         })
 
         it('for equality', () => {
-            const equality = createWriterEquality()
+            const equality = createWriterEquality<number, string>()
 
             createNumberStringWriter().equals(createNumberStringWriter(), equality).should.be.true
             createNumberStringWriter().equals(stringWriter(2, initialLog), equality).should.be.false
