@@ -22,7 +22,7 @@ export declare class Some<A> implements Option<A> {
     perform(sideEffect: () => void): Option<A>;
     performOnSome(sideEffect: (value: A) => void): Option<A>;
     performOnNone(sideEffect: () => void): Option<A>;
-    equals(other: Option<A>, equality?: Equivalence<Option<A>>): boolean;
+    equals(other: Option<A>, equality: Equivalence<Option<A>>): boolean;
     test(predicate: (value: A) => boolean): boolean;
     test(predicate: Predicate<A>): boolean;
 }

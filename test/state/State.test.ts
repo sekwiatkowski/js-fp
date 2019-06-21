@@ -1,4 +1,4 @@
-import {Pair, pair, state, stateObject} from '../../src'
+import {createPairEquality, Pair, pair, state, stateObject} from '../../src'
 
 require('chai').should()
 
@@ -23,7 +23,7 @@ describe('State', () => {
     it('can run the computation', () => {
         state(increment)
             .runWith(1)
-            .equals(pair(1, 2))
+            .equals(pair(1, 2), createPairEquality())
             .should.be.true
     })
 

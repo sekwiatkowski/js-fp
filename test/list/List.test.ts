@@ -1,4 +1,17 @@
-import {emptyList, list, listFromArray, none, None, Option, range, some, Some} from '../../src'
+import {
+    createNonEmptyListEquality,
+    createOptionEquality,
+    emptyList,
+    list,
+    listFromArray,
+    none,
+    None,
+    Option,
+    range,
+    some,
+    Some
+} from '../../src'
+import {createListEquality} from '../../src/list/List'
 
 require('chai').should()
 
@@ -7,6 +20,10 @@ describe('List<T>', () => {
         value: Number
     }
     const createNumber = (value: number): NumberValue => ({value})
+
+    const listOfNumbersEquality = createListEquality<number>()
+    const optionOfNumberEquality = createOptionEquality<number>()
+    const nelOfNumbersEquality = createNonEmptyListEquality<number>()
 
     const isEven = (x: number) => x % 2 == 0
 
@@ -129,22 +146,22 @@ describe('List<T>', () => {
 
         describe('for equality with another list', () => {
             it('equal if it contains the same items', () => {
-                emptyList().equals(emptyList()).should.be.true
-                emptyList().equals(listFromArray([1])).should.be.false
-                listFromArray([1]).equals(emptyList()).should.be.false
-                listFromArray([1]).equals(listFromArray([1, 2])).should.be.false
-                listFromArray([1, 2]).equals(listFromArray([1])).should.be.false
-                listFromArray([1, 1, 2]).equals(listFromArray([1, 2])).should.be.false
+                emptyList().equals(emptyList(), listOfNumbersEquality).should.be.true
+                emptyList().equals(listFromArray([1]), listOfNumbersEquality).should.be.false
+                listFromArray([1]).equals(emptyList(), listOfNumbersEquality).should.be.false
+                listFromArray([1]).equals(listFromArray([1, 2]), listOfNumbersEquality).should.be.false
+                listFromArray([1, 2]).equals(listFromArray([1]), listOfNumbersEquality).should.be.false
+                listFromArray([1, 1, 2]).equals(listFromArray([1, 2]), listOfNumbersEquality).should.be.false
             })
 
             it('in the same sequence', () => {
-                listFromArray([1, 2]).equals(listFromArray([1, 2])).should.be.true
-                listFromArray([1, 2]).equals(listFromArray([2, 1])).should.be.false
+                listFromArray([1, 2]).equals(listFromArray([1, 2]), listOfNumbersEquality).should.be.true
+                listFromArray([1, 2]).equals(listFromArray([2, 1]), listOfNumbersEquality).should.be.false
             })
 
             it('and unequal if the other list is null or undefined', () => {
-                emptyList().equals(null).should.be.false
-                emptyList().equals(undefined).should.be.false
+                emptyList().equals(null, listOfNumbersEquality).should.be.false
+                emptyList().equals(undefined, listOfNumbersEquality).should.be.false
             })
         })
     })
@@ -165,7 +182,7 @@ describe('List<T>', () => {
                 describe('with distinct methods', () => {
                     it('for the first item', () => {
                         emptyList().first().should.equal(none)
-                        listFromArray([1]).first().equals(some(1)).should.be.true
+                        listFromArray([1]).first().equals(some(1), optionOfNumberEquality).should.be.true
                     })
 
                     describe('should return as the last item', () => {
@@ -174,7 +191,7 @@ describe('List<T>', () => {
                         })
 
                         it('an instance of Some if the list is not empty', () => {
-                            listFromArray([1]).last().equals(some(1)).should.be.true
+                            listFromArray([1]).last().equals(some(1), optionOfNumberEquality).should.be.true
                         })
                     })
                 })
@@ -302,21 +319,21 @@ describe('List<T>', () => {
     describe('should flatten', () => {
         describe('arrays', () => {
             it('of the same size', () => {
-                listFromArray([[1, 2], [3, 4]]).flatten().equals(listFromArray([1, 2, 3, 4]))
+                listFromArray([[1, 2], [3, 4]]).flatten().equals(listFromArray([1, 2, 3, 4]), listOfNumbersEquality)
             })
 
             it('of different sizes', () => {
-                listFromArray([[1, 2], [3, 4, 5]]).flatten().equals(listFromArray([1, 2, 3, 4, 5]))
+                listFromArray([[1, 2], [3, 4, 5]]).flatten().equals(listFromArray([1, 2, 3, 4, 5]), listOfNumbersEquality)
             })
         })
 
         describe('lists', () => {
             it('of the same size', () => {
-                listFromArray([listFromArray([1, 2]), listFromArray([3, 4])]).flatten().equals(listFromArray([1, 2, 3, 4]))
+                listFromArray([listFromArray([1, 2]), listFromArray([3, 4])]).flatten().equals(listFromArray([1, 2, 3, 4]), listOfNumbersEquality)
             })
 
             it('of different sizes', () => {
-                listFromArray([listFromArray([1, 2]), listFromArray( [3, 4, 5])]).flatten().equals(listFromArray([1, 2, 3, 4, 5]))
+                listFromArray([listFromArray([1, 2]), listFromArray( [3, 4, 5])]).flatten().equals(listFromArray([1, 2, 3, 4, 5]), listOfNumbersEquality)
             })
         })
     })
@@ -364,7 +381,7 @@ describe('List<T>', () => {
             })
 
             it('and return an instance of Some if there is a match', () => {
-                listFromArray([1, 2, 3, 4]).find(isEven).equals(some(2)).should.be.true
+                listFromArray([1, 2, 3, 4]).find(isEven).equals(some(2), optionOfNumberEquality).should.be.true
             })
         })
 
@@ -374,18 +391,18 @@ describe('List<T>', () => {
             })
 
             it('and return an instance of Some if there is a match', () => {
-                listFromArray([1, 2, 3, 4]).findLast(isEven).equals(some(4)).should.be.true
+                listFromArray([1, 2, 3, 4]).findLast(isEven).equals(some(4), optionOfNumberEquality).should.be.true
             })
         })
     })
 
     describe('can add an item', () => {
         it('to the end', () => {
-            listFromArray([1]).append(2).equals(list(1, 2)).should.be.true
+            listFromArray([1]).append(2).equals(list(1, 2), nelOfNumbersEquality).should.be.true
         })
 
         it('to the start', () => {
-            listFromArray([1]).prepend(2).equals(list(2, 1)).should.be.true
+            listFromArray([1]).prepend(2).equals(list(2, 1), nelOfNumbersEquality).should.be.true
         })
     })
 
@@ -394,8 +411,8 @@ describe('List<T>', () => {
         actual.should.equal(none)
     }
 
-    function assertSome<T>(actual: Option<T>, expected: T) {
-        actual.equals(some(expected)).should.be.true
+    function assertSome(actual: Option<number>, expected: number) {
+        actual.equals(some(expected), optionOfNumberEquality).should.be.true
     }
 
     const one = {number:1}

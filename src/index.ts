@@ -32,31 +32,31 @@ export { Monoid, Any, All, Latest, Max, Earliest, Min, Sum, Product, ArrayConcat
 //endregion
 
 //region Computation
-export { Box, box, boxObject } from './box/Box'
-export { Pair, pair } from './pair/Pair'
+export { Box, box, boxObject, createBoxEquality } from './box/Box'
+export { Pair, pair, createPairEquality } from './pair/Pair'
 
-export { Program, program } from './program/Program'
+export { emptyList, List, listFromArray, range, repeat, createListEquality } from './list/List'
+export { inclusiveRange, list, NonEmptyList, createNonEmptyListEquality } from './list/NonEmptyList'
 
-export { Option, option } from './option/Option'
+export { Option, option, createOptionEquality } from './option/Option'
 export { Some, some, optionObject } from './option/Some'
 export { None, none } from './option/None'
 
-export { Result } from './result/Result'
+export { Result, createResultEquality } from './result/Result'
 export { Success, success, resultObject } from './result/Success'
 export { Failure, failure } from './result/Failure'
 
-export { Validated } from './validated/Validated'
+export { Validated, createValidatedEquality } from './validated/Validated'
 export { Valid, valid, validatedObject } from './validated/Valid'
 export { Invalid, invalid } from './validated/Invalid'
 
 export { Future, future, fulfill, reject, futureObject } from './future/Future'
+export { Settled, createSettledEquality } from './future/Settled'
 
-export { emptyList, List, listFromArray, range, repeat } from './list/List'
-export { inclusiveRange, list, NonEmptyList } from './list/NonEmptyList'
+export { Program, program } from './program/Program'
 
 export { State, state, stateObject } from './state/State'
-
-export { Writer, writer, stringWriter, listWriter } from './writer/Writer'
+export { Writer, writer, stringWriter, listWriter, createWriterEquality } from './writer/Writer'
 //endregion
 
 //region Functions

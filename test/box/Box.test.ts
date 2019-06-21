@@ -1,4 +1,4 @@
-import {box, Future, Some, Success, Valid} from '../../src'
+import {box, createBoxEquality, Future, guardedStrictEquality, Some, Success, Valid} from '../../src'
 
 require('chai').should()
 
@@ -79,10 +79,11 @@ describe('Box', () => {
 
         it('test for equality', () => {
             const boxOfOne = box(1)
-            boxOfOne.equals(box(1)).should.be.true
-            boxOfOne.equals(box(2)).should.be.false
-            boxOfOne.equals(null).should.be.false
-            boxOfOne.equals(undefined).should.be.false
+            const boxEquality = createBoxEquality<number>(guardedStrictEquality)
+            boxOfOne.equals(box(1), boxEquality).should.be.true
+            boxOfOne.equals(box(2), boxEquality).should.be.false
+            boxOfOne.equals(null, boxEquality).should.be.false
+            boxOfOne.equals(undefined, boxEquality).should.be.false
         })
     })
 

@@ -1,4 +1,4 @@
-import {anyResultEquality, Result} from './Result'
+import {Result} from './Result'
 import {Failure} from './Failure'
 import {Equivalence, fulfill, Future, Option, Predicate, some, valid, Validated} from '..'
 
@@ -125,8 +125,8 @@ export class Success<T, E> implements Result<T, E> {
     //endregion
 
     //region Testing
-    equals(otherResult: Result<T, E>, equality?: Equivalence<Result<T, E>>): boolean {
-        return (equality || anyResultEquality).test(this, otherResult)
+    equals(otherResult: Result<T, E>, equality: Equivalence<Result<T, E>>): boolean {
+        return equality.test(this, otherResult)
     }
 
     test(predicate: (value: T) => boolean): boolean

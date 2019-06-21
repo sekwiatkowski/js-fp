@@ -280,8 +280,8 @@ export class NonEmptyList<T> {
         return containsItem(this.items, item, ensureEquivalenceFunction(itemEquality))
     }
 
-    equals(otherList: NonEmptyList<T>, equality?: Equivalence<NonEmptyList<T>> ): boolean {
-        return (equality || anyNonEmptyListEquality).test(this, otherList)
+    equals(otherList: NonEmptyList<T>, equality: Equivalence<NonEmptyList<T>>): boolean {
+        return equality.test(this, otherList)
     }
 
     all(predicate: ((item: T) => boolean)|Predicate<T>): boolean {
@@ -342,5 +342,6 @@ export function inclusiveRange(start: number, end?: number): NonEmptyList<number
     }
 }
 
-export const anyNonEmptyListEquality = (neitherIsUndefinedOrNull as Equivalence<NonEmptyList<any>>)
-    .and(createArrayEquality().adapt<NonEmptyList<any>>(l => l.getArray()))
+export function createNonEmptyListEquality<T>(itemEquality: Equivalence<T> = guardedStrictEquality): Equivalence<NonEmptyList<T>> {
+    return (neitherIsUndefinedOrNull as Equivalence<NonEmptyList<T>>).and(createArrayEquality(itemEquality).adapt(l => l.getArray()))
+}

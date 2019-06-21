@@ -2,8 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const Fulfilled_1 = require("./Fulfilled");
 const Rejected_1 = require("./Rejected");
-const Equality_1 = require("../equivalence/Equality");
-const __1 = require("..");
 class Future {
     constructor(createPromise) {
         this.createPromise = createPromise;
@@ -241,7 +239,7 @@ class Future {
     //region Testing
     equals(otherFutureOrPromise, equality) {
         return this.both(otherFutureOrPromise)
-            .then(settled => (equality || anySettledEquality).test(settled[0], settled[1]));
+            .then(settled => equality.test(settled[0], settled[1]));
     }
     test(predicate) {
         return this.match(value => predicate instanceof Function ? predicate(value) : predicate.test(value), error => false);
@@ -268,6 +266,4 @@ function futureObject() {
     return fulfill({});
 }
 exports.futureObject = futureObject;
-const anySettledEquality = Equality_1.neitherIsUndefinedOrNull
-    .and(__1.equivalence((thisSettled, otherSettled) => thisSettled.match(thisValue => otherSettled.match(otherValue => Equality_1.strictEquality.test(thisValue, otherValue), () => false), thisError => otherSettled.match(() => false, otherError => Equality_1.strictEquality.test(thisError, otherError)))));
 //# sourceMappingURL=Future.js.map

@@ -1,4 +1,4 @@
-import {none, some} from '../../src'
+import {createOptionEquality, none, some} from '../../src'
 
 const chai = require('chai')
 const expect = chai.expect
@@ -10,6 +10,9 @@ describe('Some', () => {
     const satisfiedPredicate = value => value === containedValue
     const violatedPredicate = value => value === 'something else'
 
+    const optionOfNumberEquality = createOptionEquality<number>()
+    const optionOfStringEquality = createOptionEquality<string>()
+
     describe('can build an object', () => {
         it('one member at a time', () => {
             some({})
@@ -18,7 +21,7 @@ describe('Some', () => {
                 .assign('c', some(3))
                 .assign('d', scope => some(scope.c + 1))
                 .map(scope => scope.a + scope.b + scope.c + scope.d)
-                .equals(some(10))
+                .equals(some(10), optionOfNumberEquality)
                 .should.be.true
         })
 
@@ -52,7 +55,7 @@ describe('Some', () => {
             .apply(() => 2)
             .apply(some(3))
             .apply(() => some(4))
-            .equals(some(10))
+            .equals(some(10), optionOfNumberEquality)
             .should.be.true
     })
 
@@ -60,7 +63,7 @@ describe('Some', () => {
         const text = 'mapped over value'
         createSomeOfString()
             .map(() => text)
-            .equals(some(text))
+            .equals(some(text), optionOfStringEquality)
             .should.be.true
     })
 

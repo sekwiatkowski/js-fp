@@ -23,7 +23,7 @@ export declare class Failure<T, E> implements Result<T, E> {
     performOnFailure(sideEffect: (error: E) => void): Result<T, E>;
     isFailure(): boolean;
     isSuccess(): boolean;
-    equals(otherResult: Result<T, E>, equality?: Equivalence<Result<T, E>>): boolean;
+    equals(otherResult: Result<T, E>, equality: Equivalence<Result<T, E>>): boolean;
     test(predicate: (value: T) => boolean): boolean;
     test(predicate: Predicate<T>): boolean;
 }

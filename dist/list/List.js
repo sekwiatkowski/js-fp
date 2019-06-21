@@ -203,11 +203,11 @@ class List {
     }
     //endregion
     //region Testing
+    equals(otherList, equality) {
+        return equality.test(this, otherList);
+    }
     contains(item, itemEquality = __1.guardedStrictEquality) {
         return ArrayFunctions_1.containsItem(this.items, item, __1.ensureEquivalenceFunction(itemEquality));
-    }
-    equals(otherList, equality) {
-        return (equality || exports.anyListEquality).test(this, otherList);
     }
     all(predicate) {
         return ArrayFunctions_1.allItems(this.items, __1.ensurePredicateFunction(predicate));
@@ -247,7 +247,10 @@ function repeat(times, valueOrFunction) {
     return listFromArray(ArrayFunctions_1.repeatItems(times, valueOrFunction));
 }
 exports.repeat = repeat;
-exports.anyListEquality = __1.neitherIsUndefinedOrNull.and(__1.createArrayEquality().adapt(l => l.getArray()));
+function createListEquality(itemEquality = __1.guardedStrictEquality) {
+    return __1.neitherIsUndefinedOrNull.and(__1.createArrayEquality(itemEquality).adapt(l => l.getArray()));
+}
+exports.createListEquality = createListEquality;
 exports.ListConcatenation = {
     combine: (xs) => (ys) => new List(__1.ArrayConcatenation.combine(xs.getArray())(ys.getArray())),
     identityElement: emptyList()

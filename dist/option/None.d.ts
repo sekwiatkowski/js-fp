@@ -16,7 +16,7 @@ export declare class None<A> implements Option<A> {
     orAttempt(alternative: () => Option<A>): Option<A>;
     filter(predicate: (value: A) => boolean): Option<A>;
     map<B>(f: (value: A) => B): Option<B>;
-    equals(other: Option<A>, equality?: Equivalence<Option<A>>): boolean;
+    equals(other: Option<A>, equality: Equivalence<Option<A>>): boolean;
     test(predicate: (value: A) => boolean): boolean;
     test(predicate: Predicate<A>): boolean;
     match<B>(onSome: (value: A) => B, onNone: () => B): B;

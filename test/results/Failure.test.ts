@@ -1,4 +1,4 @@
-import {failure, success} from '../../src'
+import {createResultEquality, failure, success} from '../../src'
 
 const expect = require('chai').expect
 
@@ -8,13 +8,16 @@ describe('Failure', () => {
     const createFailureOfString = () => failure<string, string>(error)
     const noSideEffectText = 'no side-effect'
 
+    const resultOfNumberStringEquality = createResultEquality<number, string>()
+    const resultOfStringStringEquality = createResultEquality<string, string>()
+
     it('ignores attempts to apply parameters', () => {
         failure<((a: number) => (b: number) => (c: number) => (d: number) => number), string>(error)
             .apply(1)
             .apply(() => 2)
             .apply(success(3))
             .apply(() => success(4))
-            .equals(failure(error))
+            .equals(failure(error), resultOfNumberStringEquality)
             .should.be.true
     })
 
@@ -25,7 +28,7 @@ describe('Failure', () => {
             .assign('c', success(3))
             .assign('d', scope => success(scope.c + 1))
             .map(scope => scope.a + scope.b + scope.c + scope.d)
-            .equals(failure(error))
+            .equals(failure(error), resultOfNumberStringEquality)
             .should.be.true
     })
 
@@ -50,21 +53,21 @@ describe('Failure', () => {
         it('using a default value', () => {
             createFailureOfString()
                 .orElse(fallbackText)
-                .equals(success(fallbackText))
+                .equals(success(fallbackText), resultOfStringStringEquality)
                 .should.be.true
         })
 
         it('using the result of a guaranteed computation', () => {
             createFailureOfString()
                 .orElse(() => fallbackText)
-                .equals(success(fallbackText))
+                .equals(success(fallbackText), resultOfStringStringEquality)
                 .should.be.true
         })
 
         it('using an alternative attempt', () => {
             createFailureOfString()
                 .orAttempt(() => success(fallbackText))
-                .equals(success(fallbackText))
+                .equals(success(fallbackText), resultOfStringStringEquality)
                 .should.be.true
         })
     })
@@ -80,7 +83,7 @@ describe('Failure', () => {
             const f = error => `mapped over ${error}`
             createFailureOfString()
                 .mapError(f)
-                .equals(failure(f(error)))
+                .equals(failure(f(error)), resultOfStringStringEquality)
                 .should.be.true
         })
 

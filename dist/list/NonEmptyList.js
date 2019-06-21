@@ -184,7 +184,7 @@ class NonEmptyList {
         return ArrayFunctions_1.containsItem(this.items, item, __1.ensureEquivalenceFunction(itemEquality));
     }
     equals(otherList, equality) {
-        return (equality || exports.anyNonEmptyListEquality).test(this, otherList);
+        return equality.test(this, otherList);
     }
     all(predicate) {
         return ArrayFunctions_1.allItems(this.items, __1.ensurePredicateFunction(predicate));
@@ -236,6 +236,8 @@ function inclusiveRange(start, end) {
     }
 }
 exports.inclusiveRange = inclusiveRange;
-exports.anyNonEmptyListEquality = __1.neitherIsUndefinedOrNull
-    .and(__1.createArrayEquality().adapt(l => l.getArray()));
+function createNonEmptyListEquality(itemEquality = __1.guardedStrictEquality) {
+    return __1.neitherIsUndefinedOrNull.and(__1.createArrayEquality(itemEquality).adapt(l => l.getArray()));
+}
+exports.createNonEmptyListEquality = createNonEmptyListEquality;
 //# sourceMappingURL=NonEmptyList.js.map

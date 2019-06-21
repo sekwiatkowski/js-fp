@@ -3,12 +3,12 @@ import {
     equivalence,
     Equivalence,
     Future,
+    guardedStrictEquality,
     neitherIsUndefinedOrNull,
     Option,
     Predicate,
     Result
 } from '..'
-import {strictEquality} from '../equivalence/Equality'
 
 export interface Validated<T, E> {
     //region Access
@@ -60,7 +60,7 @@ export interface Validated<T, E> {
     //endregion
 
     //region Testing
-    equals(otherValidated: Validated<T, E>, equality?: Equivalence<Validated<T, E>>): boolean
+    equals(otherValidated: Validated<T, E>, equality: Equivalence<Validated<T, E>>): boolean
 
     test(predicate: (value: T) => boolean): boolean
     test(predicate: Predicate<T>): boolean
@@ -68,12 +68,16 @@ export interface Validated<T, E> {
     //endregion
 }
 
-export const anyValidatedEquality = (neitherIsUndefinedOrNull as Equivalence<Validated<any, any>>).and(equivalence((validatedX: Validated<any, any>, validatedY: Validated<any, any>) => (
-    validatedX.match(
-        valueX => validatedY.match(
-            successY => strictEquality.test(valueX, successY),
-            _ => false),
-        errorsX => validatedY.match(
-            _ => false,
-            errorsY => createArrayEquality<any>().test(errorsX, errorsY)))
-)))
+export function createValidatedEquality<T, E>(
+    valueEquality: Equivalence<T> = guardedStrictEquality,
+    errorsEquality: Equivalence<E[]> = createArrayEquality(guardedStrictEquality)): Equivalence<Validated<T, E>> {
+    return (neitherIsUndefinedOrNull as Equivalence<Validated<T, E>>).and(equivalence((validatedX: Validated<T, E>, resultY: Validated<T, E>) => (
+        validatedX.match(
+            valueX => resultY.match(
+                valueY => valueEquality.test(valueX, valueY),
+                _ => false),
+            errorsX => resultY.match(
+                _ => false,
+                errorY => errorsEquality.test(errorsX, errorY)))
+    )))
+}

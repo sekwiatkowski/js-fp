@@ -15,9 +15,9 @@ export declare class Pair<A, B> {
     perform(sideEffect: (first: A, second: B) => void): Pair<A, B>;
     performOnFirst(sideEffect: (first: A) => void): Pair<A, B>;
     performOnSecond(sideEffect: (second: B) => void): Pair<A, B>;
-    equals(otherPair: Pair<A, B>, equality?: Equivalence<Pair<A, B>>): boolean;
+    equals(otherPair: Pair<A, B>, equality: Equivalence<Pair<A, B>>): boolean;
     test(predicate: (value: [A, B]) => boolean): boolean;
     test(predicate: Predicate<[A, B]>): boolean;
 }
 export declare function pair<A, B>(first: A, second: B): Pair<A, B>;
-export declare const PairEquality: Equivalence<{}>;
+export declare function createPairEquality<A, B>(firstEquality?: Equivalence<A>, secondEquality?: Equivalence<B>): Equivalence<Pair<A, B>>;

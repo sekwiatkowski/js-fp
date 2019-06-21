@@ -52,7 +52,7 @@ export declare class NonEmptyList<T> {
     sortDescendingly(): List<T>;
     sortDescendinglyBy<U>(by: (item: T) => U): List<T>;
     contains(item: T, itemEquality?: (((x: T, y: T) => boolean) | Equivalence<T>)): boolean;
-    equals(otherList: NonEmptyList<T>, equality?: Equivalence<NonEmptyList<T>>): boolean;
+    equals(otherList: NonEmptyList<T>, equality: Equivalence<NonEmptyList<T>>): boolean;
     all(predicate: ((item: T) => boolean) | Predicate<T>): boolean;
     some(predicate: ((item: T) => boolean) | Predicate<T>): boolean;
     none(predicate: ((item: T) => boolean) | Predicate<T>): boolean;
@@ -62,4 +62,4 @@ export declare class NonEmptyList<T> {
 }
 export declare function list<T>(head: T, ...tail: T[]): NonEmptyList<T>;
 export declare function inclusiveRange(start: number, end?: number): NonEmptyList<number>;
-export declare const anyNonEmptyListEquality: Equivalence<NonEmptyList<any>>;
+export declare function createNonEmptyListEquality<T>(itemEquality?: Equivalence<T>): Equivalence<NonEmptyList<T>>;

@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const None_1 = require("./None");
 const __1 = require("..");
-const Equality_1 = require("../equivalence/Equality");
 class Some {
     constructor(value) {
         this.value = value;
@@ -96,7 +95,7 @@ class Some {
     //endregion
     //region Testing
     equals(other, equality) {
-        return (equality || anyOptionEquality).test(this, other);
+        return equality.test(this, other);
     }
     test(predicate) {
         if (predicate instanceof Function) {
@@ -116,5 +115,4 @@ function optionObject() {
     return some({});
 }
 exports.optionObject = optionObject;
-const anyOptionEquality = __1.neitherIsUndefinedOrNull.and(__1.equivalence((optionX, optionY) => (optionX.match(x => optionY.match(y => Equality_1.strictEquality.test(x, y), () => false), () => false))));
 //# sourceMappingURL=Some.js.map

@@ -21,7 +21,7 @@ export declare class Valid<T, E> implements Validated<T, E> {
     performOnInvalid(sideEffect: (errors: E[]) => void): Validated<T, E>;
     isInvalid(): boolean;
     isValid(): boolean;
-    equals(otherValidated: Validated<T, E>, equality?: Equivalence<Validated<T, E>>): boolean;
+    equals(otherValidated: Validated<T, E>, equality: Equivalence<Validated<T, E>>): boolean;
     test(predicate: (value: T) => boolean): boolean;
     test(predicate: Predicate<T>): boolean;
 }

@@ -1,4 +1,4 @@
-import {box, pair} from '../../src'
+import {box, createBoxEquality, createPairEquality, pair} from '../../src'
 
 require('chai').should()
 
@@ -14,7 +14,7 @@ describe('Pair', () => {
     })
 
     it('can chain', () => {
-        pair(1, 2).chain((first, second) => pair(second, first)).equals(pair(2, 1))
+        pair(1, 2).chain((first, second) => pair(second, first)).equals(pair(2, 1), createPairEquality())
     })
 
     describe('can map', () => {
@@ -27,15 +27,11 @@ describe('Pair', () => {
         it('the second value', () => {
             pair(1, 2).mapSecond(increment).second().should.equal(3)
         })
-
-        it('both values', () => {
-            pair(1, 2).mapBoth(increment, increment).toArray().should.eql([ 2, 3])
-        })
     })
 
     describe('can be converted', () => {
         it('to a Box instance', () => {
-            pair(1, 2).toBox((first, second) => first + second).equals(box(3)).should.be.true
+            pair(1, 2).toBox((first, second) => first + second).equals(box(3), createBoxEquality()).should.be.true
         })
 
         it('to an array', () => {
@@ -65,7 +61,7 @@ describe('Pair', () => {
 
     describe('can test', () => {
         it('for equality', () => {
-            pair(1, 2).equals(pair(1, 2)).should.be.true
+            pair(1, 2).equals(pair(1, 2), createPairEquality()).should.be.true
         })
     })
 })

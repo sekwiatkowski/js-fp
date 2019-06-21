@@ -1,4 +1,4 @@
-import {failure, success} from '../../src'
+import {createResultEquality, failure, success} from '../../src'
 
 const chai = require('chai')
 chai.should()
@@ -10,6 +10,9 @@ describe('Success', () => {
     const createSuccessOfString = () => success<string, string>(containedValue)
     const noSideEffectText = 'no side-effect'
 
+    const resultOfNumberStringEquality = createResultEquality<number, string>()
+    const resultOfStringStringEquality = createResultEquality<string, string>()
+
     describe('can build an object', () => {
         it('one member at a time', () => {
             success({})
@@ -18,7 +21,7 @@ describe('Success', () => {
                 .assign('c', success(3))
                 .assign('d', scope => success(scope.c + 1))
                 .map(scope => scope.a + scope.b + scope.c + scope.d)
-                .equals(success(10))
+                .equals(success(10), resultOfNumberStringEquality)
                 .should.be.true
         })
 
@@ -43,7 +46,7 @@ describe('Success', () => {
             const errorText = 'error'
             success({})
                 .assign('firstMember', failure(errorText))
-                .equals(failure(errorText))
+                .equals(failure(errorText), createResultEquality())
                 .should.be.true
         })
     })
@@ -54,7 +57,7 @@ describe('Success', () => {
             .apply(() => 2)
             .apply(success(3))
             .apply(() => success(4))
-            .equals(success(10))
+            .equals(success(10), resultOfNumberStringEquality)
             .should.be.true
     })
 
@@ -109,7 +112,7 @@ describe('Success', () => {
             const f = value => `mapped over ${value}`
             createSuccessOfString()
                 .map(f)
-                .equals(success(f(containedValue)))
+                .equals(success(f(containedValue)), resultOfStringStringEquality)
                 .should.be.true
         })
 

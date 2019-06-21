@@ -26,7 +26,7 @@ export declare class Future<T, E> {
     performSync(sideEffect: () => void): Future<T, E>;
     performSyncOnFulfilled(sideEffect: (value: T) => void): Future<T, E>;
     performSyncOnRejected(sideEffect: (error: E) => void): Future<T, E>;
-    equals(otherFutureOrPromise: Future<T, E> | Promise<T>, equality?: Equivalence<Settled<T, E>>): Promise<boolean>;
+    equals(otherFutureOrPromise: Future<T, E> | Promise<T>, equality: Equivalence<Settled<T, E>>): Promise<boolean>;
     test(predicate: (value: T) => boolean): Promise<boolean>;
     test(predicate: Predicate<T>): Promise<boolean>;
 }

@@ -71,8 +71,8 @@ export class Pair<A, B> {
     //endregion
 
     //region Testing
-    equals(otherPair: Pair<A, B>, equality?: Equivalence<Pair<A, B>>): boolean {
-        return (equality || PairEquality).test(this, otherPair)
+    equals(otherPair: Pair<A, B>, equality: Equivalence<Pair<A, B>>): boolean {
+        return equality.test(this, otherPair)
     }
 
     test(predicate: (value: [A, B]) => boolean): boolean
@@ -92,7 +92,9 @@ export function pair<A, B>(first: A, second: B): Pair<A, B> {
     return new Pair(first, second)
 }
 
-export const PairEquality = neitherIsUndefinedOrNull.and(equivalence<Pair<any, any>>((pair1, pair2) =>
-    guardedStrictEquality.test(pair1.first(), pair2.first()) &&
-    guardedStrictEquality.test(pair1.second(), pair2.second())
-))
+export function createPairEquality<A, B>(firstEquality: Equivalence<A> = guardedStrictEquality, secondEquality: Equivalence<B> = guardedStrictEquality) {
+    return (neitherIsUndefinedOrNull as Equivalence<Pair<A, B>>).and(equivalence((firstPair, secondPair) =>
+        firstEquality.test(firstPair.first(), secondPair.first()) &&
+        secondEquality.test(firstPair.second(), secondPair.second())
+    ))
+}

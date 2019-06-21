@@ -1,25 +1,34 @@
-import {ArrayConcatenation, listFromArray, listWriter, stringWriter, writer} from '../../src'
+import {
+    ArrayConcatenation,
+    createListEquality,
+    createWriterEquality,
+    listFromArray,
+    listWriter,
+    predicate,
+    stringWriter,
+    writer
+} from '../../src'
 import {StringConcatenation} from '../../src/combination/Monoid'
 import {ListConcatenation} from '../../src/list/List'
 
 require('chai').should()
 
 describe('Writer', () => {
-    const value = 1
-    const log = 'initial log'
-    const createStringWriter = () => stringWriter(value, log)
+    const defaultValue = 1
+    const defaultLog = 'initial log'
+    const createStringWriter = (value: number = defaultValue, log: string = defaultLog) => stringWriter(value, log)
 
     describe('can return', () => {
         it('the value', () => {
             createStringWriter()
                 .getValue()
-                .should.equal(value)
+                .should.equal(defaultValue)
         })
 
         it('the log', () => {
             createStringWriter()
                 .getLog()
-                .should.equal(log)
+                .should.equal(defaultLog)
         })
 
         it('both', () => {
@@ -27,8 +36,8 @@ describe('Writer', () => {
                 .get()
                 .toArray()
 
-            accessedValue.should.equal(value)
-            accessedLog.should.equal(log)
+            accessedValue.should.equal(defaultValue)
+            accessedLog.should.equal(defaultLog)
         })
     })
 
@@ -41,7 +50,7 @@ describe('Writer', () => {
             createStringWriter()
                 .map(mapOverValue)
                 .getValue()
-                .should.equal(mapOverValue(value))
+                .should.equal(mapOverValue(defaultValue))
         })
 
         describe('over the log', () => {
@@ -49,14 +58,14 @@ describe('Writer', () => {
                 createStringWriter()
                     .mapLog(mapOverLogToAnotherString)
                     .getLog()
-                    .should.equal(mapOverLogToAnotherString(log))
+                    .should.equal(mapOverLogToAnotherString(defaultLog))
             })
 
             it('with a monoid', () => {
                 createStringWriter()
                     .mapLog(mapOverLogToArray, ArrayConcatenation)
                     .getLog()
-                    .should.eql(mapOverLogToArray(log))
+                    .should.eql(mapOverLogToArray(defaultLog))
             })
         })
     })
@@ -95,8 +104,64 @@ describe('Writer', () => {
             listWriter(undefined, listFromArray(['first']))
                 .tell(listFromArray(['second']))
                 .getLog()
-                .equals(listFromArray(['first', 'second']))
+                .equals(listFromArray(['first', 'second']), createListEquality())
                 .should.be.true
+        })
+    })
+
+    describe('can perform side-effects', () => {
+        it('on the value', () => {
+            let mutable = null
+            createStringWriter()
+                .perform(value => mutable = value)
+            mutable.should.equal(defaultValue)
+        })
+
+        it('on the log', () => {
+            let mutable = null
+            createStringWriter()
+                .performOnLog(log => mutable = log)
+            mutable.should.equal(defaultLog)
+        })
+
+        it('on both', () => {
+            let firstMutable = null
+            let secondMutable = null
+            createStringWriter()
+                .performOnBoth((value, log) => {
+                    firstMutable = value
+                    secondMutable = log
+                })
+            firstMutable.should.equal(defaultValue)
+            secondMutable.should.equal(defaultLog)
+        })
+    })
+
+    describe('can test', () => {
+        describe('predicates', () => {
+            const isEven = (x: number) => x % 2 === 0
+
+            it('using functions', () => {
+
+                createStringWriter(1).test(isEven).should.be.false
+                createStringWriter(2).test(isEven).should.be.true
+            })
+
+            it('using Predicate instances', () => {
+                const isEvenPredicate = predicate(isEven)
+
+                createStringWriter(1).test(isEvenPredicate).should.be.false
+                createStringWriter(2).test(isEvenPredicate).should.be.true
+            })
+
+        })
+
+        it('for equality', () => {
+            const equality = createWriterEquality()
+
+            createStringWriter().equals(createStringWriter(), equality).should.be.true
+            createStringWriter().equals(stringWriter(2, defaultLog), equality).should.be.false
+            createStringWriter().equals(stringWriter(defaultValue, 'other log'), equality).should.be.false
         })
     })
 })

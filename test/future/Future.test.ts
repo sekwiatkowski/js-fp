@@ -1,4 +1,4 @@
-import {fulfill, future, futureObject, predicate, reject} from '../../src'
+import {createSettledEquality, fulfill, future, futureObject, predicate, reject} from '../../src'
 
 require('chai').should()
 
@@ -512,46 +512,47 @@ describe('Future', () => {
 
     describe('can test', () => {
         describe('for equality', () => {
+            const equality = createSettledEquality()
             describe('with another future', () => {
                 it('returning true when two fulfilled futures with the same value are tested', async () => {
-                    (await fulfill(1).equals(fulfill(1))).should.be.true
+                    (await fulfill(1).equals(fulfill(1), equality)).should.be.true
                 })
 
                 it('returning false when two fulfilled futures with different values are tested', async () => {
-                    const oneAndTwoResult = await fulfill(1).equals(fulfill(2))
+                    const oneAndTwoResult = await fulfill(1).equals(fulfill(2), equality)
                     oneAndTwoResult.should.be.false
 
-                    const twoAndOneResult = await fulfill(2).equals(fulfill(1))
+                    const twoAndOneResult = await fulfill(2).equals(fulfill(1), equality)
                     twoAndOneResult.should.be.false
                 })
 
                 it('returning true when two rejected futures with the same error are tested', async () => {
-                    (await reject('error').equals(reject('error'))).should.be.true
+                    (await reject('error').equals(reject('error'), equality)).should.be.true
                 })
 
                 it('returning false when two rejected futures with different errors are tested', async () => {
-                    const oneAndTwoResult = await reject(1).equals(reject(2))
+                    const oneAndTwoResult = await reject(1).equals(reject(2), equality)
                     oneAndTwoResult.should.be.false
 
-                    const twoAndOneResult = await reject(2).equals(reject(1))
+                    const twoAndOneResult = await reject(2).equals(reject(1), equality)
                     twoAndOneResult.should.be.false
                 })
             })
             describe('with a promise', () => {
                 it('returning true when a fulfilled future is compared with a fulfilled promise of the same value', async () => {
-                    (await fulfill(1).equals(Promise.resolve(1))).should.be.true
+                    (await fulfill(1).equals(Promise.resolve(1), equality)).should.be.true
                 })
 
                 it('returning false when a fulfilled future is compared with a fulfilled promise of a different value', async () => {
-                    (await fulfill(1).equals(Promise.resolve(2))).should.be.false
+                    (await fulfill(1).equals(Promise.resolve(2), equality)).should.be.false
                 })
 
                 it('returning true when a rejected future is compared with a rejected promise with the same error', async () => {
-                    (await reject(1).equals(Promise.reject(1))).should.be.true
+                    (await reject(1).equals(Promise.reject(1), equality)).should.be.true
                 })
 
                 it('returning false when a rejected future is compared with a rejected promise with a different error', async () => {
-                    (await reject(1).equals(Promise.reject(2))).should.be.false
+                    (await reject(1).equals(Promise.reject(2), equality)).should.be.false
                 })
             })
         })

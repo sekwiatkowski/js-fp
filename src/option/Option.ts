@@ -1,6 +1,15 @@
 import {some} from './Some'
 import {none} from './None'
-import {Equivalence, Future, Predicate, Result, Validated} from '..'
+import {
+    equivalence,
+    Equivalence,
+    Future,
+    guardedStrictEquality,
+    neitherIsUndefinedOrNull,
+    Predicate,
+    Result,
+    Validated
+} from '..'
 
 export interface Option<A> {
     //region Access
@@ -57,7 +66,7 @@ export interface Option<A> {
     //endregion
 
     //region Testing
-    equals(other: Option<A>, equality?: Equivalence<Option<A>>): boolean
+    equals(other: Option<A>, equality: Equivalence<Option<A>>): boolean
 
     test(predicate: (value: A) => boolean): boolean
     test(predicate: Predicate<A>): boolean
@@ -69,4 +78,14 @@ export function option<T>(valueOrFunction: undefined | null | T | (() => T)): Op
     const nullable = valueOrFunction instanceof Function ? valueOrFunction() : valueOrFunction
 
     return nullable == null ? none : some(nullable)
+}
+
+export function createOptionEquality<T>(itemEquality: Equivalence<T> = guardedStrictEquality): Equivalence<Option<T>> {
+    return (neitherIsUndefinedOrNull as Equivalence<Option<T>>).and(equivalence((optionX: Option<T>, optionY: Option<T>) => (
+        optionX.match(
+            x => optionY.match(
+                y => itemEquality.test(x, y),
+                () => false),
+            () => false)
+    )))
 }

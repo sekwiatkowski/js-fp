@@ -2,6 +2,7 @@ import {
     Equivalence,
     fulfill,
     Future,
+    guardedStrictEquality,
     neitherIsUndefinedOrNull,
     Option,
     Predicate,
@@ -12,7 +13,6 @@ import {
     valid,
     Validated
 } from '..'
-import {strictEquality} from '../equivalence/Equality'
 
 export class Box<A> {
     constructor(private readonly value: A) {}
@@ -99,8 +99,8 @@ export class Box<A> {
     //endregion
 
     //region Testing
-    equals(otherBox: Box<A>, equality?: Equivalence<Box<A>>): boolean {
-        return (equality || BoxEquality).test(this, otherBox)
+    equals(otherBox: Box<A>, equality: Equivalence<Box<A>>): boolean {
+        return equality.test(this, otherBox)
     }
 
     test(predicate: (value: A) => boolean): boolean
@@ -124,4 +124,6 @@ export function boxObject() : Box<{}> {
     return box({})
 }
 
-export const BoxEquality = neitherIsUndefinedOrNull.and(strictEquality.adapt<Box<any>>(box => box.get()))
+export function createBoxEquality<T>(valueEquality: Equivalence<T> = guardedStrictEquality) {
+    return (neitherIsUndefinedOrNull as Equivalence<Box<T>>).and(valueEquality.adapt(box => box.get()))
+}

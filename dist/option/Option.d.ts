@@ -19,9 +19,10 @@ export interface Option<A> {
     performOnNone(sideEffect: () => void): Option<A>;
     isSome(): boolean;
     isNone(): boolean;
-    equals(other: Option<A>, equality?: Equivalence<Option<A>>): boolean;
+    equals(other: Option<A>, equality: Equivalence<Option<A>>): boolean;
     test(predicate: (value: A) => boolean): boolean;
     test(predicate: Predicate<A>): boolean;
     test(predicate: ((value: A) => boolean) | Predicate<A>): boolean;
 }
 export declare function option<T>(valueOrFunction: undefined | null | T | (() => T)): Option<T>;
+export declare function createOptionEquality<T>(itemEquality?: Equivalence<T>): Equivalence<Option<T>>;

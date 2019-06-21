@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const Result_1 = require("./Result");
 const Failure_1 = require("./Failure");
 const __1 = require("..");
 class Success {
@@ -97,7 +96,7 @@ class Success {
     //endregion
     //region Testing
     equals(otherResult, equality) {
-        return (equality || Result_1.anyResultEquality).test(this, otherResult);
+        return equality.test(this, otherResult);
     }
     test(predicate) {
         if (predicate instanceof Function) {

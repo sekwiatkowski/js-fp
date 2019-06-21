@@ -1,4 +1,4 @@
-import {invalid, valid} from '../../src'
+import {createValidatedEquality, invalid, valid} from '../../src'
 
 const chai = require('chai')
 const expect = chai.expect
@@ -9,13 +9,16 @@ describe('Valid', () => {
     const createValidString = () => valid<string, string>(containedString)
     const noSideEffectText = 'no side-effect'
 
+    const validatedOfNumberStringEquality = createValidatedEquality<number, string>()
+    const validatedOfStringStringEquality = createValidatedEquality<string, string>()
+
     it('can apply parameters', () => {
         valid((a: number) => (b: number) => (c: number) => (d: number) => a + b + c + d)
             .apply(1)
             .apply(() => 2)
             .apply(valid(3))
             .apply(() => valid(4))
-            .equals(valid(10))
+            .equals(valid(10), validatedOfNumberStringEquality)
             .should.be.true
     })
 
@@ -27,7 +30,7 @@ describe('Valid', () => {
                 .assign('c', valid(3))
                 .assign('d', scope => valid(scope.c + 1))
                 .map(scope => scope.a + scope.b + scope.c + scope.d)
-                .equals(valid(10))
+                .equals(valid(10), validatedOfNumberStringEquality)
                 .should.be.true
         })
 
@@ -35,7 +38,7 @@ describe('Valid', () => {
             const errors = ['error']
             valid({})
                 .assign('x', invalid(errors))
-                .equals(invalid(errors))
+                .equals(invalid(errors), createValidatedEquality())
                 .should.be.true
         })
     })
@@ -84,7 +87,7 @@ describe('Valid', () => {
             const f = value => `mapped over ${value}`
             createValidString()
                 .map(f)
-                .equals(valid(f(containedString)))
+                .equals(valid(f(containedString)), validatedOfStringStringEquality)
                 .should.be.true
         })
 

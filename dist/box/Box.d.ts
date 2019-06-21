@@ -16,10 +16,10 @@ export declare class Box<A> {
     toValidated<E>(): Validated<A, E>;
     map<B>(f: (value: A) => B): Box<B>;
     perform(sideEffect: (value: A) => void): Box<A>;
-    equals(otherBox: Box<A>, equality?: Equivalence<Box<A>>): boolean;
+    equals(otherBox: Box<A>, equality: Equivalence<Box<A>>): boolean;
     test(predicate: (value: A) => boolean): boolean;
     test(predicate: Predicate<A>): boolean;
 }
 export declare function box<A>(value: A): Box<A>;
 export declare function boxObject(): Box<{}>;
-export declare const BoxEquality: Equivalence<{}>;
+export declare function createBoxEquality<T>(valueEquality?: Equivalence<T>): Equivalence<Box<T>>;

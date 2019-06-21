@@ -1,11 +1,21 @@
-import {emptyList, inclusiveRange, list, List, listFromArray, NonEmptyList, range} from '../../src'
+import {
+    createListEquality,
+    createNonEmptyListEquality,
+    emptyList,
+    inclusiveRange,
+    list,
+    List,
+    listFromArray,
+    NonEmptyList,
+    range
+} from '../../src'
 
 require('chai').should()
 
 describe('range', () => {
     describe('without an end argument  returns', () => {
         function checkWithStartOnly(n: number, expected: List<number>) {
-            range(n).equals(expected).should.be.true
+            range(n).equals(expected, createListEquality()).should.be.true
         }
 
         it('a list from 0 to n+1 if the start argument is negative', () => {
@@ -25,7 +35,7 @@ describe('range', () => {
 
     describe('with an end argument returns', () => {
         function check(start: number, end: number, expected: List<number>) {
-            range(start, end).equals(expected).should.be.true
+            range(start, end).equals(expected, createListEquality()).should.be.true
         }
 
         it('an empty list if the start argument is equal to the end argument', () => {
@@ -56,7 +66,7 @@ describe('range', () => {
 describe('inclusiveRange', () => {
     it('without an end argument should return a list from 0 to start', () => {
         function check(n: number, expected: NonEmptyList<number>) {
-            inclusiveRange(n).equals(expected).should.be.true
+            inclusiveRange(n).equals(expected, createNonEmptyListEquality()).should.be.true
         }
 
         check(-1, list(0, -1))
@@ -68,7 +78,7 @@ describe('inclusiveRange', () => {
 
     it('with an end argument should returns a list from start to end', () => {
         function check(start: number, end: number, expected: NonEmptyList<number>) {
-            inclusiveRange(start, end).equals(expected).should.be.true
+            inclusiveRange(start, end).equals(expected, createNonEmptyListEquality()).should.be.true
         }
 
         check(-1, -2, list(-1, -2))

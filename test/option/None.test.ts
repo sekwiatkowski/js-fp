@@ -1,4 +1,4 @@
-import {none, Option, some} from '../../src'
+import {createOptionEquality, none, Option, some} from '../../src'
 
 const chai = require('chai')
 const expect = chai.expect
@@ -73,26 +73,27 @@ describe('None', () => {
     })
 
     describe('can fall back', () => {
-        const fallbackText = 'fallback';
+        const equality = createOptionEquality<string>()
+        const fallbackText = 'fallback'
 
         it('to a default value', () => {
             (none as Option<string>)
                 .orElse(fallbackText)
-                .equals(some(fallbackText))
+                .equals(some(fallbackText), equality)
                 .should.be.true
         })
 
         it('to the result of a guaranteed computation', () => {
             (none as Option<string>)
                 .orElse(() => fallbackText)
-                .equals(some(fallbackText))
+                .equals(some(fallbackText), equality)
                 .should.be.true
         })
 
         it('or try another computation with an optional result', () => {
             (none as Option<string>)
                 .orAttempt(() => some(fallbackText))
-                .equals(some(fallbackText))
+                .equals(some(fallbackText), equality)
                 .should.be.true
         })
     })

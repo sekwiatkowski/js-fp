@@ -71,7 +71,7 @@ export class None<A> implements Option<A> {
     //endregion
 
     //region Testing
-    equals(other: Option<A>, equality?: Equivalence<Option<A>>): boolean {
+    equals(other: Option<A>, equality: Equivalence<Option<A>>): boolean {
         return false
     }
 

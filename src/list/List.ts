@@ -310,12 +310,12 @@ export class List<T> {
     //endregion
 
     //region Testing
-    contains(item: T, itemEquality: (((x: T, y: T) => boolean)|Equivalence<T>) = guardedStrictEquality): boolean {
-        return containsItem(this.items, item, ensureEquivalenceFunction(itemEquality))
+    equals(otherList: List<T>, equality: Equivalence<List<T>>): boolean {
+        return equality.test(this, otherList)
     }
 
-    equals(otherList: List<T>, equality?: Equivalence<List<T>>): boolean {
-        return (equality || anyListEquality).test(this, otherList)
+    contains(item: T, itemEquality: (((x: T, y: T) => boolean)|Equivalence<T>) = guardedStrictEquality): boolean {
+        return containsItem(this.items, item, ensureEquivalenceFunction(itemEquality))
     }
 
     all(predicate: ((item: T) => boolean)|Predicate<T>): boolean {
@@ -363,7 +363,9 @@ export function repeat<T>(times: number, valueOrFunction: T|((index?: number) =>
     return listFromArray(repeatItems(times, valueOrFunction))
 }
 
-export const anyListEquality = (neitherIsUndefinedOrNull as Equivalence<List<any>>).and(createArrayEquality().adapt<List<any>>(l => l.getArray()))
+export function createListEquality<T>(itemEquality: Equivalence<T> = guardedStrictEquality): Equivalence<List<T>> {
+    return (neitherIsUndefinedOrNull as Equivalence<List<T>>).and(createArrayEquality(itemEquality).adapt(l => l.getArray()))
+}
 
 export const ListConcatenation : Monoid<List<any>> = {
     combine: (xs: List<any>) => (ys: List<any>) => new List(ArrayConcatenation.combine(xs.getArray())(ys.getArray())),

@@ -1,4 +1,4 @@
-import {invalid, valid} from '../../src'
+import {createValidatedEquality, invalid, valid} from '../../src'
 
 const chai = require('chai')
 const expect = chai.expect
@@ -8,13 +8,15 @@ describe('Invalid', () => {
     const createInvalidInstance = <T>() => invalid<T, string>(errors)
     const noSideEffectText = 'no side-effect'
 
+    const validatedOfNumberStringEquality = createValidatedEquality<number, string>()
+
     it('ignores attempts to apply parameters', () => {
         createInvalidInstance<((a: number) => (b: number) => (c: number) => (d: number) => number)>()
             .apply(1)
             .apply(() => 2)
             .apply(valid(3))
             .apply(() => valid(4))
-            .equals(invalid(errors))
+            .equals(invalid(errors), validatedOfNumberStringEquality)
             .should.be.true
     })
 
@@ -25,7 +27,7 @@ describe('Invalid', () => {
             .assign('c', valid(3))
             .assign('d', scope => valid(scope.c + 1))
             .map(scope => scope.a + scope.b + scope.c + scope.d)
-            .equals(invalid(errors))
+            .equals(invalid(errors), validatedOfNumberStringEquality)
             .should.be.true
     })
 
@@ -42,7 +44,7 @@ describe('Invalid', () => {
             const secondErrors = ['error 2a', 'error 2b']
             invalid(firstErrors)
                 .concat(invalid(secondErrors))
-                .equals(invalid(firstErrors.concat(secondErrors)))
+                .equals(invalid(firstErrors.concat(secondErrors)), createValidatedEquality())
                 .should.be.true
         })
     })
@@ -82,7 +84,7 @@ describe('Invalid', () => {
             const mappedErrors = errors.map(f)
             createInvalidInstance()
                 .mapErrors(errors => errors.map(f))
-                .equals(invalid(mappedErrors))
+                .equals(invalid(mappedErrors), createValidatedEquality())
                 .should.be.true
         })
 

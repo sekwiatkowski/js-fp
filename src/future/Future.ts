@@ -1,8 +1,7 @@
 import {Settled} from './Settled'
 import {fulfilled} from './Fulfilled'
 import {rejected} from './Rejected'
-import {neitherIsUndefinedOrNull, strictEquality} from '../equivalence/Equality'
-import {equivalence, Equivalence, Predicate} from '..'
+import {Equivalence, Predicate} from '..'
 
 export class Future<T, E> {
     constructor(private readonly createPromise: () => Promise<Settled<T, E>>) {}
@@ -372,9 +371,9 @@ export class Future<T, E> {
     //endregion
 
     //region Testing
-    equals(otherFutureOrPromise: Future<T, E>|Promise<T>, equality?: Equivalence<Settled<T, E>>): Promise<boolean> {
+    equals(otherFutureOrPromise: Future<T, E>|Promise<T>, equality: Equivalence<Settled<T, E>>): Promise<boolean> {
         return this.both(otherFutureOrPromise)
-            .then(settled => (equality || anySettledEquality).test(settled[0], settled[1]))
+            .then(settled => equality.test(settled[0], settled[1]))
     }
 
     test(predicate: (value: T) => boolean): Promise<boolean>
@@ -408,15 +407,3 @@ export function future<T, E>(createPromise: () => Promise<T>): Future<T, E> {
 export function futureObject<E>() : Future<{}, E> {
     return fulfill({})
 }
-
-const anySettledEquality = (neitherIsUndefinedOrNull as Equivalence<Settled<any, any>>)
-    .and(equivalence<Settled<any, any>>((thisSettled, otherSettled) => thisSettled.match(
-        thisValue => otherSettled.match(
-            otherValue => strictEquality.test(thisValue, otherValue),
-            () => false
-        ),
-        thisError => otherSettled.match(
-            () => false,
-            otherError => strictEquality.test(thisError, otherError)
-        )
-    )))

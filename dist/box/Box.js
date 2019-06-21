@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const __1 = require("..");
-const Equality_1 = require("../equivalence/Equality");
 class Box {
     constructor(value) {
         this.value = value;
@@ -66,7 +65,7 @@ class Box {
     //endregion
     //region Testing
     equals(otherBox, equality) {
-        return (equality || exports.BoxEquality).test(this, otherBox);
+        return equality.test(this, otherBox);
     }
     test(predicate) {
         if (predicate instanceof Function) {
@@ -86,5 +85,8 @@ function boxObject() {
     return box({});
 }
 exports.boxObject = boxObject;
-exports.BoxEquality = __1.neitherIsUndefinedOrNull.and(Equality_1.strictEquality.adapt(box => box.get()));
+function createBoxEquality(valueEquality = __1.guardedStrictEquality) {
+    return __1.neitherIsUndefinedOrNull.and(valueEquality.adapt(box => box.get()));
+}
+exports.createBoxEquality = createBoxEquality;
 //# sourceMappingURL=Box.js.map

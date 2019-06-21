@@ -60,7 +60,7 @@ class Pair {
     //endregion
     //region Testing
     equals(otherPair, equality) {
-        return (equality || exports.PairEquality).test(this, otherPair);
+        return equality.test(this, otherPair);
     }
     test(predicate) {
         if (predicate instanceof Function) {
@@ -76,6 +76,9 @@ function pair(first, second) {
     return new Pair(first, second);
 }
 exports.pair = pair;
-exports.PairEquality = __1.neitherIsUndefinedOrNull.and(__1.equivalence((pair1, pair2) => __1.guardedStrictEquality.test(pair1.first(), pair2.first()) &&
-    __1.guardedStrictEquality.test(pair1.second(), pair2.second())));
+function createPairEquality(firstEquality = __1.guardedStrictEquality, secondEquality = __1.guardedStrictEquality) {
+    return __1.neitherIsUndefinedOrNull.and(__1.equivalence((firstPair, secondPair) => firstEquality.test(firstPair.first(), secondPair.first()) &&
+        secondEquality.test(firstPair.second(), secondPair.second())));
+}
+exports.createPairEquality = createPairEquality;
 //# sourceMappingURL=Pair.js.map
