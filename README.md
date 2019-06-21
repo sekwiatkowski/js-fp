@@ -20,9 +20,9 @@ A TypeScript/JavaScript library designed to implement workflows as computational
 
 [**Option**](src/option/Option.ts): computation with a value that may be present or absent
 
-[**Validated**](src/validated/Validated.ts): like *Result*, but accumulates errors instead of short-circuiting
-
 [**Result**](src/result/Result.ts): synchronous computation that may succeed or fail, short-circuits when a failure occurs
+
+[**Validated**](src/validated/Validated.ts): like *Result*, but accumulates errors instead of short-circuiting
 
 ### Computation with a value and a context
 

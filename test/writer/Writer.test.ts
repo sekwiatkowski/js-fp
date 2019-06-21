@@ -10,8 +10,6 @@ import {
     stringWriter,
     writer
 } from '../../src'
-import {StringConcatenation} from '../../src/combination/Monoid'
-import {ListConcatenation} from '../../src/list/List'
 import {listWriterObject} from '../../src/writer/Writer'
 
 require('chai').should()
@@ -105,19 +103,22 @@ describe('Writer', () => {
 
     describe('can modify the log', () => {
         it('through a reset', () => {
-            stringWriter(undefined, 'log')
+            const initialStringLog = 'initial string log'
+            stringWriter(undefined, initialStringLog)
                 .reset()
                 .getLog()
-                .should.equal(StringConcatenation.identityElement)
+                .should.equal(initialStringLog)
 
-            listWriter(undefined, 'log')
+            const initialListLogEntry = 'log'
+            listWriter(undefined, initialListLogEntry)
                 .reset()
                 .getLog()
-                .should.equal(ListConcatenation.identityElement)
+                .getArray()
+                .should.eql([initialListLogEntry])
         })
 
         it('through a combination with a another log', () => {
-            writer(undefined, { combine: x => y => x + '\n' + y, identityElement: '' }, 'first')
+            writer(undefined, { combine: x => y => x + '\n' + y }, 'first')
                 .tell('second')
                 .getLog()
                 .should.equal('first\nsecond')

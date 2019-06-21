@@ -8,13 +8,18 @@ import {
     neitherIsUndefinedOrNull,
     pair,
     Pair,
-    Predicate
+    Predicate,
+    Semigroup
 } from '..'
 import {ListConcatenation} from '../list/List'
 import {StringConcatenation} from '../combination/Monoid'
 
 export class Writer<V, L> {
-    constructor(private readonly value: V, private readonly monoid: Monoid<L>, private readonly log: L) {}
+    constructor(
+        private readonly value: V,
+        private readonly log: L,
+        private readonly semigroup: Semigroup<L>,
+        private readonly _resetLog: () => L) {}
 
     //region Access
     get(): Pair<V, L> {
@@ -33,7 +38,7 @@ export class Writer<V, L> {
     //region Chaining
     chain<U>(f: (value: V) => Writer<U, L>): Writer<U, L> {
         const nextWriter = f(this.value)
-        return writer(nextWriter.getValue(), this.monoid, this.monoid.combine(this.log)(nextWriter.getLog()))
+        return new Writer(nextWriter.getValue(), this.semigroup.combine(this.log)(nextWriter.getLog()), this.semigroup, this._resetLog)
     }
     //endregion
 
@@ -51,7 +56,7 @@ export class Writer<V, L> {
                     [key]: memberOrWriter.getValue()
                 }
 
-                return writer(expandedObject, this.monoid, memberOrWriter.getLog())
+                return new Writer(expandedObject, memberOrWriter.getLog(), this.semigroup, this._resetLog)
             }
             else {
                 const expandedObject = {
@@ -59,7 +64,7 @@ export class Writer<V, L> {
                     [key]: memberOrWriter
                 }
 
-                return writer(expandedObject, this.monoid, this.monoid.identityElement)
+                return new Writer(expandedObject, this.getLog(), this.semigroup, this._resetLog)
             }
         })
     }
@@ -67,28 +72,40 @@ export class Writer<V, L> {
 
     //region Mapping
     map<U>(f: (value: V) => U): Writer<U, L> {
-        return writer(f(this.value), this.monoid, this.log)
+        return new Writer(f(this.value), this.log, this.semigroup, this._resetLog)
     }
 
     mapLog(f: (value: L) => L): Writer<V, L>
-    mapLog<M>(f: (value: L) => M, newMonoid: Monoid<M>): Writer<V, M>
-    mapLog<M>(f: ((value: L) => L)|((value: L) => M), newMonoid?: Monoid<M>): Writer<V, L>|Writer<V, M> {
-        if (newMonoid) {
-            return writer<V, M>(this.value, newMonoid, (f as ((value: L) => M))(this.log))
+    mapLog<M>(f: (value: L) => M, monoid: Monoid<M>): Writer<V, M>
+    mapLog<M>(f: (value: L) => M, semigroup: Semigroup<M>, resetLog: () => M): Writer<V, M>
+    mapLog<M>(f: (value: L) => M, monoidOrSemigroup?: Semigroup<M>, resetLog?: () => M): Writer<V, M>
+    mapLog<M>(f: ((value: L) => L)|((value: L) => M), monoidOrSemigroup?: Monoid<M>|Semigroup<M>, resetLog?: () => M): Writer<V, L>|Writer<V, M> {
+        if (monoidOrSemigroup) {
+            const mapToM = f as ((value: L) => M)
+            const logInM = mapToM(this.log)
+
+            if (resetLog) {
+                return new Writer(this.value, logInM, monoidOrSemigroup, resetLog)
+            }
+            else {
+                const monoid = monoidOrSemigroup as Monoid<M>
+                return new Writer(this.value, logInM, monoid, () => monoid.identityElement)
+            }
         }
         else {
-            return writer<V, L>(this.value, this.monoid, (f as ((value: L) => L))(this.log))
+            const mapWitinL = f as ((value: L) => L)
+            return new Writer(this.value, mapWitinL(this.log), this.semigroup as Semigroup<L>, this._resetLog)
         }
     }
     //endregion
 
     //region Modification
     reset(): Writer<V, L> {
-        return this.mapLog(() => this.monoid.identityElement)
+        return this.mapLog(this._resetLog)
     }
 
     tell(other: L): Writer<V, L> {
-        return this.mapLog(log => this.monoid.combine(log)(other))
+        return this.mapLog(log => this.semigroup.combine(log)(other))
     }
     //endregion
 
@@ -125,21 +142,30 @@ export class Writer<V, L> {
 }
 
 
-export function writer<V, L>(value: V, monoid: Monoid<L>, log: L = monoid.identityElement): Writer<V, L> {
+export function writer<V, L>(value: V, monoid: Monoid<L>): Writer<V, L>
+export function writer<V, L>(value: V, semigroup: Semigroup<L>, log: L): Writer<V, L>
+export function writer<V, L>(value: V, semigroupOrMonoid: Semigroup<L>|Monoid<L>, initialLog?: L): Writer<V, L> {
 
-    return new Writer(value, monoid, log)
+    if (initialLog) {
+        return new Writer(value, initialLog, semigroupOrMonoid, () => initialLog)
+    }
+    else {
+        const monoid = semigroupOrMonoid as Monoid<L>
+
+        return new Writer(value, monoid.identityElement, monoid, () => monoid.identityElement)
+    }
 }
 
-export function listWriter<V, I=string>(value: V, log: List<I>|I = ListConcatenation.identityElement): Writer<V, List<I>> {
-    return writer(value, ListConcatenation, log instanceof List ? log : listFromArray([log]))
+export function listWriter<V, I=string>(value: V, initialLog: List<I>|I = ListConcatenation.identityElement): Writer<V, List<I>> {
+    return writer(value, ListConcatenation, initialLog instanceof List ? initialLog : listFromArray([initialLog]))
 }
 
-export function listWriterObject<I=string>(log: List<I>|I = ListConcatenation.identityElement) : Writer<object, List<I>> {
-    return listWriter({}, log)
+export function listWriterObject<I=string>(initialLog: List<I>|I = ListConcatenation.identityElement) : Writer<object, List<I>> {
+    return listWriter({}, initialLog)
 }
 
-export function stringWriter<V, I>(value: V, log: string = StringConcatenation.identityElement): Writer<V, string> {
-    return writer(value, StringConcatenation, log)
+export function stringWriter<V, I>(value: V, initialLog: string = StringConcatenation.identityElement): Writer<V, string> {
+    return writer(value, StringConcatenation, initialLog)
 }
 
 export function createWriterEquality<V, L>(valueEquality: Equivalence<V> = guardedStrictEquality, logEquality: Equivalence<L> = guardedStrictEquality) {
