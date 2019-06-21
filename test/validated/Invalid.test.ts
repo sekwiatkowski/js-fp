@@ -59,13 +59,13 @@ describe('Invalid', () => {
         const fallbackText = 'alternative'
 
         it('but returns a default when the value is requested', () => {
-            createInvalidInstance()
+            createInvalidInstance<string>()
                 .getOrElse(fallbackText)
                 .should.equal(fallbackText)
         })
 
         it('... or the result of a guaranteed computation', () => {
-            createInvalidInstance()
+            createInvalidInstance<string>()
                 .getOrElse(() => fallbackText)
                 .should.equal(fallbackText)
         })

@@ -355,7 +355,7 @@ describe('Future', () => {
     describe('can fall back', () => {
         it('to a default value', async () => {
             const defaultValue = 'default'
-            const got = await reject(error)
+            const got = await reject<string, string>(error)
                 .orElse(defaultValue)
                 .getOrElse(unsafeGet)
 
@@ -364,7 +364,7 @@ describe('Future', () => {
 
         it('to the result of a guaranteed computation', async () => {
             const defaultValue = 'default'
-            const got = await reject(error)
+            const got = await reject<string, string>(error)
                 .orElse(() => defaultValue)
                 .getOrElse(unsafeGet)
 
@@ -375,7 +375,7 @@ describe('Future', () => {
     describe('can attempt to fallback', () => {
 
         it('with a promise', async() => {
-            const got = await reject(error)
+            const got = await reject<string, string>(error)
                 .orPromise(Promise.resolve(value))
                 .getOrElse(unsafeGet)
 
@@ -383,7 +383,7 @@ describe('Future', () => {
         })
 
         it('... or yet another promise', async() => {
-            const got = await reject(error)
+            const got = await reject<string, string>(error)
                 .orPromise(Promise.reject(error))
                 .orPromise(() => Promise.resolve(value))
                 .getOrElse(unsafeGet)
@@ -400,7 +400,7 @@ describe('Future', () => {
         })
 
         it('with another future', async() => {
-            const got = await reject(error)
+            const got = await reject<string, string>(error)
                 .orAttempt(fulfill(value))
                 .getOrElse(unsafeGet)
 
@@ -408,7 +408,7 @@ describe('Future', () => {
         })
 
         it('... yet another future', async() => {
-            const got = await reject(error)
+            const got = await reject<string, string>(error)
                 .orAttempt(reject(error))
                 .orAttempt(() => fulfill(value))
                 .getOrElse(unsafeGet)
@@ -417,7 +417,7 @@ describe('Future', () => {
         })
 
         it('but continues on the rejection path if the fallback future has been rejected', async() => {
-            const got = await reject(error)
+            const got = await reject<string, string>(error)
                 .orAttempt(() => reject(error))
                 .getErrorOrElse(unsafeGetError)
 

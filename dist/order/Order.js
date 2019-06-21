@@ -56,7 +56,7 @@ exports.orderDescendinglyBy = orderDescendinglyBy;
 exports.NumberOrder = exports.AnyOrder;
 exports.StringOrder = exports.AnyOrder;
 exports.BooleanOrder = exports.AnyOrder;
-exports.DateOrder = exports.AnyOrder.adapt(date => date.valueOf());
+exports.DateOrder = exports.AnyOrder.adapt((date) => date.valueOf());
 exports.DescendingNumberOrder = exports.DescendingAnyOrder;
 exports.DescendingStringOrder = exports.DescendingAnyOrder;
 exports.DescendingBooleanOrder = exports.DescendingAnyOrder;

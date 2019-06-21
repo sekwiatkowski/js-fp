@@ -4,7 +4,8 @@
     "target": "es6",
     "sourceMap": false,
     "declaration": false,
-    "strict": true
+    "strict": true,
+    "incremental": true
   },
   "exclude": [
     "node_modules",

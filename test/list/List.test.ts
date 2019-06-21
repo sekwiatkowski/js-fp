@@ -195,8 +195,8 @@ describe('List<T>', () => {
             describe('... or a default value',  () => {
                 const defaultText = "default"
                 it('when an item at the provided index does not exist', () => {
-                    emptyList().getOrElse(0, defaultText).should.equal(defaultText)
-                    emptyList().getOrElse(0, () => defaultText).should.equal(defaultText)
+                    emptyList<string>().getOrElse(0, defaultText).should.equal(defaultText)
+                    emptyList<string>().getOrElse(0, () => defaultText).should.equal(defaultText)
                 })
 
                 it('but not when it does exist', () => {

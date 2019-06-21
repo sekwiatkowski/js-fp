@@ -1,13 +1,13 @@
 import { Equivalence } from './Equivalence';
-export declare const neitherIsUndefinedOrNull: Equivalence<{}>;
-export declare const strictEquality: Equivalence<{}>;
-export declare const guardedStrictEquality: Equivalence<{}>;
+export declare const neitherIsUndefinedOrNull: Equivalence<unknown>;
+export declare const strictEquality: Equivalence<unknown>;
+export declare const guardedStrictEquality: Equivalence<unknown>;
 export declare const StringEquality: Equivalence<string>;
 export declare const NumberEquality: Equivalence<number>;
 export declare const BooleanEquality: Equivalence<boolean>;
 export declare const DateEquality: Equivalence<any>;
-export declare const bothAreNull: Equivalence<{}>;
-export declare const nullableStrictEquality: Equivalence<{}>;
+export declare const bothAreNull: Equivalence<unknown>;
+export declare const nullableStrictEquality: Equivalence<unknown>;
 export declare const NullableStringEquality: Equivalence<string>;
 export declare const NullableNumberEquality: Equivalence<number>;
 export declare const NullableBooleanEquality: Equivalence<boolean>;

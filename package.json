@@ -1,6 +1,6 @@
 {
   "name": "flowscript",
-  "version": "0.14.1",
+  "version": "0.15.0",
   "description": "A TypeScript/JavaScript library designed to implement workflows as computational graphs",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -18,7 +18,7 @@
     "nyc": "14.1.1",
     "rimraf": "2.6.3",
     "ts-node": "8.1.0",
-    "typescript": "3.4.5"
+    "typescript": "3.5.2"
   },
   "keywords": [
     "workflow",
@@ -38,6 +38,8 @@
     "validation",
     "future",
     "list",
+    "state",
+    "writer",
     "combination",
     "semigroup",
     "monoid",

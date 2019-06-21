@@ -24,8 +24,8 @@ export declare function orderDescendinglyBy<T, U>(by: (x: T) => U, byOrder?: Ord
 export declare const NumberOrder: Order<number>;
 export declare const StringOrder: Order<string>;
 export declare const BooleanOrder: Order<boolean>;
-export declare const DateOrder: Order<{}>;
+export declare const DateOrder: Order<Date>;
 export declare const DescendingNumberOrder: Order<number>;
 export declare const DescendingStringOrder: Order<string>;
 export declare const DescendingBooleanOrder: Order<boolean>;
-export declare const DescendingDateOrder: Order<{}>;
+export declare const DescendingDateOrder: Order<Date>;

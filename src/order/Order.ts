@@ -67,7 +67,7 @@ export function orderDescendinglyBy <T, U>(by: (x: T) => U, byOrder?: Order<U>):
 export const NumberOrder: Order<number> = AnyOrder
 export const StringOrder: Order<string> = AnyOrder
 export const BooleanOrder: Order<boolean> = AnyOrder
-export const DateOrder = AnyOrder.adapt(date => date.valueOf())
+export const DateOrder = AnyOrder.adapt((date: Date) => date.valueOf())
 
 export const DescendingNumberOrder: Order<number> = DescendingAnyOrder
 export const DescendingStringOrder: Order<string> = DescendingAnyOrder
