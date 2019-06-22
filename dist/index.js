@@ -141,5 +141,7 @@ exports.action = Action_1.action;
 var Arrow_1 = require("./arrow/Arrow");
 exports.Arrow = Arrow_1.Arrow;
 exports.arrow = Arrow_1.arrow;
+var Identity_1 = require("./functions/Identity");
+exports.identity = Identity_1.identity;
 //endregion
 //# sourceMappingURL=index.js.map

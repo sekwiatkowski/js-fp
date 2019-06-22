@@ -27,3 +27,4 @@ export { State, state, stateObject } from './state/State';
 export { Writer, writer, stringWriter, listWriter, createWriterEquality } from './writer/Writer';
 export { Action, action } from './action/Action';
 export { Arrow, arrow } from './arrow/Arrow';
+export { identity } from './functions/Identity';

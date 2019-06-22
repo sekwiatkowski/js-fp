@@ -9,6 +9,7 @@ import {
     Equivalence,
     Future,
     guardedStrictEquality,
+    identity,
     Latest,
     List,
     Max,
@@ -135,7 +136,7 @@ export class NonEmptyList<T> {
     }
 
     reduce(operation: (a: T) => (b: T) => T): Option<T> {
-        return this.reduceBy(x => x, operation)
+        return this.reduceBy(identity, operation)
     }
 
     reduceByWithSemigroup<U>(by: (item: T) => U, semigroup: Semigroup<U>): Option<U> {
@@ -151,7 +152,7 @@ export class NonEmptyList<T> {
     }
 
     fold(operation: (a: T) => (b: T) => T, initialValue: T): T {
-        return this.foldBy(x => x, operation, initialValue)
+        return this.foldBy(identity, operation, initialValue)
     }
 
     foldWithMonoid(monoid: Monoid<T>): T {

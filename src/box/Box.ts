@@ -52,7 +52,7 @@ export class Box<A> {
         const memberOrBox = memberOrBoxOrFunction instanceof Function ? memberOrBoxOrFunction(this.value) : memberOrBoxOrFunction
         const member = memberOrBox instanceof Box ? memberOrBox.get() : memberOrBox
 
-        return this.map<A & { [key in K]: B }>(obj => ({
+        return this.map(obj => ({
             ...Object(obj),
             [key]: member
         }))

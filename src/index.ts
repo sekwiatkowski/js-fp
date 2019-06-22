@@ -62,4 +62,5 @@ export { Writer, writer, stringWriter, listWriter, createWriterEquality } from '
 //region Functions
 export { Action, action } from './action/Action'
 export { Arrow, arrow } from './arrow/Arrow'
+export { identity } from './functions/Identity'
 //endregion

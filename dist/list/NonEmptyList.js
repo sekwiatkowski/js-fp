@@ -71,7 +71,7 @@ class NonEmptyList {
         }
     }
     reduce(operation) {
-        return this.reduceBy(x => x, operation);
+        return this.reduceBy(__1.identity, operation);
     }
     reduceByWithSemigroup(by, semigroup) {
         return this.reduceBy(by, semigroup.combine);
@@ -83,7 +83,7 @@ class NonEmptyList {
         return ArrayFunctions_1.foldItemsBy(this.items, by, operation, initialValue);
     }
     fold(operation, initialValue) {
-        return this.foldBy(x => x, operation, initialValue);
+        return this.foldBy(__1.identity, operation, initialValue);
     }
     foldWithMonoid(monoid) {
         return this.fold(monoid.combine, monoid.identityElement);

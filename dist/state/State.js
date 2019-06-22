@@ -12,9 +12,19 @@ class State {
     //endregion
     //region Chaining
     chain(g) {
-        return new State((firstState) => {
-            const secondState = this.f(firstState);
-            return g(secondState.second()).runWith(secondState.first());
+        return new State((previousState) => {
+            // Run the computation up until this point.
+            const previousResult = this.runWith(previousState);
+            // This is the end state of the computation up until now ...
+            const previousEndState = previousResult.first();
+            // ... and this is the resultant.
+            const previousEndResultant = previousResult.second();
+            // The old State instance is now discarded.
+            // A new State instance is created by applying the user-supplied function to the resultant.
+            const newState = g(previousEndResultant);
+            // Now we have an inner State instance wrapped within the function of outer State instance.
+            // To merge the two, the currentResultant is "forwarded" to the new State instance.
+            return newState.runWith(previousEndState);
         });
     }
     //endregion
@@ -28,39 +38,31 @@ class State {
     //endregion
     //region Comprehension
     assign(key, memberOrStateOrFunction) {
-        return new State(state => {
-            const objectLevel = this.runWith(state);
-            const memberOrState = memberOrStateOrFunction instanceof Function ? memberOrStateOrFunction(objectLevel.second()) : memberOrStateOrFunction;
-            if (memberOrState instanceof State) {
-                const memberLevel = memberOrState.runWith(objectLevel.first());
-                const updatedState = memberLevel.first();
-                const updatedResultant = Object.assign({}, Object.assign(objectLevel.second()), { [key]: memberLevel.second() });
-                return __1.pair(updatedState, updatedResultant);
-            }
-            else {
-                const updatedState = objectLevel.first();
-                const updatedResultant = Object.assign({}, Object.assign(objectLevel.second()), { [key]: memberOrState });
-                return __1.pair(updatedState, updatedResultant);
-            }
+        return this.chain(scope => {
+            const memberOrState = memberOrStateOrFunction instanceof Function
+                // If the user has supplied a function, apply it to the current scope to produce the member or state.
+                ? memberOrStateOrFunction(scope)
+                // If not, then treat the argument as a member or a state.
+                : memberOrStateOrFunction;
+            const state = memberOrState instanceof State
+                // If a user-provided state is available, use it as is.
+                ? memberOrState
+                // If not, then create a new State instance with the member as its resultant.
+                : new State(state => __1.pair(state, memberOrState));
+            // Map the state to merge the new member with the existing scope
+            return state.map(newMember => (Object.assign({}, Object.assign(scope), { [key]: newMember })));
         });
     }
-    accessState(key) {
-        return this.assign(key, new State(state => __1.pair(state, state)));
-    }
-    replaceState(valueOrFunction) {
-        return new State((state) => {
-            const modifiedState = valueOrFunction instanceof Function ? valueOrFunction(state) : valueOrFunction;
-            const obj = this.runWith(state).second();
-            return __1.pair(modifiedState, obj);
-        });
+    assignState(key) {
+        return this.chain(scope => new State(state => __1.pair(state, Object.assign({}, Object.assign(scope), { [key]: state }))));
     }
     //endregion
     //region Mapping
     map(f) {
-        return new State((firstState) => {
-            const secondState = this.runWith(firstState);
-            return secondState.mapSecond(f);
-        });
+        return new State((firstState) => this.runWith(firstState).mapSecond(f));
+    }
+    mapState(f) {
+        return new State((firstState) => this.runWith(firstState).mapFirst(f));
     }
     //endregion
     //region Side-effects
