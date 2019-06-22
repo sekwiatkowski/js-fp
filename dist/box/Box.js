@@ -29,7 +29,7 @@ class Box {
     assign(key, memberOrBoxOrFunction) {
         const memberOrBox = memberOrBoxOrFunction instanceof Function ? memberOrBoxOrFunction(this.value) : memberOrBoxOrFunction;
         const member = memberOrBox instanceof Box ? memberOrBox.get() : memberOrBox;
-        return this.map(obj => (Object.assign({}, Object(obj), { [key]: member })));
+        return this.chain(scope => new Box(Object.assign({}, Object(scope), { [key]: member })));
     }
     //endregion
     //region Combination

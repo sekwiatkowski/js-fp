@@ -52,8 +52,8 @@ export class Box<A> {
         const memberOrBox = memberOrBoxOrFunction instanceof Function ? memberOrBoxOrFunction(this.value) : memberOrBoxOrFunction
         const member = memberOrBox instanceof Box ? memberOrBox.get() : memberOrBox
 
-        return this.map(obj => ({
-            ...Object(obj),
+        return this.chain(scope => new Box({
+            ...Object(scope),
             [key]: member
         }))
     }

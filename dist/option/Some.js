@@ -29,13 +29,15 @@ class Some {
     //endregion
     //region Comprehension
     assign(key, memberOrOptionOrFunction) {
-        const memberOrOption = memberOrOptionOrFunction instanceof Function ? memberOrOptionOrFunction(this.value) : memberOrOptionOrFunction;
-        if (memberOrOption instanceof Some || memberOrOption instanceof None_1.None) {
-            return memberOrOption.map(otherValue => (Object.assign({}, Object(this.value), { [key]: otherValue })));
-        }
-        else {
-            return this.map(obj => (Object.assign({}, Object(obj), { [key]: memberOrOption })));
-        }
+        return this.chain(scope => {
+            const memberOrOption = memberOrOptionOrFunction instanceof Function
+                ? memberOrOptionOrFunction(scope)
+                : memberOrOptionOrFunction;
+            const option = ((memberOrOption instanceof Some || memberOrOption instanceof None_1.None)
+                ? memberOrOption
+                : some(memberOrOption));
+            return option.map(otherValue => (Object.assign({}, Object(scope), { [key]: otherValue })));
+        });
     }
     //endregion
     //region Conversion

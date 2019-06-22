@@ -35,20 +35,21 @@ export class Some<A> implements Option<A> {
         this: Some<A>,
         key: Exclude<K, keyof A>,
         memberOrOptionOrFunction: Option<B> | ((value: A) => Option<B>) | B | ((value: A) => B)): Option<A & { [key in K]: B }> {
-        const memberOrOption = memberOrOptionOrFunction instanceof Function ? memberOrOptionOrFunction(this.value) : memberOrOptionOrFunction
 
-        if(memberOrOption instanceof Some || memberOrOption instanceof None) {
-            return memberOrOption.map<A & { [key in K]: B }>(otherValue => ({
-                ...Object(this.value),
+        return this.chain(scope => {
+            const memberOrOption = memberOrOptionOrFunction instanceof Function
+                ? memberOrOptionOrFunction(scope)
+                : memberOrOptionOrFunction
+
+            const option = ((memberOrOption instanceof Some || memberOrOption instanceof None)
+                ? memberOrOption
+                : some(memberOrOption))
+
+            return option.map(otherValue => ({
+                ...Object(scope),
                 [key]: otherValue
             }))
-        }
-        else {
-            return this.map<A & { [key in K]: B }>(obj => ({
-                ...Object(obj),
-                [key]: memberOrOption
-            }))
-        }
+        })
     }
     //endregion
 
