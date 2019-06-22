@@ -34,9 +34,9 @@ class Some {
             const memberOptionOrValue = memberOptionOrValueOrFunction instanceof Function
                 ? memberOptionOrValueOrFunction(scope)
                 : memberOptionOrValueOrFunction;
-            const memberOption = ((memberOptionOrValue instanceof Some || memberOptionOrValue instanceof None_1.None)
+            const memberOption = (memberOptionOrValue instanceof Some || memberOptionOrValue instanceof None_1.None)
                 ? memberOptionOrValue
-                : Option_1.option(memberOptionOrValue));
+                : Option_1.option(memberOptionOrValue);
             return memberOption.map(member => (Object.assign({}, Object(scope), { [key]: member })));
         });
     }

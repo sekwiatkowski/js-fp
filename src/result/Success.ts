@@ -46,7 +46,7 @@ export class Success<T, E> implements Result<T, E> {
                 ? memberResultOrValueOrFunction(this.value)
                 : memberResultOrValueOrFunction
 
-            const memberResult = memberResultOrValue instanceof Success || memberResultOrValue instanceof Failure
+            const memberResult = (memberResultOrValue instanceof Success || memberResultOrValue instanceof Failure)
                 ? memberResultOrValue
                 : success(memberResultOrValue)
 

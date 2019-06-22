@@ -22,13 +22,6 @@ export interface Validated<T, E> {
         argumentOrFunctionOrValidated: U | Validated<U, E> | (() => U) | (() => Validated<U, E>)) : Validated<V, E>
     //endregion
 
-    //region Comprehension
-    assign<T extends object, K extends string, U>(
-        this: Validated<T, E>,
-        key: Exclude<K, keyof T>,
-        memberOrFunction: Validated<U, E> | ((value: T) => Validated<U, E>) | U | ((value: T) => U)): Validated<T & { [key in K]: U }, E>
-    //endregion
-
     //region Concatenation
     concat(otherValidated: Validated<T, E>): Validated<T, E>
     //endregion

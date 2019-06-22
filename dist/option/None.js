@@ -20,7 +20,7 @@ class None {
     }
     //endregion
     //region Comprehension
-    assign(key, memberOrOptionOrFunction) {
+    assign(key, memberOptionOrValueOrFunction) {
         return exports.none;
     }
     //endregion

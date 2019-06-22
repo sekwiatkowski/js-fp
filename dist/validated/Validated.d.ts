@@ -3,9 +3,6 @@ export interface Validated<T, E> {
     getErrorsOrElse(alternative: E[] | ((value: T) => E[])): E[];
     getOrElse(alternative: T | ((errors: E[]) => T)): T;
     apply<U, V>(this: Validated<(parameter: U) => V, E>, argumentOrFunctionOrValidated: U | Validated<U, E> | (() => U) | (() => Validated<U, E>)): Validated<V, E>;
-    assign<T extends object, K extends string, U>(this: Validated<T, E>, key: Exclude<K, keyof T>, memberOrFunction: Validated<U, E> | ((value: T) => Validated<U, E>) | U | ((value: T) => U)): Validated<T & {
-        [key in K]: U;
-    }, E>;
     concat(otherValidated: Validated<T, E>): Validated<T, E>;
     toFuture(): Future<T, E[]>;
     toResult(): Result<T, E[]>;

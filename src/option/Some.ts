@@ -41,9 +41,9 @@ export class Some<A> implements Option<A> {
                 ? memberOptionOrValueOrFunction(scope)
                 : memberOptionOrValueOrFunction
 
-            const memberOption = ((memberOptionOrValue instanceof Some || memberOptionOrValue instanceof None)
+            const memberOption = (memberOptionOrValue instanceof Some || memberOptionOrValue instanceof None)
                 ? memberOptionOrValue
-                : option(memberOptionOrValue))
+                : option(memberOptionOrValue)
 
             return memberOption.map(member => ({
                 ...Object(scope),

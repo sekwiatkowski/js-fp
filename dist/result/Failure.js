@@ -25,7 +25,7 @@ class Failure {
     }
     //endregion
     //region Comprehension
-    assign(key, other) {
+    assign(key, memberResultOrValueOrFunction) {
         return new Failure(this.error);
     }
     //endregion

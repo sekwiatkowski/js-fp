@@ -22,27 +22,6 @@ describe('Valid', () => {
             .should.be.true
     })
 
-    describe('can build objects', () => {
-        it('one member at a time', () => {
-            valid<object, string>({})
-                .assign('a', 1)
-                .assign('b', scope => scope.a + 1)
-                .assign('c', valid(3))
-                .assign('d', scope => valid(scope.c + 1))
-                .map(scope => scope.a + scope.b + scope.c + scope.d)
-                .equals(valid(10), validatedOfNumberStringEquality)
-                .should.be.true
-        })
-
-        it('but switches to the Invalid path when an instance of Invalid is assigned to a member', () => {
-            const errors = ['error']
-            valid<object, string>({})
-                .assign('x', invalid(errors))
-                .equals(invalid(errors), createValidatedEquality())
-                .should.be.true
-        })
-    })
-
     describe('provides access', () => {
         it('to the value', () => {
             createValidString()

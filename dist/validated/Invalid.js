@@ -18,11 +18,6 @@ class Invalid {
         return new Invalid(this.errors);
     }
     //endregion
-    //region Comprehension
-    assign(key, memberOrValidatedOrFunction) {
-        return new Invalid(this.errors);
-    }
-    //endregion
     //region Concatenation
     concat(otherValidated) {
         return otherValidated.match(() => this, otherList => new Invalid(this.errors.concat(otherList)));

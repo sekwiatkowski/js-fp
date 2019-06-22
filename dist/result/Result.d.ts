@@ -4,7 +4,7 @@ export interface Result<T, E> {
     getOrElse(alternative: T | ((error: E) => T)): T;
     apply<U, V>(this: Result<(parameter: U) => V, E>, argumentOrResultOrFunction: U | (() => U) | Result<U, E> | (() => Result<U, E>)): Result<V, E>;
     chain<U>(f: (value: T) => Result<U, E>): Result<U, E>;
-    assign<T extends object, K extends string, U>(this: Result<T, E>, key: Exclude<K, keyof T>, memberOrResultOrFunction: Result<U, E> | ((value: T) => Result<U, E>) | U | ((value: T) => U)): Result<T & {
+    assign<T extends object, K extends string, U>(this: Result<T, E>, key: Exclude<K, keyof T>, memberResultOrValueOrFunction: Result<U, E> | ((value: T) => Result<U, E>) | U | ((value: T) => U)): Result<T & {
         [key in K]: U;
     }, E>;
     toFuture(): Future<T, E>;

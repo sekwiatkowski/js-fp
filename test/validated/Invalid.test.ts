@@ -20,17 +20,6 @@ describe('Invalid', () => {
             .should.be.true
     })
 
-    it('ignores attempts build an object with values', () => {
-        createInvalidInstance<{}>()
-            .assign('a', 1)
-            .assign('b', scope => scope.a + 1)
-            .assign('c', valid(3))
-            .assign('d', scope => valid(scope.c + 1))
-            .map(scope => scope.a + scope.b + scope.c + scope.d)
-            .equals(invalid(errors), validatedOfNumberStringEquality)
-            .should.be.true
-    })
-
     describe('concatenates', () => {
         it('with a Valid instance by returning itself', () => {
             const invalidInstance = createInvalidInstance<string>()

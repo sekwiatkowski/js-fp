@@ -30,28 +30,6 @@ export class Valid<T, E> implements Validated<T, E> {
     }
     //endregion
 
-    //region Comprehension
-    assign<T extends object, K extends string, U>(
-        this: Valid<T, E>,
-        key: Exclude<K, keyof T>,
-        memberOrValidatedOrFunction: Validated<U, E> | ((value: T) => Validated<U, E>) | U | ((value: T) => U)): Validated<T & { [key in K]: U }, E> {
-        const member = memberOrValidatedOrFunction instanceof Function ? memberOrValidatedOrFunction(this.value) : memberOrValidatedOrFunction
-
-        if (member instanceof Valid || member instanceof Invalid) {
-            return member.map<T & { [key in K]: U }>(memberValue => ({
-                ...Object(this.value),
-                [key]: memberValue
-            }))
-        }
-        else {
-            return this.map<T & { [key in K]: U }>(obj => ({
-                ...Object(obj),
-                [key]: member
-            }))
-        }
-    }
-    //endregion
-
     //region Concatenation
     concat(otherValidated: Validated<T, E>): Validated<T, E> {
         return otherValidated

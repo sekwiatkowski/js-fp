@@ -36,7 +36,7 @@ class Success {
             const memberResultOrValue = memberResultOrValueOrFunction instanceof Function
                 ? memberResultOrValueOrFunction(this.value)
                 : memberResultOrValueOrFunction;
-            const memberResult = memberResultOrValue instanceof Success || memberResultOrValue instanceof Failure_1.Failure
+            const memberResult = (memberResultOrValue instanceof Success || memberResultOrValue instanceof Failure_1.Failure)
                 ? memberResultOrValue
                 : success(memberResultOrValue);
             return memberResult.map(map => (Object.assign({}, Object(scope), { [key]: map })));

@@ -25,17 +25,6 @@ class Valid {
         }
     }
     //endregion
-    //region Comprehension
-    assign(key, memberOrValidatedOrFunction) {
-        const member = memberOrValidatedOrFunction instanceof Function ? memberOrValidatedOrFunction(this.value) : memberOrValidatedOrFunction;
-        if (member instanceof Valid || member instanceof Invalid_1.Invalid) {
-            return member.map(memberValue => (Object.assign({}, Object(this.value), { [key]: memberValue })));
-        }
-        else {
-            return this.map(obj => (Object.assign({}, Object(obj), { [key]: member })));
-        }
-    }
-    //endregion
     //region Concatenation
     concat(otherValidated) {
         return otherValidated;
