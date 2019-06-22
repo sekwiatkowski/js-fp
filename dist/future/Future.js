@@ -64,30 +64,24 @@ class Future {
     }
     //endregion
     //region Comprehension
-    assign(key, memberOrFutureOrPromiseOrFunction) {
-        return new Future(() => new Promise(resolve => {
-            this.run(existingObject => {
-                const memberOrFutureOrPromise = memberOrFutureOrPromiseOrFunction instanceof Function ? memberOrFutureOrPromiseOrFunction(existingObject) : memberOrFutureOrPromiseOrFunction;
-                if (memberOrFutureOrPromise instanceof Future) {
-                    memberOrFutureOrPromise.run(member => {
-                        const updatedObject = Object.assign({}, Object(existingObject), { [key]: member });
-                        resolve(Fulfilled_1.fulfilled(updatedObject));
-                    }, secondError => resolve(Rejected_1.rejected(secondError)));
+    assign(key, memberFutureOrPromiseValueOrFunction) {
+        return this.chain(scope => {
+            const memberFutureOrPromiseOrValue = memberFutureOrPromiseValueOrFunction instanceof Function
+                ? memberFutureOrPromiseValueOrFunction(scope)
+                : memberFutureOrPromiseValueOrFunction;
+            function ensureFuture(memberFutureOrValueOrPromise) {
+                if (memberFutureOrValueOrPromise instanceof Future) {
+                    return memberFutureOrValueOrPromise;
                 }
-                else if (memberOrFutureOrPromise instanceof Promise) {
-                    memberOrFutureOrPromise
-                        .then(member => {
-                        const updatedObject = Object.assign({}, Object(existingObject), { [key]: member });
-                        resolve(Fulfilled_1.fulfilled(updatedObject));
-                    })
-                        .catch(secondError => resolve(Rejected_1.rejected(secondError)));
+                else if (memberFutureOrValueOrPromise instanceof Promise) {
+                    return future(() => memberFutureOrValueOrPromise);
                 }
                 else {
-                    const updatedObject = Object.assign({}, Object(existingObject), { [key]: memberOrFutureOrPromise });
-                    resolve(Fulfilled_1.fulfilled(updatedObject));
+                    return fulfill(memberFutureOrValueOrPromise);
                 }
-            }, firstError => resolve(Rejected_1.rejected(firstError)));
-        }));
+            }
+            return ensureFuture(memberFutureOrPromiseOrValue).map(member => (Object.assign({}, Object(scope), { [key]: member })));
+        });
     }
     //endregion
     //region Fallback

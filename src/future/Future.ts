@@ -87,48 +87,29 @@ export class Future<T, E> {
     assign<T extends object, K extends string, U>(
         this: Future<T, E>,
         key: Exclude<K, keyof T>,
-        memberOrFutureOrPromiseOrFunction: Future<U, E> | ((value: T) => Future<U, E>) | Promise<U> | ((value: T) => Promise<U>) | U | ((value: T) => U)): Future<T & { [key in K]: U }, E> {
-        return new Future(() =>
-            new Promise(resolve => {
-                this.run(
-                    existingObject => {
-                        const memberOrFutureOrPromise = memberOrFutureOrPromiseOrFunction instanceof Function ? memberOrFutureOrPromiseOrFunction(existingObject) : memberOrFutureOrPromiseOrFunction
+        memberFutureOrPromiseValueOrFunction: Future<U, E> | ((value: T) => Future<U, E>) | Promise<U> | ((value: T) => Promise<U>) | U | ((value: T) => U)): Future<T & { [key in K]: U }, E> {
+        return this.chain(scope => {
+            const memberFutureOrPromiseOrValue = memberFutureOrPromiseValueOrFunction instanceof Function
+                ? memberFutureOrPromiseValueOrFunction(scope)
+                : memberFutureOrPromiseValueOrFunction
 
-                        if (memberOrFutureOrPromise instanceof Future) {
-                            memberOrFutureOrPromise.run(
-                                member => {
-                                    const updatedObject = {
-                                        ...Object(existingObject),
-                                        [key]: member
-                                    }
-                                    resolve(fulfilled(updatedObject))
-                                },
-                                secondError => resolve(rejected(secondError)))
-                        }
-                        else if (memberOrFutureOrPromise instanceof Promise) {
-                            memberOrFutureOrPromise
-                                .then(member => {
-                                    const updatedObject = {
-                                        ...Object(existingObject),
-                                        [key]: member
-                                    }
-                                    resolve(fulfilled(updatedObject))
-                                })
-                                .catch(secondError => resolve(rejected(secondError)))
-                        }
-                        else {
-                            const updatedObject = {
-                                ...Object(existingObject),
-                                [key]: memberOrFutureOrPromise
-                            }
+            function ensureFuture(memberFutureOrValueOrPromise: Future<U, E> | Promise<U> | U): Future<U, E> {
+                if (memberFutureOrValueOrPromise instanceof Future) {
+                    return memberFutureOrValueOrPromise
+                }
+                else if (memberFutureOrValueOrPromise instanceof Promise) {
+                    return future(() => memberFutureOrValueOrPromise)
+                }
+                else {
+                    return fulfill(memberFutureOrValueOrPromise)
+                }
+            }
 
-                            resolve(fulfilled(updatedObject))
-                        }
-                    },
-                    firstError => resolve(rejected(firstError))
-                )
-            })
-        )
+            return ensureFuture(memberFutureOrPromiseOrValue).map(member => ({
+                ...Object(scope),
+                [key]: member
+            }))
+        })
     }
     //endregion
 
