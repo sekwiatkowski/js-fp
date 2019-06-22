@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const None_1 = require("./None");
+const Option_1 = require("./Option");
 const __1 = require("..");
 class Some {
     constructor(value) {
@@ -28,15 +29,15 @@ class Some {
     }
     //endregion
     //region Comprehension
-    assign(key, memberOrOptionOrFunction) {
+    assign(key, memberOptionOrValueOrFunction) {
         return this.chain(scope => {
-            const memberOrOption = memberOrOptionOrFunction instanceof Function
-                ? memberOrOptionOrFunction(scope)
-                : memberOrOptionOrFunction;
-            const option = ((memberOrOption instanceof Some || memberOrOption instanceof None_1.None)
-                ? memberOrOption
-                : some(memberOrOption));
-            return option.map(otherValue => (Object.assign({}, Object(scope), { [key]: otherValue })));
+            const memberOptionOrValue = memberOptionOrValueOrFunction instanceof Function
+                ? memberOptionOrValueOrFunction(scope)
+                : memberOptionOrValueOrFunction;
+            const memberOption = ((memberOptionOrValue instanceof Some || memberOptionOrValue instanceof None_1.None)
+                ? memberOptionOrValue
+                : Option_1.option(memberOptionOrValue));
+            return memberOption.map(member => (Object.assign({}, Object(scope), { [key]: member })));
         });
     }
     //endregion

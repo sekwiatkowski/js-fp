@@ -6,7 +6,7 @@ export declare class Box<A> {
     get<T>(f: (value: A) => T): T;
     apply<B, C>(this: Box<(parameter: B) => C>, argumentOrBoxOrFunction: B | Box<B> | (() => B) | (() => Box<B>)): Box<C>;
     chain<B>(f: (value: A) => Box<B>): Box<B>;
-    assign<A extends object, K extends string, B>(this: Box<A>, key: Exclude<K, keyof A>, memberOrBoxOrFunction: Box<B> | ((scope: A) => Box<B>) | B | ((scope: A) => B)): Box<A & {
+    assign<A extends object, K extends string, B>(this: Box<A>, key: Exclude<K, keyof A>, memberBoxOrValueOrFunction: Box<B> | ((scope: A) => Box<B>) | B | ((scope: A) => B)): Box<A & {
         [key in K]: B;
     }>;
     combine(otherValueOrBox: A | Box<A>, semigroup: Semigroup<A>): Box<A>;

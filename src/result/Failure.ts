@@ -33,7 +33,7 @@ export class Failure<T, E> implements Result<T, E> {
     assign<T extends object, K extends string, U>(
         this: Failure<T, E>,
         key: Exclude<K, keyof T>,
-        other: Result<U, E> | ((value: T) => Result<U, E>) | U | ((value: T) => U)): Result<T & { [key in K]: U }, E> {
+        memberResultOrValueOrFunction: Result<U, E> | ((value: T) => Result<U, E>) | U | ((value: T) => U)): Result<T & { [key in K]: U }, E> {
         return new Failure<T & { [k in K]: U }, E>(this.error)
     }
     //endregion

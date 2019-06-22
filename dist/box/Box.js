@@ -26,10 +26,16 @@ class Box {
     }
     //endregion
     //region Comprehension
-    assign(key, memberOrBoxOrFunction) {
-        const memberOrBox = memberOrBoxOrFunction instanceof Function ? memberOrBoxOrFunction(this.value) : memberOrBoxOrFunction;
-        const member = memberOrBox instanceof Box ? memberOrBox.get() : memberOrBox;
-        return this.chain(scope => new Box(Object.assign({}, Object(scope), { [key]: member })));
+    assign(key, memberBoxOrValueOrFunction) {
+        return this.chain(scope => {
+            const memberBoxOrValue = memberBoxOrValueOrFunction instanceof Function
+                ? memberBoxOrValueOrFunction(this.value)
+                : memberBoxOrValueOrFunction;
+            const memberBox = memberBoxOrValue instanceof Box
+                ? memberBoxOrValue
+                : new Box(memberBoxOrValue);
+            return memberBox.map(memberValue => (Object.assign({}, Object(scope), { [key]: memberValue })));
+        });
     }
     //endregion
     //region Combination

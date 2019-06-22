@@ -31,14 +31,16 @@ class Success {
     }
     //endregion
     //region Comprehension
-    assign(key, memberOrResultOrFunction) {
-        const memberOrResult = memberOrResultOrFunction instanceof Function ? memberOrResultOrFunction(this.value) : memberOrResultOrFunction;
-        if (memberOrResult instanceof Success || memberOrResult instanceof Failure_1.Failure) {
-            return memberOrResult.map(memberValue => (Object.assign({}, Object(this.value), { [key]: memberValue })));
-        }
-        else {
-            return this.map(obj => (Object.assign({}, Object(obj), { [key]: memberOrResult })));
-        }
+    assign(key, memberResultOrValueOrFunction) {
+        return this.chain(scope => {
+            const memberResultOrValue = memberResultOrValueOrFunction instanceof Function
+                ? memberResultOrValueOrFunction(this.value)
+                : memberResultOrValueOrFunction;
+            const memberResult = memberResultOrValue instanceof Success || memberResultOrValue instanceof Failure_1.Failure
+                ? memberResultOrValue
+                : success(memberResultOrValue);
+            return memberResult.map(map => (Object.assign({}, Object(scope), { [key]: map })));
+        });
     }
     //endregion
     //region Conversion

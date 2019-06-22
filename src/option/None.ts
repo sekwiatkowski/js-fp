@@ -29,7 +29,7 @@ export class None<A> implements Option<A> {
     assign<A extends object, K extends string, B>(
         this: None<A>,
         key: Exclude<K, keyof A>,
-        memberOrOptionOrFunction: Option<B> | ((value: A) => Option<B>) | B | ((value: A) => B)): Option<A & { [key in K]: B }> {
+        memberOptionOrValueOrFunction: Option<B> | ((value: A) => Option<B>) | B | ((value: A) => B)): Option<A & { [key in K]: B }> {
         return none
     }
     //endregion

@@ -48,14 +48,21 @@ export class Box<A> {
     assign<A extends object, K extends string, B>(
         this: Box<A>,
         key: Exclude<K, keyof A>,
-        memberOrBoxOrFunction: Box<B> | ((scope: A) => Box<B>) | B | ((scope: A) => B)): Box<A & { [key in K]: B }> {
-        const memberOrBox = memberOrBoxOrFunction instanceof Function ? memberOrBoxOrFunction(this.value) : memberOrBoxOrFunction
-        const member = memberOrBox instanceof Box ? memberOrBox.get() : memberOrBox
+        memberBoxOrValueOrFunction: Box<B> | ((scope: A) => Box<B>) | B | ((scope: A) => B)): Box<A & { [key in K]: B }> {
+        return this.chain(scope => {
+            const memberBoxOrValue = memberBoxOrValueOrFunction instanceof Function
+                ? memberBoxOrValueOrFunction(this.value)
+                : memberBoxOrValueOrFunction
 
-        return this.chain(scope => new Box({
-            ...Object(scope),
-            [key]: member
-        }))
+            const memberBox = memberBoxOrValue instanceof Box
+                ? memberBoxOrValue
+                : new Box(memberBoxOrValue)
+
+            return memberBox.map(memberValue => ({
+                ...Object(scope),
+                [key]: memberValue
+            }))
+        })
     }
     //endregion
 

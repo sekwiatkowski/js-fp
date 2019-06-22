@@ -1,5 +1,5 @@
 import {None, none} from './None'
-import {Option} from './Option'
+import {option, Option} from './Option'
 import {Equivalence, fulfill, Future, Predicate, Result, success, valid, Validated} from '..'
 
 export class Some<A> implements Option<A> {
@@ -34,20 +34,20 @@ export class Some<A> implements Option<A> {
     assign<A extends object, K extends string, B>(
         this: Some<A>,
         key: Exclude<K, keyof A>,
-        memberOrOptionOrFunction: Option<B> | ((value: A) => Option<B>) | B | ((value: A) => B)): Option<A & { [key in K]: B }> {
+        memberOptionOrValueOrFunction: Option<B> | ((value: A) => Option<B>) | B | ((value: A) => B)): Option<A & { [key in K]: B }> {
 
         return this.chain(scope => {
-            const memberOrOption = memberOrOptionOrFunction instanceof Function
-                ? memberOrOptionOrFunction(scope)
-                : memberOrOptionOrFunction
+            const memberOptionOrValue = memberOptionOrValueOrFunction instanceof Function
+                ? memberOptionOrValueOrFunction(scope)
+                : memberOptionOrValueOrFunction
 
-            const option = ((memberOrOption instanceof Some || memberOrOption instanceof None)
-                ? memberOrOption
-                : some(memberOrOption))
+            const memberOption = ((memberOptionOrValue instanceof Some || memberOptionOrValue instanceof None)
+                ? memberOptionOrValue
+                : option(memberOptionOrValue))
 
-            return option.map(otherValue => ({
+            return memberOption.map(member => ({
                 ...Object(scope),
-                [key]: otherValue
+                [key]: member
             }))
         })
     }

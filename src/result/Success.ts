@@ -40,21 +40,21 @@ export class Success<T, E> implements Result<T, E> {
     assign<T extends object, K extends string, U>(
         this: Success<T, E>,
         key: Exclude<K, keyof T>,
-        memberOrResultOrFunction: Result<U, E> | ((value: T) => Result<U, E>) | U | ((value: T) => U)): Result<T & { [key in K]: U }, E> {
-        const memberOrResult = memberOrResultOrFunction instanceof Function ? memberOrResultOrFunction(this.value) : memberOrResultOrFunction
+        memberResultOrValueOrFunction: Result<U, E> | ((value: T) => Result<U, E>) | U | ((value: T) => U)): Result<T & { [key in K]: U }, E> {
+        return this.chain(scope => {
+            const memberResultOrValue = memberResultOrValueOrFunction instanceof Function
+                ? memberResultOrValueOrFunction(this.value)
+                : memberResultOrValueOrFunction
 
-        if(memberOrResult instanceof Success || memberOrResult instanceof Failure) {
-            return memberOrResult.map<T & { [key in K]: U }>(memberValue => ({
-                ...Object(this.value),
-                [key]: memberValue
+            const memberResult = memberResultOrValue instanceof Success || memberResultOrValue instanceof Failure
+                ? memberResultOrValue
+                : success(memberResultOrValue)
+
+            return memberResult.map(map => ({
+                ...Object(scope),
+                [key]: map
             }))
-        }
-        else {
-            return this.map<T & { [key in K]: U }>(obj  => ({
-                ...Object(obj),
-                [key]: memberOrResult
-            }))
-        }
+        })
     }
     //endregion
 
