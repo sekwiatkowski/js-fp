@@ -30,6 +30,12 @@ A TypeScript/JavaScript library designed to implement workflows as computational
 
 [**Writer**](src/writer/Writer.ts): computation with additional data (used for logging)
 
+#### Writers
+
+[**StringWriter**](src/writer/Writer.ts): computation with log entries concatenated to a string
+
+[**ListWriter**](src/writer/Writer.ts): computation with log entries concatenated to a [**List**](src/list/List.ts) instance 
+
 ### Asynchronous computation
 
 [**Future**](src/future/Future.ts): asynchronous computation that may succeed or fail (a monadic alternative to Promises)
@@ -78,9 +84,17 @@ A TypeScript/JavaScript library designed to implement workflows as computational
 
 [**Latest**](src/combination/Monoid.ts): combines two dates, resulting in the later of the two
 
+#### String
+
+[**StringConcatenation**](src/combination/Monoid.ts): combines two string using concatenation
+
 #### Array
 
 [**ArrayConcatenation**](src/combination/Monoid.ts): combines two arrays using concatenation
+
+#### List
+
+[**ListConcatenation**](src/combination/Monoid.ts): combines two lists using concatenation
 
 ## Testing
 

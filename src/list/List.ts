@@ -368,7 +368,7 @@ export function createListEquality<T>(itemEquality: Equivalence<T> = guardedStri
     return (neitherIsUndefinedOrNull as Equivalence<List<T>>).and(createArrayEquality(itemEquality).adapt(l => l.getArray()))
 }
 
-export const ListConcatenation : Monoid<List<any>> = {
+export const ListConcatenation: Monoid<List<any>> = {
     combine: (xs: List<any>) => (ys: List<any>) => new List(ArrayConcatenation.combine(xs.getArray())(ys.getArray())),
     identityElement: emptyList()
 }
