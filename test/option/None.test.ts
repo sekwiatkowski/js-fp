@@ -54,7 +54,7 @@ describe('None', () => {
         })
 
         it('but no side-effects intended for the Some path', () => {
-            expect(() => none.performOnSome(() => { throw 'Unexpected side-effect!' }))
+            expect(() => none.perform(() => { throw 'Unexpected side-effect!' }))
                 .not.to.throw()
         })
     })

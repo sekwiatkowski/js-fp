@@ -53,10 +53,10 @@ export { Invalid, invalid } from './validated/Invalid'
 export { Future, future, fulfill, reject, futureObject } from './future/Future'
 export { Settled, createSettledEquality } from './future/Settled'
 
-export { Program, program } from './program/Program'
-
 export { State, state, stateObject } from './state/State'
 export { Writer, writer, stringWriter, listWriter, createWriterEquality } from './writer/Writer'
+
+export { Program, program } from './program/Program'
 //endregion
 
 //region Functions

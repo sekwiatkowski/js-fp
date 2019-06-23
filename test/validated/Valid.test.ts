@@ -88,7 +88,7 @@ describe('Valid', () => {
         it('intended for the valid path', () => {
             let mutable = noSideEffectText
             const afterSideEffectText = 'after side-effect'
-            createValidString().perform(() => mutable = 'after side-effect' )
+            createValidString().performOnBoth(() => mutable = 'after side-effect' )
             mutable.should.equal(afterSideEffectText)
         })
 

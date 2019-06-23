@@ -89,12 +89,12 @@ export class None<A> implements Option<A> {
     //endregion
 
     //region Side-effects
-    perform(sideEffect: () => void): Option<A> {
+    performOnBoth(sideEffect: () => void): Option<A> {
         sideEffect()
         return none
     }
 
-    performOnSome(sideEffect: (value: A) => void): Option<A> {
+    perform(sideEffect: (value: A) => void): Option<A> {
         return none
     }
 

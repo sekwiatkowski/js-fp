@@ -1,33 +1,39 @@
-export class Program<E, T> {
-    constructor(private readonly f: (shared: E) => T) {}
+import {emptyList, List, NonEmptyList, repeat, Result} from '..'
 
-    runWith(shared: E): T {
-        return this.f(shared)
+export class Program<I, T, E> {
+    constructor(private readonly f: (instructions : I) => Result<T, E>) {}
+
+    withInstructions(instructions: I): Runner<T, E> {
+        return new Runner(() => this.f(instructions))
     }
 }
 
-export function program<E = void, T = void>(f: (environment: E) => T): Program<E, T> {
-    return new Program((f))
+function attempt<T, E>(f: () => Result<T, E>, results: List<Result<T, E>>|NonEmptyList<Result<T, E>>, attemptsLeft: number): NonEmptyList<Result<T, E>> {
+    if(attemptsLeft === 0) {
+        return results as NonEmptyList<Result<T, E>>
+    }
+
+    const result = f()
+
+    return attempt(f, results.append(result), result.isSuccess() ? 0 : --attemptsLeft)
 }
 
-/*
-interface Environment {
-    ask: () => string
-    tell: (s: string) => void
+class Runner<T, E> {
+    constructor(private readonly f: () => Result<T, E>) {}
+
+    repeat(times: number): List<Result<T, E>> {
+        return repeat(times, () => this.f())
+    }
+
+    attempt(times: number): NonEmptyList<Result<T, E>> {
+        return  attempt(this.f, emptyList(), times)
+    }
+
+    run(): Result<T, E> {
+        return this.f()
+    }
 }
 
-const ProductionEnvironment = {
-    ask: () => readlineSync.question("What's your name? "),
-    tell: (name: string) => console.log(`Hi, ${name}!`)
+export function program<I, T, E>(f: (instructions : I) => Result<T, E>): Program<I, T, E> {
+    return new Program<I, T, E>(f)
 }
-
-const TestEnvironment = {
-    ...ProductionEnvironment,
-    ask: () => '[Test name]'
-}
-
-const greet = program<Environment, void>(({ ask, tell }) => {
-    action(ask)
-        .compose(tell)
-        .act()
-}) */

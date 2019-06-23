@@ -85,7 +85,7 @@ describe('Some', () => {
         it('intended for the Some path', () => {
             let mutable = 'before side-effect'
 
-            createSomeOfString().performOnSome(value => mutable = value)
+            createSomeOfString().perform(value => mutable = value)
 
             mutable.should.equal(containedValue)
         })

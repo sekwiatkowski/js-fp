@@ -224,26 +224,26 @@ describe('Future', () => {
                 let mutable: string[] = []
 
                 await fulfill({})
-                    .perform(() => new Promise(resolve => {
+                    .performOnBoth(() => new Promise(resolve => {
                         setTimeout(() => {
                             mutable.push('first')
                             resolve()
                         }, timeout)
                     }))
-                    .perform(() => new Promise(resolve => {
+                    .performOnBoth(() => new Promise(resolve => {
                         mutable.push('second')
                         resolve()
                     }))
                     .getOrElse(unsafeGet)
 
                 await reject({})
-                    .perform(() => new Promise(resolve => {
+                    .performOnBoth(() => new Promise(resolve => {
                         setTimeout(() => {
                             mutable.push('third')
                             resolve()
                         }, timeout)
                     }))
-                    .perform(() => new Promise(resolve => {
+                    .performOnBoth(() => new Promise(resolve => {
                         mutable.push('fourth')
                         resolve()
                     }))
@@ -256,13 +256,13 @@ describe('Future', () => {
                 let mutable: string[] = []
 
                 await fulfill({})
-                    .performOnFulfilled(() => new Promise(resolve => {
+                    .perform(() => new Promise(resolve => {
                         setTimeout(() => {
                             mutable.push('first')
                             resolve()
                         }, timeout)
                     }))
-                    .performOnFulfilled(() => new Promise(resolve => {
+                    .perform(() => new Promise(resolve => {
                         mutable.push('second')
                         resolve()
                     }))
@@ -275,13 +275,13 @@ describe('Future', () => {
                 let mutable: string[] = []
 
                 await reject({})
-                    .performOnFulfilled(() => new Promise(resolve => {
+                    .perform(() => new Promise(resolve => {
                         setTimeout(() => {
                             mutable.push('first')
                             resolve()
                         }, timeout)
                     }))
-                    .performOnFulfilled(() => new Promise(resolve => {
+                    .perform(() => new Promise(resolve => {
                         mutable.push('second')
                         resolve()
                     }))
@@ -489,7 +489,7 @@ describe('Future', () => {
     describe('is rejected', () => {
         it('if a side-effect in the fulfillment path is rejected', async() => {
             const createFutureWithRejectedSideEffectOnFulfilled = () => fulfill({})
-                .performOnFulfilled(() => Promise.reject({}))
+                .perform(() => Promise.reject({}))
 
             const isFulfilled = await createFutureWithRejectedSideEffectOnFulfilled().isFulfilled()
             isFulfilled.should.be.false
@@ -500,7 +500,7 @@ describe('Future', () => {
 
         it('if a side-effect on both paths is rejected', async() => {
             const createFutureWithRejectedSideEffectOnBothPaths = () => fulfill({})
-                .perform(() => Promise.reject({}))
+                .performOnBoth(() => Promise.reject({}))
 
             const isFulfilled = await createFutureWithRejectedSideEffectOnBothPaths().isFulfilled()
             isFulfilled.should.be.false

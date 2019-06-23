@@ -53,9 +53,9 @@ export interface Result<T, E> {
     //endregion
 
     //region Side-effects
-    perform(sideEffect: () => void): Result<T, E>
-    performOnSuccess(sideEffect: (value: T) => void): Result<T, E>
+    perform(sideEffect: (value: T) => void): Result<T, E>
     performOnFailure(sideEffect: (error: E) => void): Result<T, E>
+    performOnBoth(sideEffect: () => void): Result<T, E>
     //endregion
 
     //region Status

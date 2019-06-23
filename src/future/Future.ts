@@ -228,7 +228,7 @@ export class Future<T, E> {
     //endregion
 
     //region Side-effects
-    perform<U>(f: (() => Future<U, E>) | (() => Promise<U>)): Future<T, E> {
+    performOnBoth<U>(f: (() => Future<U, E>) | (() => Promise<U>)): Future<T, E> {
         return new Future<T, E>(() =>
             new Promise<Settled<T, E>>(resolve => {
                 this.run(
@@ -266,7 +266,7 @@ export class Future<T, E> {
         )
     }
 
-    performOnFulfilled<U>(f: ((value: T) => Future<U, E>) | ((value: T) => Promise<U>)): Future<T, E> {
+    perform<U>(f: ((value: T) => Future<U, E>) | ((value: T) => Promise<U>)): Future<T, E> {
         return new Future<T, E>(() =>
             new Promise<Settled<T, E>>(resolve =>
                 this.run(

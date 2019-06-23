@@ -66,7 +66,7 @@ describe('Success', () => {
         it('intended for the success path', () => {
             let mutable = noSideEffectText
 
-            createSuccessOfString().performOnSuccess(value => mutable = value)
+            createSuccessOfString().perform(value => mutable = value)
 
             mutable.should.equal(containedValue)
         })

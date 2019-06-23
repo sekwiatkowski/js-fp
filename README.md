@@ -42,7 +42,7 @@ A TypeScript/JavaScript library designed to implement workflows as computational
 
 ### High-level computation
 
-[**Program**](src/program/Program.ts) (*in progress*): computation with a shared environment (used for dependency injection)
+[**Program**](src/program/Program.ts): interpretation of program descriptions 
 
 ## Functions
 

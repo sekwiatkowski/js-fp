@@ -42,9 +42,9 @@ export interface Validated<T, E> {
     //endregion
 
     //region Side-effects
-    perform(sideEffect: () => void): Validated<T, E>
-    performOnValid(sideEffect: (value: T) => void): Validated<T, E>
+    perform(sideEffect: (value: T) => void): Validated<T, E>
     performOnInvalid(sideEffect: (errors: E[]) => void): Validated<T, E>
+    performOnBoth(sideEffect: () => void): Validated<T, E>
     //endregion
 
     //region Status

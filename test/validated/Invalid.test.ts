@@ -106,7 +106,7 @@ describe('Invalid', () => {
 
         it('but not those intended for the valid path', () => {
             expect(() => createInvalidInstance()
-                .performOnValid(() => { throw 'Unexpected side-effect!' }))
+                .perform(() => { throw 'Unexpected side-effect!' }))
                 .not.to.throw()
         })
     })

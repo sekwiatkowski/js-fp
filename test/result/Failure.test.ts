@@ -42,7 +42,7 @@ describe('Failure', () => {
         })
 
         it('but not for the success path', () => {
-            expect(() => createFailureOfString().performOnSuccess(() => { throw 'Unexpected side-effect!'}))
+            expect(() => createFailureOfString().perform(() => { throw 'Unexpected side-effect!'}))
                 .not.to.throw()
         })
     })

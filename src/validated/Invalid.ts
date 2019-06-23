@@ -61,12 +61,12 @@ export class Invalid<T, E> implements Validated<T, E> {
     //endregion
 
     //region Side-effects
-    perform(sideEffect: () => void): Validated<T, E> {
+    performOnBoth(sideEffect: () => void): Validated<T, E> {
         sideEffect()
         return this
     }
 
-    performOnValid(sideEffect: (value: T) => void): Validated<T, E> {
+    perform(sideEffect: (value: T) => void): Validated<T, E> {
         return this
     }
 

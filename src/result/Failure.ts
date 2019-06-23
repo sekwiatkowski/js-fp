@@ -79,12 +79,12 @@ export class Failure<T, E> implements Result<T, E> {
     //endregion
 
     //region Side-effects
-    perform(sideEffect: () => void) : Result<T, E> {
+    performOnBoth(sideEffect: () => void) : Result<T, E> {
         sideEffect()
         return this
     }
 
-    performOnSuccess(sideEffect: (value: T) => void) : Result<T, E> {
+    perform(sideEffect: (value: T) => void) : Result<T, E> {
         return this
     }
 

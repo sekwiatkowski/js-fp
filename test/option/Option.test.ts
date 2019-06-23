@@ -6,8 +6,8 @@ describe('Option', () => {
     it('can perform side-effects on both paths', () => {
         let mutable = 0
 
-        some('value').perform(() => { mutable++ })
-        none.perform(() => { mutable++ })
+        some('value').performOnBoth(() => { mutable++ })
+        none.performOnBoth(() => { mutable++ })
 
         mutable.should.equal(2)
     })
