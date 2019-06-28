@@ -22,4 +22,4 @@ export declare class Invalid<T, E> implements Validated<T, E> {
     test(predicate: (value: T) => boolean): boolean;
     test(predicate: Predicate<T>): boolean;
 }
-export declare function invalid<T, E>(errors?: E | E[]): Invalid<T, E>;
+export declare function invalid<T, E>(errors: E | E[]): Invalid<T, E>;

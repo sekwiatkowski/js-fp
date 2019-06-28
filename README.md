@@ -1,6 +1,6 @@
-# FlowScript
+# JS/FP
 
-A TypeScript/JavaScript library designed to implement workflows as computational graphs
+A pragmatic functional programming library for JavaScript/TypeScript
 
 ## Computation with monad(-like) objects
 

@@ -1,7 +1,7 @@
 {
-  "name": "flowscript",
-  "version": "0.16.1",
-  "description": "A TypeScript/JavaScript library designed to implement workflows as computational graphs",
+  "name": "js-fp",
+  "version": "0.17.0",
+  "description": "A pragmatic functional programming library for JavaScript/TypeScript",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "directories": {
@@ -21,15 +21,16 @@
     "typescript": "3.5.2"
   },
   "keywords": [
-    "workflow",
-    "computation",
-    "graph",
     "functional-programming",
     "fp",
+    "javascript",
+    "typescript",
+    "workflow",
+    "flow",
+    "computation",
+    "graph",
     "railway-oriented-programming",
     "rop",
-    "typescript",
-    "javascript",
     "functor",
     "applicative",
     "monad",
@@ -57,6 +58,10 @@
   },
   "author": "Sebastian E. Kwiatkowski",
   "license": "MIT",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/npm/cli.git"
+  },
   "nyc": {
     "all": true,
     "extension": [

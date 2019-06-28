@@ -77,7 +77,7 @@ class Invalid {
     }
 }
 exports.Invalid = Invalid;
-function invalid(errors = []) {
+function invalid(errors) {
     return new Invalid(errors instanceof Array ? errors : [errors]);
 }
 exports.invalid = invalid;
