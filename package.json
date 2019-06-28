@@ -1,6 +1,6 @@
 {
   "name": "@sekwiatkowski/js-fp",
-  "version": "0.18.0",
+  "version": "0.18.1",
   "description": "A pragmatic functional programming library for JavaScript/TypeScript",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -63,7 +63,7 @@
   "license": "MIT",
   "repository": {
     "type" : "git",
-    "url" : "https://github.com/sekwiatkowski/computation-graph.git"
+    "url" : "https://github.com/sekwiatkowski/js-fp.git"
   },
   "nyc": {
     "all": true,
