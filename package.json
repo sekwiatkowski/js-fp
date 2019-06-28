@@ -1,6 +1,6 @@
 {
   "name": "js-fp",
-  "version": "0.17.0",
+  "version": "0.17.1",
   "description": "A pragmatic functional programming library for JavaScript/TypeScript",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
