@@ -51,7 +51,7 @@
   ],
   "scripts": {
     "clean": "rimraf dist/*",
-    "transpile": "npm run clean && tsc -p tsconfig.production.json",
+    "build": "npm run clean && tsc -p tsconfig.production.json",
     "test": "mocha --require ts-node/register test/**/*.ts",
     "test:watch": "mocha --require ts-node/register test/**/*.ts --watch --watch-extensions ts",
     "coverage": "nyc mocha"
