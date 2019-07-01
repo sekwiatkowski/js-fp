@@ -1,7 +1,6 @@
-import {Future, List, none, NonEmptyList, option, Option, Ordering, some} from '..'
+import {Future, List, none, NonEmptyList, option, Option, Ordering, Settled, some} from '..'
 import {fulfilled} from '../future/Fulfilled'
 import {rejected} from '../future/Rejected'
-import {Settled} from '../future/Settled'
 
 //region Access
 export function getItem<T>(items: T[], index: number): Option<T> {
@@ -95,6 +94,17 @@ export function foldItemsBy<T, U>(
 //endregion
 
 //region Grouping
+export function chunked<T>(items: T[], size: number): T[][] {
+    const chunks: T[][] = []
+
+    for (let index = 0; index < items.length; index += size) {
+        const chunk = items.slice(index, index+size)
+        chunks.push(chunk)
+    }
+
+    return chunks
+}
+
 export function groupItemsBy<T>(items: T[], computeKey: (item: T) => string): { [id: string]: T[] } {
     let dictionary:{ [id: string]: T[] } = {}
     for(let i = 0; i < items.length; i++) {

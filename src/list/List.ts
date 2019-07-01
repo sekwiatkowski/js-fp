@@ -30,6 +30,7 @@ import {
 import {
     allItems,
     appendItem,
+    chunked,
     containsItem,
     countItems,
     filterItems,
@@ -123,6 +124,10 @@ export class List<T> {
     //endregion
 
     //region Grouping
+    chunked(size: number): List<T[]> {
+        return new List(chunked(this.items, size))
+    }
+
     groupBy(computeKey: (item: T) => string): { [id: string]: T[] } {
         return groupItemsBy(this.items, computeKey)
     }

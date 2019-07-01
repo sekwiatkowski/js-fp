@@ -30,6 +30,7 @@ import {
 import {
     allItems,
     appendItem,
+    chunked,
     containsItem,
     countItems,
     filterItems,
@@ -213,6 +214,10 @@ export class NonEmptyList<T> {
     //endregion
 
     //region Grouping
+    chunked(size: number): NonEmptyList<T[]> {
+        return new NonEmptyList(chunked(this.items, size))
+    }
+
     groupBy(computeKey: (item: T) => string): { [id: string]: T[] } {
         return groupItemsBy(this.items, computeKey)
     }

@@ -1,4 +1,6 @@
 import {
+    createArrayEquality,
+    createListEquality,
     createNonEmptyListEquality,
     createOptionEquality,
     emptyList,
@@ -11,10 +13,10 @@ import {
     some,
     Some
 } from '../../src'
-import {createListEquality} from '../../src/list/List'
 
 require('chai').should()
 
+type Created = number[]
 describe('List<T>', () => {
     interface NumberValue {
         value: Number
@@ -314,23 +316,54 @@ describe('List<T>', () => {
     describe('should flatten', () => {
         describe('arrays', () => {
             it('of the same size', () => {
-                listFromArray([[1, 2], [3, 4]]).flatten().equals(listFromArray([1, 2, 3, 4]), listOfNumbersEquality)
+                listFromArray([[1, 2], [3, 4]]).flatten().equals(listFromArray([1, 2, 3, 4]), listOfNumbersEquality).should.be.true
             })
 
             it('of different sizes', () => {
-                listFromArray([[1, 2], [3, 4, 5]]).flatten().equals(listFromArray([1, 2, 3, 4, 5]), listOfNumbersEquality)
+                listFromArray([[1, 2], [3, 4, 5]]).flatten().equals(listFromArray([1, 2, 3, 4, 5]), listOfNumbersEquality).should.be.true
             })
         })
 
         describe('lists', () => {
             it('of the same size', () => {
-                listFromArray([listFromArray([1, 2]), listFromArray([3, 4])]).flatten().equals(listFromArray([1, 2, 3, 4]), listOfNumbersEquality)
+                listFromArray([listFromArray([1, 2]), listFromArray([3, 4])]).flatten().equals(listFromArray([1, 2, 3, 4]), listOfNumbersEquality).should.be.true
             })
 
             it('of different sizes', () => {
-                listFromArray([listFromArray([1, 2]), listFromArray( [3, 4, 5])]).flatten().equals(listFromArray([1, 2, 3, 4, 5]), listOfNumbersEquality)
+                listFromArray([listFromArray([1, 2]), listFromArray( [3, 4, 5])]).flatten().equals(listFromArray([1, 2, 3, 4, 5]), listOfNumbersEquality).should.be.true
             })
         })
+    })
+
+    describe('can be chunked', () => {
+        describe('into a list of arrays of numbers not exceeding the given size', () => {
+            const equality = createListEquality<number[]>(createArrayEquality<number>())
+
+            it('with the last array not being of full size', () => {
+                const actual = listFromArray([1, 2, 3, 4]).chunked(2)
+                const expected = listFromArray([[1, 2], [3, 4]])
+
+                actual.equals(expected, equality)
+                    .should.be.true
+            })
+
+            it('with the last array being of full size', () => {
+                const actual = listFromArray([1, 2, 3]).chunked(2)
+                const expected = listFromArray([[1, 2], [3]])
+
+                actual.equals(expected, equality)
+                    .should.be.true
+            })
+
+            it('when the input is empty', () => {
+                const actual = listFromArray([] as number[]).chunked(2)
+                const expected = listFromArray([] as number[][])
+
+                actual.equals(expected, equality)
+                    .should.be.true
+            })
+        })
+
     })
 
     describe('can group', () => {

@@ -1,6 +1,6 @@
 {
   "name": "@sekwiatkowski/js-fp",
-  "version": "0.18.1",
+  "version": "0.18.2",
   "description": "A pragmatic functional programming library for JavaScript/TypeScript",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
